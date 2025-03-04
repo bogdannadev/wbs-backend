@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\BonusSystem.Core\BonusSystem.Core.csproj" />
+    <ProjectReference Include="..\..\src\BonusSystem.Infrastructure\BonusSystem.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\BonusSystem.Shared\BonusSystem.Shared.csproj" />
   </ItemGroup>
 
