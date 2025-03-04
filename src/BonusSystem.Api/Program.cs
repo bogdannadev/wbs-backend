@@ -1,5 +1,8 @@
+using BonusSystem.Core.Repositories;
 using BonusSystem.Core.Services.Interfaces;
-using BonusSystem.Infrastructure.Supabase;
+using BonusSystem.Infrastructure.Auth;
+using BonusSystem.Infrastructure.DataAccess;
+using BonusSystem.Infrastructure.DataAccess.InMemory;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -10,15 +13,26 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configure Supabase
-builder.Services.Configure<SupabaseOptions>(
-    builder.Configuration.GetSection(SupabaseOptions.Position));
+// Configure database options
+builder.Services.Configure<AppDbOptions>(
+    builder.Configuration.GetSection(AppDbOptions.Position));
+
+// Register repositories and data services
+builder.Services.AddSingleton<IDataService, InMemoryDataService>();
+builder.Services.AddSingleton<IUserRepository>(sp => sp.GetRequiredService<IDataService>().Users);
+builder.Services.AddSingleton<ICompanyRepository>(sp => sp.GetRequiredService<IDataService>().Companies);
+builder.Services.AddSingleton<IStoreRepository>(sp => sp.GetRequiredService<IDataService>().Stores);
+builder.Services.AddSingleton<ITransactionRepository>(sp => sp.GetRequiredService<IDataService>().Transactions);
+builder.Services.AddSingleton<INotificationRepository>(sp => sp.GetRequiredService<IDataService>().Notifications);
+
+// Register authentication service
+builder.Services.AddSingleton<IAuthenticationService, JwtAuthenticationService>();
 
 // Configure Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        var jwtSecret = builder.Configuration["Supabase:JwtSecret"];
+        var jwtSecret = builder.Configuration["AppDb:JwtSecret"];
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
@@ -33,15 +47,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 // Register BFF services
-// These would be implemented and registered when ready
+// These would be implemented in a full prototype
 // builder.Services.AddScoped<IBuyerBffService, BuyerBffService>();
 // builder.Services.AddScoped<ISellerBffService, SellerBffService>();
 // builder.Services.AddScoped<IAdminBffService, AdminBffService>();
 // builder.Services.AddScoped<IObserverBffService, ObserverBffService>();
-
-// Register infrastructure services
-// builder.Services.AddScoped<ISupabaseService, SupabaseService>();
-// builder.Services.AddScoped<IAuthenticationService, SupabaseAuthService>();
 
 var app = builder.Build();
 
@@ -57,19 +67,39 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Authentication endpoints
-app.MapPost("/auth/register", async (HttpContext httpContext) =>
+app.MapPost("/auth/register", async (IAuthenticationService authService, UserRegistrationDto registration) =>
 {
-    // Implementation would go here
-    return Results.Ok(new { message = "Registration endpoint placeholder" });
+    var result = await authService.SignUpAsync(registration);
+    
+    if (!result.Success)
+    {
+        return Results.BadRequest(new { message = result.ErrorMessage });
+    }
+    
+    return Results.Ok(new { 
+        userId = result.UserId,
+        token = result.Token,
+        role = result.Role
+    });
 })
 .AllowAnonymous()
 .WithName("Register")
 .WithOpenApi();
 
-app.MapPost("/auth/login", async (HttpContext httpContext) =>
+app.MapPost("/auth/login", async (IAuthenticationService authService, UserLoginDto login) =>
 {
-    // Implementation would go here
-    return Results.Ok(new { message = "Login endpoint placeholder" });
+    var result = await authService.SignInAsync(login);
+    
+    if (!result.Success)
+    {
+        return Results.BadRequest(new { message = result.ErrorMessage });
+    }
+    
+    return Results.Ok(new { 
+        userId = result.UserId,
+        token = result.Token,
+        role = result.Role
+    });
 })
 .AllowAnonymous()
 .WithName("Login")
