@@ -3,15 +3,51 @@ using BonusSystem.Core.Services.Interfaces;
 using BonusSystem.Infrastructure.Auth;
 using BonusSystem.Infrastructure.DataAccess;
 using BonusSystem.Infrastructure.DataAccess.InMemory;
+using BonusSystem.Shared.Dtos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "BonusSystem API",
+        Version = "v1",
+        Description = "A prototype API for the BonusSystem"
+    });
+    
+    // Add JWT authentication to Swagger
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    });
+    
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 // Configure database options
 builder.Services.Configure<AppDbOptions>(
@@ -59,7 +95,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "BonusSystem API v1");
+        c.RoutePrefix = "swagger";
+    });
 }
 
 app.UseHttpsRedirection();
@@ -104,6 +144,10 @@ app.MapPost("/auth/login", async (IAuthenticationService authService, UserLoginD
 .AllowAnonymous()
 .WithName("Login")
 .WithOpenApi();
+
+// Add a root endpoint that redirects to Swagger
+app.MapGet("/", () => Results.Redirect("/swagger"))
+    .ExcludeFromDescription();
 
 // Role-specific endpoints would be added here
 // Each role would have its own group of endpoints
