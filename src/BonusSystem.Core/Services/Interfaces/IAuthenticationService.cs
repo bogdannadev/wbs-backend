@@ -12,6 +12,9 @@ public record AuthResult
     public UserRole? Role { get; init; }
 }
 
+/// <summary>
+/// Service for authentication operations
+/// </summary>
 public interface IAuthenticationService
 {
     Task<AuthResult> SignInAsync(UserLoginDto loginDto);
@@ -19,4 +22,6 @@ public interface IAuthenticationService
     Task<bool> SignOutAsync(string token);
     Task<UserRole> GetUserRoleAsync(Guid userId);
     Task<bool> ValidateTokenAsync(string token);
+    Task<string> GenerateTokenAsync(Guid userId, UserRole role);
+    Task<Guid?> GetUserIdFromTokenAsync(string token);
 }
