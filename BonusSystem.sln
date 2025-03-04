@@ -1,18 +1,24 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
+# Rider Solution File
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FF7CD3A9-5E8A-4C6C-B81D-BEBFE0E75A3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Api", "src\BonusSystem.Api\BonusSystem.Api.csproj", "{1A8DE7D5-8C6B-4CC3-B8A0-2F4B45B26716}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Api", "src/BonusSystem.Api/BonusSystem.Api.csproj", "{1A8DE7D5-8C6B-4CC3-B8A0-2F4B45B26716}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Core", "src\BonusSystem.Core\BonusSystem.Core.csproj", "{FAB55BE9-73CE-4C55-9A8E-D2924AB8E78A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Core", "src/BonusSystem.Core/BonusSystem.Core.csproj", "{FAB55BE9-73CE-4C55-9A8E-D2924AB8E78A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Infrastructure", "src\BonusSystem.Infrastructure\BonusSystem.Infrastructure.csproj", "{8B13F4A5-84E1-4A78-A6A3-3E1A3D2DAFBB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Infrastructure", "src/BonusSystem.Infrastructure/BonusSystem.Infrastructure.csproj", "{8B13F4A5-84E1-4A78-A6A3-3E1A3D2DAFBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Shared", "src\BonusSystem.Shared\BonusSystem.Shared.csproj", "{FFDF6C65-C8C5-4FE6-A5C8-C4D9EA9B92FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Shared", "src/BonusSystem.Shared/BonusSystem.Shared.csproj", "{FFDF6C65-C8C5-4FE6-A5C8-C4D9EA9B92FA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{58B9773F-CFDF-43C0-A70A-1B3F60A8F37D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Api.Tests", "tests/BonusSystem.Api.Tests/BonusSystem.Api.Tests.csproj", "{A1B2C3D4-E5F6-7890-1234-56789ABCDEF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Core.Tests", "tests/BonusSystem.Core.Tests/BonusSystem.Core.Tests.csproj", "{B2C3D4E5-F678-9012-3456-7890ABCDEF12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Infrastructure.Tests", "tests/BonusSystem.Infrastructure.Tests/BonusSystem.Infrastructure.Tests.csproj", "{C3D4E5F6-7890-1234-5678-90ABCDEF1234}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,19 +33,37 @@ Global
 		{FAB55BE9-73CE-4C55-9A8E-D2924AB8E78A} = {FF7CD3A9-5E8A-4C6C-B81D-BEBFE0E75A3C}
 		{8B13F4A5-84E1-4A78-A6A3-3E1A3D2DAFBB} = {FF7CD3A9-5E8A-4C6C-B81D-BEBFE0E75A3C}
 		{FFDF6C65-C8C5-4FE6-A5C8-C4D9EA9B92FA} = {FF7CD3A9-5E8A-4C6C-B81D-BEBFE0E75A3C}
+		{A1B2C3D4-E5F6-7890-1234-56789ABCDEF0} = {58B9773F-CFDF-43C0-A70A-1B3F60A8F37D}
+		{B2C3D4E5-F678-9012-3456-7890ABCDEF12} = {58B9773F-CFDF-43C0-A70A-1B3F60A8F37D}
+		{C3D4E5F6-7890-1234-5678-90ABCDEF1234} = {58B9773F-CFDF-43C0-A70A-1B3F60A8F37D}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1A8DE7D5-8C6B-4CC3-B8A0-2F4B45B26716}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1A8DE7D5-8C6B-4CC3-B8A0-2F4B45B26716}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1A8DE7D5-8C6B-4CC3-B8A0-2F4B45B26716}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{FAB55BE9-73CE-4C55-9A8E-D2924AB8E78A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FAB55BE9-73CE-4C55-9A8E-D2924AB8E78A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FAB55BE9-73CE-4C55-9A8E-D2924AB8E78A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{8B13F4A5-84E1-4A78-A6A3-3E1A3D2DAFBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8B13F4A5-84E1-4A78-A6A3-3E1A3D2DAFBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8B13F4A5-84E1-4A78-A6A3-3E1A3D2DAFBB}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{FFDF6C65-C8C5-4FE6-A5C8-C4D9EA9B92FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FFDF6C65-C8C5-4FE6-A5C8-C4D9EA9B92FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FFDF6C65-C8C5-4FE6-A5C8-C4D9EA9B92FA}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-1234-56789ABCDEF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-1234-56789ABCDEF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2C3D4E5-F678-9012-3456-7890ABCDEF12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2C3D4E5-F678-9012-3456-7890ABCDEF12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3D4E5F6-7890-1234-5678-90ABCDEF1234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3D4E5F6-7890-1234-5678-90ABCDEF1234}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
+Explanation
+Project Paths: Updated paths to use forward slashes (/) for consistency.
+Test Projects: Added entries for the test projects located in the tests directory.
+Nested Projects: Ensured that the test projects are nested under the tests solution folder.
+This should align with your folder structure and ensure that all projects are correctly referenced in the solution file. If you encounter any issues or need further adjustments, feel free to ask!
+
+
+Edit in Pages
+
+
+
+
+AI-generated content may be incorrect
