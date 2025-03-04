@@ -1,0 +1,31 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FF7CD3A9-5E8A-4C6C-B81D-BEBFE0E75A3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Api", "src\BonusSystem.Api\BonusSystem.Api.csproj", "{1A8DE7D5-8C6B-4CC3-B8A0-2F4B45B26716}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Core", "src\BonusSystem.Core\BonusSystem.Core.csproj", "{FAB55BE9-73CE-4C55-9A8E-D2924AB8E78A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Infrastructure", "src\BonusSystem.Infrastructure\BonusSystem.Infrastructure.csproj", "{8B13F4A5-84E1-4A78-A6A3-3E1A3D2DAFBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusSystem.Shared", "src\BonusSystem.Shared\BonusSystem.Shared.csproj", "{FFDF6C65-C8C5-4FE6-A5C8-C4D9EA9B92FA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{58B9773F-CFDF-43C0-A70A-1B3F60A8F37D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1A8DE7D5-8C6B-4CC3-B8A0-2F4B45B26716} = {FF7CD3A9-5E8A-4C6C-B81D-BEBFE0E75A3C}
+		{FAB55BE9-73CE-4C55-9A8E-D2924AB8E78A} = {FF7CD3A9-5E8A-4C6C-B81D-BEBFE0E75A3C}
+		{8B13F4A5-84E1-4A78-A6A3-3E1A3D2DAFBB} = {FF7CD3A9-5E8A-4C6C-B81D-BEBFE0E75A3C}
+		{FFDF6C65-C8C5-4FE6-A5C8-C4D9EA9B92FA} = {FF7CD3A9-5E8A-4C6C-B81D-BEBFE0E75A3C}
+	EndGlobalSection
+EndGlobal
