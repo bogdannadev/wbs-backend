@@ -5,21 +5,28 @@ using BonusSystem.Api.Features.Observers;
 using BonusSystem.Api.Features.Sellers;
 using BonusSystem.Api.Infrastructure.Extensions;
 
-var builder = WebApplication.CreateBuilder(args);
+public class Program
+{
+    public static async Task Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-// Configure services
-builder.Services.AddApiServices(builder.Configuration);
+        // Configure services
+        builder.Services.AddApiServices(builder.Configuration);
 
-var app = builder.Build();
+        var app = builder.Build();
 
-// Configure middleware
-app.UseApiMiddleware(app.Environment);
+        // Configure middleware
+        app.UseApiMiddleware(app.Environment);
 
-// Map endpoints by feature
-app.MapAuthEndpoints();
-app.MapBuyerEndpoints();
-app.MapSellerEndpoints();
-app.MapAdminEndpoints();
-app.MapObserverEndpoints();
+        // Map endpoints by feature
+        app.MapAuthEndpoints();
+        app.MapBuyerEndpoints();
+        app.MapSellerEndpoints();
+        app.MapAdminEndpoints();
+        app.MapObserverEndpoints();
 
-await app.RunAsync();
+        await app.RunAsync();
+    }
+}
+
