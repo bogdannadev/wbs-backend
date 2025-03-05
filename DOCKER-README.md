@@ -28,13 +28,6 @@ This document describes the Docker-based development environment for the BonusSy
 - **Credentials**: Defined in .env file
 - **Purpose**: Web-based database administration
 
-### Supabase Container
-
-- **Image**: Supabase local development
-- **Ports**: 8000 (API), 8080 (Studio)
-- **Purpose**: Local Supabase instance for development
-- **Configuration**: Connected to PostgreSQL container
-
 ## Getting Started
 
 ### Starting the Environment
@@ -95,12 +88,6 @@ docker-compose up -d
 - **URL**: http://localhost:5050
 - **Email**: admin@bonussystem.com (or as defined in .env)
 - **Password**: admin (or as defined in .env)
-
-### Supabase
-
-- **API URL**: http://localhost:8000
-- **Studio URL**: http://localhost:8080
-- **Anon Key**: As defined in .env file
 
 ## Troubleshooting
 

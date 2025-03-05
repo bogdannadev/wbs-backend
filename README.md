@@ -4,21 +4,21 @@ A bonus tracking and management platform designed to provide a flexible, scalabl
 
 ## Project Overview
 
-BonusSystem is a comprehensive platform that allows different user roles (buyers, sellers, admins, etc.) to interact with a bonus point system. It follows a Vertical Slice Monolith with BFF (Backend for Frontend) architecture using .NET 9 and Supabase as the backend service.
+BonusSystem is a comprehensive platform that allows different user roles (buyers, sellers, admins, etc.) to interact with a bonus point system. It follows a Vertical Slice Monolith with BFF (Backend for Frontend) architecture using .NET 9 with PostgreSQL as the backend database.
 
 ## Architecture
 
 - **Architecture Style**: Monolithic with Modular Design
 - **API Pattern**: Backend for Frontend (BFF) with Vertical Slices
 - **Technology Stack**:
-  - Backend: .NET 9, Supabase (PostgreSQL)
-  - Authentication: Supabase Authentication with JWT
+  - Backend: .NET 9, PostgreSQL
+  - Authentication: JWT Authentication
 
 ## Project Structure
 
 - **BonusSystem.Api**: Web API with BFF implementation
 - **BonusSystem.Core**: Domain models and business logic
-- **BonusSystem.Infrastructure**: Supabase integration
+- **BonusSystem.Infrastructure**: Data access and external services integration
 - **BonusSystem.Shared**: DTOs and shared utilities
 
 ## Development Environment Setup
@@ -48,13 +48,11 @@ This will start the following services:
 - **API**: .NET 9 API (http://localhost:5001, https://localhost:5002)
 - **PostgreSQL**: Database (localhost:5432)
 - **pgAdmin**: Database management tool (http://localhost:5050)
-- **Supabase**: Local Supabase instance (API: http://localhost:8000, Studio: http://localhost:8080)
 
 3. Access the services:
 
 - **API Swagger UI**: http://localhost:5001/swagger
 - **pgAdmin**: http://localhost:5050 (Email: admin@bonussystem.com, Password: admin)
-- **Supabase Studio**: http://localhost:8080
 
 ### Environment Variables
 
