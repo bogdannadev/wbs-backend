@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  # .NET API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bonussystem-api
+    ports:
+      - "5001:80"
+      - "5002:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - AppDb__Type=Postgres
+      - AppDb__JwtSecret=DevSecretKey123!ForDockerDevelopment
+      - AppDb__TokenExpirationMinutes=60
+      - Supabase__Url=http://supabase:8000
+      - Supabase__Key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
+      - Supabase__JwtSecret=super-secret-jwt-token-with-at-least-32-characters-long
+      - PostgresOptions__ConnectionString=Host=postgres;Database=bonussystem;Username=postgres;Password=postgres
+      - PostgresOptions__EnableDetailedLogging=true
+    volumes:
+      - ./src:/src
+    depends_on:
+      - postgres
+      - supabase
+    restart: always
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:14-alpine
+    container_name: bonussystem-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=bonussystem
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: always
+
+  # pgAdmin for Database Management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: bonussystem-pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@bonussystem.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    restart: always
+
+  # Local Supabase for Development
+  supabase:
+    image: supabase/supabase-dev:latest
+    container_name: bonussystem-supabase
+    ports:
+      - "8000:8000" # API
+      - "8080:8080" # Studio
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - SUPABASE_DB_URL=postgresql://postgres:postgres@postgres:5432/bonussystem
+      - JWT_SECRET=super-secret-jwt-token-with-at-least-32-characters-long
+      - ENABLE_SIGNUP=true
+      - SITE_URL=http://localhost:5001
+    depends_on:
+      - postgres
+    restart: always
+
+volumes:
+  postgres-data:
+  pgadmin-data:
