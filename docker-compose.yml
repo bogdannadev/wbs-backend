@@ -15,16 +15,12 @@ services:
       - AppDb__Type=${APP_DB_TYPE}
       - AppDb__JwtSecret=${APP_JWT_SECRET}
       - AppDb__TokenExpirationMinutes=${APP_TOKEN_EXPIRATION}
-      - Supabase__Url=http://supabase:${SUPABASE_API_PORT}
-      - Supabase__Key=${SUPABASE_ANON_KEY}
-      - Supabase__JwtSecret=${SUPABASE_JWT_SECRET}
       - PostgresOptions__ConnectionString=Host=postgres;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - PostgresOptions__EnableDetailedLogging=true
     volumes:
       - ./src:/src
     depends_on:
       - postgres
-      - supabase
     restart: always
 
   # PostgreSQL Database
@@ -53,23 +49,6 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
     volumes:
       - pgadmin-data:/var/lib/pgadmin
-    depends_on:
-      - postgres
-    restart: always
-
-  # Local Supabase for Development
-  supabase:
-    image: supabase/supabase-dev:latest
-    container_name: bonussystem-supabase
-    ports:
-      - "${SUPABASE_API_PORT}:8000" # API
-      - "${SUPABASE_STUDIO_PORT}:8080" # Studio
-    environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - SUPABASE_DB_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-      - JWT_SECRET=${SUPABASE_JWT_SECRET}
-      - ENABLE_SIGNUP=true
-      - SITE_URL=http://localhost:${API_HTTP_PORT}
     depends_on:
       - postgres
     restart: always
