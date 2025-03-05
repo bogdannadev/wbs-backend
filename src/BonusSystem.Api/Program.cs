@@ -4,14 +4,17 @@ using BonusSystem.Core.Services.Interfaces;
 using BonusSystem.Infrastructure.Auth;
 using BonusSystem.Infrastructure.DataAccess;
 using BonusSystem.Infrastructure.DataAccess.InMemory;
+using BonusSystem.Infrastructure.DataAccess.Postgres;
 using BonusSystem.Shared.Dtos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -56,17 +59,55 @@ public class Program
         // Configure database options
         builder.Services.Configure<AppDbOptions>(
             builder.Configuration.GetSection(AppDbOptions.Position));
+            
+        // Configure PostgreSQL options
+        builder.Services.Configure<PostgresOptions>(
+            builder.Configuration.GetSection(PostgresOptions.Position));
 
-        // Register repositories and data services
-        builder.Services.AddSingleton<IDataService, InMemoryDataService>();
-        builder.Services.AddSingleton<IUserRepository>(sp => sp.GetRequiredService<IDataService>().Users);
-        builder.Services.AddSingleton<ICompanyRepository>(sp => sp.GetRequiredService<IDataService>().Companies);
-        builder.Services.AddSingleton<IStoreRepository>(sp => sp.GetRequiredService<IDataService>().Stores);
-        builder.Services.AddSingleton<ITransactionRepository>(sp => sp.GetRequiredService<IDataService>().Transactions);
-        builder.Services.AddSingleton<INotificationRepository>(sp => sp.GetRequiredService<IDataService>().Notifications);
+        // Register data services based on configuration
+        var dbType = builder.Configuration["AppDb:Type"];
+
+        if (dbType?.ToLower() == "postgres")
+        {
+            // Configure PostgreSQL DbContext
+            builder.Services.AddDbContext<BonusSystemDbContext>((serviceProvider, options) =>
+            {
+                var postgresOptions = serviceProvider.GetRequiredService<IOptions<PostgresOptions>>().Value;
+                
+                options.UseNpgsql(postgresOptions.ConnectionString, npgsqlOptions =>
+                {
+                    npgsqlOptions.MigrationsHistoryTable("__ef_migrations_history", "bonus");
+                    npgsqlOptions.EnableRetryOnFailure(5);
+                });
+                
+                if (postgresOptions.EnableDetailedLogging)
+                {
+                    options.EnableSensitiveDataLogging();
+                    options.EnableDetailedErrors();
+                }
+            });
+            
+            // Register PostgreSQL data service
+            builder.Services.AddScoped<IDataService, PostgresDataService>();
+            
+            // Register PostgreSQL initializer
+            builder.Services.AddScoped<PostgresInitializer>();
+        }
+        else
+        {
+            // Register InMemory data service (fallback)
+            builder.Services.AddSingleton<IDataService, InMemoryDataService>();
+        }
+        
+        // Register repositories based on data service (will resolve according to configuration)
+        builder.Services.AddScoped<IUserRepository>(sp => sp.GetRequiredService<IDataService>().Users);
+        builder.Services.AddScoped<ICompanyRepository>(sp => sp.GetRequiredService<IDataService>().Companies);
+        builder.Services.AddScoped<IStoreRepository>(sp => sp.GetRequiredService<IDataService>().Stores);
+        builder.Services.AddScoped<ITransactionRepository>(sp => sp.GetRequiredService<IDataService>().Transactions);
+        builder.Services.AddScoped<INotificationRepository>(sp => sp.GetRequiredService<IDataService>().Notifications);
 
         // Register authentication service
-        builder.Services.AddSingleton<IAuthenticationService, JwtAuthenticationService>();
+        builder.Services.AddScoped<IAuthenticationService, JwtAuthenticationService>();
 
         // Configure Authentication
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -87,6 +128,16 @@ public class Program
         builder.Services.AddAuthorization();
 
         var app = builder.Build();
+
+        // Initialize database if using PostgreSQL
+        if (dbType?.ToLower() == "postgres")
+        {
+            using (var scope = app.Services.CreateScope())
+            {
+                var initializer = scope.ServiceProvider.GetRequiredService<PostgresInitializer>();
+                await initializer.InitializeAsync();
+            }
+        }
 
         // Configure the HTTP request pipeline
         if (app.Environment.IsDevelopment())
@@ -149,6 +200,6 @@ public class Program
         // Role-specific endpoints would be added here
         // Each role would have its own group of endpoints
 
-        app.Run();
+        await app.RunAsync();
     }    
 }
