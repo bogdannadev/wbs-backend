@@ -16,25 +16,24 @@ public class AdminBffControllerTests : IClassFixture<WebApplicationFactory<Progr
 {
     private readonly WebApplicationFactory<Program> _factory;
     private readonly Mock<IAdminBffService> _adminBffServiceMock;
-    private readonly Mock<IAuthenticationService> _authServiceMock;
     private readonly string _validToken = "valid-admin-token";
     private readonly Guid _testAdminId = Guid.NewGuid();
 
     public AdminBffControllerTests(WebApplicationFactory<Program> factory)
     {
         _adminBffServiceMock = new Mock<IAdminBffService>();
-        _authServiceMock = new Mock<IAuthenticationService>();
-        
+        Mock<IAuthenticationService> authServiceMock = new Mock<IAuthenticationService>();
+
         // Setup auth service to validate our test token
-        _authServiceMock
+        authServiceMock
             .Setup(s => s.ValidateTokenAsync(_validToken))
             .ReturnsAsync(true);
         
-        _authServiceMock
+        authServiceMock
             .Setup(s => s.GetUserIdFromTokenAsync(_validToken))
             .ReturnsAsync(_testAdminId);
         
-        _authServiceMock
+        authServiceMock
             .Setup(s => s.GetUserRoleAsync(_testAdminId))
             .ReturnsAsync(UserRole.SystemAdmin);
         
@@ -60,7 +59,7 @@ public class AdminBffControllerTests : IClassFixture<WebApplicationFactory<Progr
 
                 // Add the mock services
                 services.AddSingleton(_adminBffServiceMock.Object);
-                services.AddSingleton(_authServiceMock.Object);
+                services.AddSingleton(authServiceMock.Object);
             });
         });
     }
