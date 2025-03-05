@@ -32,10 +32,10 @@ public class PostgresDataService : IDataService, IDisposable
 
         // For the prototype, we'll use placeholder implementations for other repositories
         // These would be properly implemented for a full solution
-        Companies = new NotImplementedCompanyRepository();
-        Stores = new NotImplementedStoreRepository();
-        Transactions = new NotImplementedTransactionRepository();
-        Notifications = new NotImplementedNotificationRepository();
+        Companies = new PostgresCompanyRepository();
+        Stores = new PostgresStoreRepository();
+        Transactions = new PostgresTransactionRepository();
+        Notifications = new PostgresNotificationRepository();
     }
 
     public void Dispose()
