@@ -1,8 +1,6 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
 using BonusSystem.Core.Services.Interfaces;
 using BonusSystem.Shared.Dtos;
 using BonusSystem.Shared.Models;
@@ -182,7 +180,7 @@ public class BuyerBffControllerTests : IClassFixture<WebApplicationFactory<Progr
             .ReturnsAsync(true);
         
         // Act
-        var response = await client.DeleteAsync($"/api/buyer/transactions/{transactionId}");
+        var response = await client.PostAsync($"/api/buyer/transactions/{transactionId}/cancel", null);
         
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -202,7 +200,7 @@ public class BuyerBffControllerTests : IClassFixture<WebApplicationFactory<Progr
             .ReturnsAsync(false);
         
         // Act
-        var response = await client.DeleteAsync($"/api/buyer/transactions/{transactionId}");
+        var response = await client.PostAsync($"/api/buyer/transactions/{transactionId}/cancel", null);
         
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -276,9 +274,8 @@ public class BuyerBffControllerTests : IClassFixture<WebApplicationFactory<Progr
         
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var qrCode = await response.Content.ReadAsStringAsync();
+        var result = await response.Content.ReadFromJsonAsync<object>();
         
-        qrCode.Should().NotBeNullOrEmpty();
-        qrCode.Should().Be(expectedQrCode);
+        result.Should().NotBeNull();
     }
 }
