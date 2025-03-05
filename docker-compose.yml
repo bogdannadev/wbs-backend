@@ -8,17 +8,17 @@ services:
       dockerfile: Dockerfile
     container_name: bonussystem-api
     ports:
-      - "5001:80"
-      - "5002:443"
+      - "${API_HTTP_PORT}:80"
+      - "${API_HTTPS_PORT}:443"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - AppDb__Type=Postgres
-      - AppDb__JwtSecret=DevSecretKey123!ForDockerDevelopment
-      - AppDb__TokenExpirationMinutes=60
-      - Supabase__Url=http://supabase:8000
-      - Supabase__Key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
-      - Supabase__JwtSecret=super-secret-jwt-token-with-at-least-32-characters-long
-      - PostgresOptions__ConnectionString=Host=postgres;Database=bonussystem;Username=postgres;Password=postgres
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - AppDb__Type=${APP_DB_TYPE}
+      - AppDb__JwtSecret=${APP_JWT_SECRET}
+      - AppDb__TokenExpirationMinutes=${APP_TOKEN_EXPIRATION}
+      - Supabase__Url=http://supabase:${SUPABASE_API_PORT}
+      - Supabase__Key=${SUPABASE_ANON_KEY}
+      - Supabase__JwtSecret=${SUPABASE_JWT_SECRET}
+      - PostgresOptions__ConnectionString=Host=postgres;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - PostgresOptions__EnableDetailedLogging=true
     volumes:
       - ./src:/src
@@ -32,13 +32,14 @@ services:
     image: postgres:14-alpine
     container_name: bonussystem-postgres
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=bonussystem
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ./scripts/init-db:/docker-entrypoint-initdb.d
     restart: always
 
   # pgAdmin for Database Management
@@ -46,10 +47,10 @@ services:
     image: dpage/pgadmin4:latest
     container_name: bonussystem-pgadmin
     ports:
-      - "5050:80"
+      - "${PGADMIN_PORT}:80"
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@bonussystem.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     depends_on:
@@ -61,14 +62,14 @@ services:
     image: supabase/supabase-dev:latest
     container_name: bonussystem-supabase
     ports:
-      - "8000:8000" # API
-      - "8080:8080" # Studio
+      - "${SUPABASE_API_PORT}:8000" # API
+      - "${SUPABASE_STUDIO_PORT}:8080" # Studio
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - SUPABASE_DB_URL=postgresql://postgres:postgres@postgres:5432/bonussystem
-      - JWT_SECRET=super-secret-jwt-token-with-at-least-32-characters-long
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - SUPABASE_DB_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - JWT_SECRET=${SUPABASE_JWT_SECRET}
       - ENABLE_SIGNUP=true
-      - SITE_URL=http://localhost:5001
+      - SITE_URL=http://localhost:${API_HTTP_PORT}
     depends_on:
       - postgres
     restart: always
