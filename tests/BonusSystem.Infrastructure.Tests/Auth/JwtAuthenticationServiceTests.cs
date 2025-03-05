@@ -185,7 +185,6 @@ public class JwtAuthenticationServiceTests
     [Fact]
     public async Task GetUserIdFromTokenAsync_ValidToken_ReturnsUserId()
     {
-        // todo: edit this test after the register implementation
         // Arrange
         var userId = Guid.NewGuid();
         
@@ -193,12 +192,12 @@ public class JwtAuthenticationServiceTests
         var token = await _authService.GenerateTokenAsync(userId, UserRole.Buyer);
         token.Should().NotBeNullOrEmpty();
         
-        /*// Act
+        // Act
         var result = await _authService.GetUserIdFromTokenAsync(token);
         
         // Assert
         result.Should().NotBeNull();
-        result.Value.Should().Be(userId);*/
+        result.Value.Should().Be(userId);
     }
 
     [Fact]
