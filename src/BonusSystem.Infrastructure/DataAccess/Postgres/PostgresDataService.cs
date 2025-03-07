@@ -27,15 +27,12 @@ public class PostgresDataService : IDataService, IDisposable
         _dbContext = dbContext;
         _loggerFactory = loggerFactory;
 
-        // Initialize repositories
+        // Initialize repositories with proper implementations
         Users = new PostgresUserRepository(dbContext, loggerFactory.CreateLogger<PostgresUserRepository>());
-
-        // For the prototype, we'll use placeholder implementations for other repositories
-        // These would be properly implemented for a full solution
-        Companies = new PostgresCompanyRepository();
-        Stores = new PostgresStoreRepository();
-        Transactions = new PostgresTransactionRepository();
-        Notifications = new PostgresNotificationRepository();
+        Companies = new PostgresCompanyRepository(dbContext, loggerFactory.CreateLogger<PostgresCompanyRepository>());
+        Stores = new PostgresStoreRepository(dbContext, loggerFactory.CreateLogger<PostgresStoreRepository>());
+        Transactions = new PostgresTransactionRepository(dbContext, loggerFactory.CreateLogger<PostgresTransactionRepository>());
+        Notifications = new PostgresNotificationRepository(dbContext, loggerFactory.CreateLogger<PostgresNotificationRepository>());
     }
 
     public void Dispose()
