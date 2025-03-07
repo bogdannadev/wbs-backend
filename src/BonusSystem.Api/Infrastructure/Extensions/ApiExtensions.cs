@@ -26,7 +26,12 @@ public static class ApiExtensions
             {
                 Title = "BonusSystem API",
                 Version = "v1",
-                Description = "A prototype API for the BonusSystem"
+                Description = "A prototype API for the BonusSystem",
+                Contact = new OpenApiContact
+                {
+                    Name = "BonusSystem Team",
+                    Email = "info@bonussystem.com"
+                }
             });
             
             // Add JWT authentication to Swagger
@@ -54,6 +59,10 @@ public static class ApiExtensions
                     Array.Empty<string>()
                 }
             });
+            
+            // Organize endpoints by tag
+            c.TagActionsBy(api => new[] { api.GroupName ?? "Default" });
+            c.DocInclusionPredicate((name, api) => true);
         });
 
         // Configure database options
@@ -150,22 +159,29 @@ public static class ApiExtensions
         }
 
         // Configure the HTTP request pipeline
-        if (env.IsDevelopment())
+        app.UseSwagger(c =>
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "BonusSystem API v1");
-                c.RoutePrefix = "swagger";
-            });
-        }
+            c.RouteTemplate = "api-docs/{documentName}/swagger.json";
+        });
+        
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/api-docs/v1/swagger.json", "BonusSystem API v1");
+            c.RoutePrefix = "api-docs";
+            c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
+            c.DefaultModelsExpandDepth(0); // Hide models section by default
+            c.DisplayRequestDuration();
+            c.EnableDeepLinking();
+            c.EnableFilter();
+            c.EnableValidator();
+        });
 
         app.UseHttpsRedirection();
         app.UseAuthentication();
         app.UseAuthorization();
 
-        // Add a root endpoint that redirects to Swagger
-        app.MapGet("/", () => Results.Redirect("/swagger"))
+        // Add a root endpoint that redirects to API docs
+        app.MapGet("/", () => Results.Redirect("/api-docs"))
             .ExcludeFromDescription();
 
         return app;
