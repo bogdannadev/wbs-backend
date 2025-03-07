@@ -6,7 +6,7 @@ This document outlines the port configuration for the BonusSystem prototype and 
 
 | Service          | HTTP Port | HTTPS Port | Internal Container Port |
 |------------------|-----------|------------|------------------------|
-| BonusSystem API  | 5001      | 5002       | 80/443                 |
+| BonusSystem API  | 5001      | 5002       | 8080/443               |
 | PostgreSQL       | 5432      | -          | 5432                   |
 | pgAdmin          | 5050      | -          | 80                     |
 
@@ -35,7 +35,15 @@ This document outlines the port configuration for the BonusSystem prototype and 
   - Clear separation from application ports
   - Easy to remember as "50xx" for admin interfaces
 
-### 3. Security Considerations
+### 3. Container Port Configuration
+
+- **Internal Port 8080**: 
+  - The API container is configured to listen on port 8080 internally
+  - This is mapped to external port 5001 as defined in the docker-compose.yml
+  - Using the `ASPNETCORE_URLS` environment variable to explicitly set listening ports
+  - This approach works well with container platforms that may set their own PORT environment variable
+
+### 4. Security Considerations
 
 - **HTTPS Configuration**:
   - All public endpoints should be served over HTTPS (port 5002)
@@ -46,7 +54,7 @@ This document outlines the port configuration for the BonusSystem prototype and 
   - Database ports should never be exposed directly to the internet
   - Management interfaces like pgAdmin should be restricted to VPN/internal networks
 
-### 4. Development vs. Production
+### 5. Development vs. Production
 
 - **Development Environment**:
   - Local ports are configured in launchSettings.json and docker-compose.yml
@@ -82,3 +90,12 @@ PGADMIN_PORT=5050
 ```
 
 Modify these values in the `.env` file to change port assignments for all components.
+
+## Troubleshooting Port Issues
+
+If the application doesn't respond on the expected ports, check:
+
+1. Docker container logs to see which port the application is actually listening on
+2. Ensure the port mappings in docker-compose.yml match the actual listening ports
+3. Verify the `ASPNETCORE_URLS` environment variable is set correctly
+4. Check if the host machine has another process using the same ports
