@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { 
   Dashboard as DashboardIcon, 
   History as HistoryIcon, 
-  QrCode as QrCodeIcon, 
   Store as StoreIcon,
   ShoppingCart as ShoppingCartIcon
 } from '@mui/icons-material';
@@ -19,7 +18,6 @@ const SellerDashboard = () => {
   const [userContext, setUserContext] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserContext = async () => {
@@ -35,20 +33,7 @@ const SellerDashboard = () => {
       }
     };
     
-    // In a real implementation, we would call the API
-    // However, for the demo, we'll mock the response
-    setTimeout(() => {
-      setUserContext({
-        username: 'Sarah Seller',
-        role: 'Seller',
-        selectedStore: {
-          id: 2,
-          name: 'Global Retail - Uptown',
-          company: 'Global Retail Inc.'
-        }
-      });
-      setLoading(false);
-    }, 1000);
+    fetchUserContext();
   }, []);
 
   const menuItems = [
@@ -86,6 +71,7 @@ const SellerDashboard = () => {
         <Route path="/transaction" element={<SellerTransactionForm />} />
         <Route path="/transactions" element={<SellerTransactions />} />
         <Route path="/stores" element={<SellerStores />} />
+        <Route path="*" element={<Navigate to="/seller" replace />} />
       </Routes>
     </DashboardLayout>
   );
