@@ -47,6 +47,18 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Helper function to get dashboard route
+  const getDashboardRoute = (role) => {
+    switch (role) {
+      case 'Buyer': return '/buyer';
+      case 'Seller': return '/seller';
+      case 'SystemAdmin': return '/admin';
+      case 'CompanyObserver':
+      case 'SystemObserver': return '/observer';
+      default: return '/';
+    }
+  };
+
   // Check if user is already logged in
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -68,37 +80,18 @@ export const AuthProvider = ({ children }) => {
       };
 
       setUser(userData);
-      navigateByRole(role);
+      
+      // Attempt to navigate to the appropriate dashboard
+      try {
+        const dashboardRoute = getDashboardRoute(role);
+        navigate(dashboardRoute);
+      } catch (error) {
+        console.error('Navigation error:', error);
+      }
     }
     
     setLoading(false);
-  }, []);
-
-  // Explicit navigation function with logging
-  const navigateByRole = (role) => {
-    console.log('Navigating for role:', role);
-    try {
-      switch (role) {
-        case 'Buyer':
-          window.location.href = '/buyer';
-          break;
-        case 'Seller':
-          window.location.href = '/seller';
-          break;
-        case 'SystemAdmin':
-          window.location.href = '/admin';
-          break;
-        case 'CompanyObserver':
-        case 'SystemObserver':
-          window.location.href = '/observer';
-          break;
-        default:
-          window.location.href = '/';
-      }
-    } catch (error) {
-      console.error('Navigation error:', error);
-    }
-  };
+  }, [navigate]);
 
   // Login method with demo account support
   const login = async (email, password) => {
@@ -131,16 +124,19 @@ export const AuthProvider = ({ children }) => {
           localStorage.setItem('selectedStore', JSON.stringify(selectedStore));
         }
         
-        setUser({
+        const userData = {
           id: userId,
           role,
           username,
           ...(role === 'Buyer' && { bonusBalance }),
           ...(role === 'Seller' && { selectedStore })
-        });
+        };
         
-        // Redirect based on role using window.location
-        navigateByRole(role);
+        setUser(userData);
+        
+        // Navigate to appropriate dashboard
+        const dashboardRoute = getDashboardRoute(role);
+        navigate(dashboardRoute);
         
         setLoading(false);
         return true;
@@ -159,8 +155,9 @@ export const AuthProvider = ({ children }) => {
         role,
       });
       
-      // Redirect based on role using window.location
-      navigateByRole(role);
+      // Navigate to appropriate dashboard
+      const dashboardRoute = getDashboardRoute(role);
+      navigate(dashboardRoute);
       
       setLoading(false);
       return true;
@@ -187,8 +184,9 @@ export const AuthProvider = ({ children }) => {
         role,
       });
       
-      // Redirect based on role using window.location
-      navigateByRole(role);
+      // Navigate to appropriate dashboard
+      const dashboardRoute = getDashboardRoute(role);
+      navigate(dashboardRoute);
       
       setLoading(false);
       return true;
@@ -210,7 +208,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('selectedStore');
     
     setUser(null);
-    window.location.href = '/';
+    navigate('/');
   };
 
   return (
