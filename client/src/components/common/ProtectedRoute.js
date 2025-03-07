@@ -1,13 +1,27 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { Box, CircularProgress, Typography } from '@mui/material';
 
 const ProtectedRoute = ({ children, roles = [] }) => {
   const { user, loading } = useAuth();
 
   // Show loading state
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        height: '100vh' 
+      }}>
+        <CircularProgress size={40} />
+        <Typography variant="body1" sx={{ mt: 2 }}>
+          Loading user data...
+        </Typography>
+      </Box>
+    );
   }
 
   // If not authenticated, redirect to login
