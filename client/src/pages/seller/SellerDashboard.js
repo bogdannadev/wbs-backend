@@ -2,17 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { 
   Dashboard as DashboardIcon, 
-  QrCodeScanner as QrCodeScannerIcon, 
   History as HistoryIcon, 
-  AccountBalance as AccountBalanceIcon 
+  QrCode as QrCodeIcon, 
+  Store as StoreIcon,
+  ShoppingCart as ShoppingCartIcon
 } from '@mui/icons-material';
 import DashboardLayout from '../../components/common/DashboardLayout';
 import SellerHome from './SellerHome';
-import SellerTransactionForm from './SellerTransactionForm';
 import SellerTransactions from './SellerTransactions';
-import SellerBalances from './SellerBalances';
+import SellerTransactionForm from './SellerTransactionForm';
+import SellerStores from './SellerStores';
 import { sellerService } from '../../services/api';
-import { CircularProgress, Box, Paper, Typography } from '@mui/material';
+import { Paper, Typography, Box, CircularProgress } from '@mui/material';
 
 const SellerDashboard = () => {
   const [userContext, setUserContext] = useState(null);
@@ -34,14 +35,27 @@ const SellerDashboard = () => {
       }
     };
     
-    fetchUserContext();
+    // In a real implementation, we would call the API
+    // However, for the demo, we'll mock the response
+    setTimeout(() => {
+      setUserContext({
+        username: 'Sarah Seller',
+        role: 'Seller',
+        selectedStore: {
+          id: 2,
+          name: 'Global Retail - Uptown',
+          company: 'Global Retail Inc.'
+        }
+      });
+      setLoading(false);
+    }, 1000);
   }, []);
 
   const menuItems = [
     { label: 'Dashboard', path: '/seller', icon: <DashboardIcon /> },
-    { label: 'Process Transaction', path: '/seller/transaction', icon: <QrCodeScannerIcon /> },
+    { label: 'New Transaction', path: '/seller/transaction', icon: <ShoppingCartIcon /> },
     { label: 'Transaction History', path: '/seller/transactions', icon: <HistoryIcon /> },
-    { label: 'Store Balances', path: '/seller/balances', icon: <AccountBalanceIcon /> },
+    { label: 'Store Selection', path: '/seller/stores', icon: <StoreIcon /> }
   ];
 
   if (loading) {
@@ -65,20 +79,13 @@ const SellerDashboard = () => {
     );
   }
 
-  // For the demo, let's create a mock user context if API call fails
-  const demoUserContext = userContext || {
-    userId: '22222222-2222-2222-2222-222222222222',
-    username: 'Seller Demo',
-    role: 'Seller'
-  };
-
   return (
     <DashboardLayout title="Seller Dashboard" menuItems={menuItems}>
       <Routes>
-        <Route path="/" element={<SellerHome userContext={demoUserContext} />} />
+        <Route path="/" element={<SellerHome userContext={userContext} />} />
         <Route path="/transaction" element={<SellerTransactionForm />} />
         <Route path="/transactions" element={<SellerTransactions />} />
-        <Route path="/balances" element={<SellerBalances />} />
+        <Route path="/stores" element={<SellerStores />} />
       </Routes>
     </DashboardLayout>
   );
