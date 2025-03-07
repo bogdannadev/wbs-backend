@@ -30,11 +30,13 @@ import {
 } from '@mui/icons-material';
 import DashboardLayout from '../../components/common/DashboardLayout';
 import AdminCompanies from './AdminCompanies';
+import AdminUsers from './AdminUsers';
 import { adminService } from '../../services/api';
 
 // Home component for the Admin dashboard
 const AdminHome = () => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   // Mock data for companies
   const companies = [
@@ -149,7 +151,7 @@ const AdminHome = () => {
               </TableContainer>
               
               <Box sx={{ mt: 2, textAlign: 'right' }}>
-                <Button variant="outlined" size="small" href="/admin/companies">View All Companies</Button>
+                <Button variant="outlined" size="small" onClick={() => navigate('/admin/companies')}>View All Companies</Button>
               </Box>
             </CardContent>
           </Card>
@@ -202,7 +204,7 @@ const AdminHome = () => {
               </TableContainer>
               
               <Box sx={{ mt: 2, textAlign: 'right' }}>
-                <Button variant="outlined" size="small" href="/admin/stores">View All Pending</Button>
+                <Button variant="outlined" size="small" onClick={() => navigate('/admin/stores')}>View All Pending</Button>
               </Box>
             </CardContent>
           </Card>
@@ -216,13 +218,6 @@ const AdminHome = () => {
 const AdminStores = () => (
   <Paper sx={{ p: 3 }}>
     <Typography variant="h5" gutterBottom>Store Management</Typography>
-    <Typography>This feature will be available in the complete version.</Typography>
-  </Paper>
-);
-
-const AdminUsers = () => (
-  <Paper sx={{ p: 3 }}>
-    <Typography variant="h5" gutterBottom>User Management</Typography>
     <Typography>This feature will be available in the complete version.</Typography>
   </Paper>
 );
