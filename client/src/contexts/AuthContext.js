@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { authService } from '../services/api';
+import { authService, buyerService, sellerService, adminService, observerService } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
 // Demo accounts data for mocking the authentication
@@ -47,9 +47,19 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Mock services for demo accounts
+  const getDemoServiceByRole = (role) => {
+    switch (role) {
+      case 'Buyer': return buyerService;
+      case 'Seller': return sellerService;
+      case 'SystemAdmin': return adminService;
+      case 'CompanyObserver': return observerService;
+      default: return null;
+    }
+  };
+
   // Helper function to get dashboard route
   const getDashboardRoute = (role) => {
-    console.log('Getting dashboard route for role:', role);
     switch (role) {
       case 'Buyer': return '/buyer';
       case 'Seller': return '/seller';
@@ -67,39 +77,55 @@ export const AuthProvider = ({ children }) => {
     const role = localStorage.getItem('role');
     const username = localStorage.getItem('username');
 
-    console.log('Checking existing login:', { token, userId, role, username });
-
-    if (token && userId && role) {
-      const userData = {
-        id: userId,
-        role,
-        username: username || 'User',
-        ...(role === 'Buyer' && { 
-          bonusBalance: parseInt(localStorage.getItem('bonusBalance') || '0') 
-        }),
-        ...(role === 'Seller' && { 
-          selectedStore: JSON.parse(localStorage.getItem('selectedStore') || 'null')
-        })
-      };
-
-      setUser(userData);
-      
-      // Attempt to navigate to the appropriate dashboard
+    const fetchDemoContext = async (role) => {
       try {
-        const dashboardRoute = getDashboardRoute(role);
-        navigate(dashboardRoute);
+        const service = getDemoServiceByRole(role);
+        if (service) {
+          const response = await service.getContext();
+          return response.data.context;
+        }
       } catch (error) {
-        console.error('Navigation error:', error);
+        console.error('Error fetching demo context:', error);
+        return null;
       }
-    }
-    
-    setLoading(false);
+    };
+
+    const initializeUser = async () => {
+      if (token && userId && role) {
+        try {
+          const demoContext = await fetchDemoContext(role);
+          
+          const userData = {
+            id: userId,
+            role,
+            username: username || 'User',
+            ...(role === 'Buyer' && { 
+              bonusBalance: parseInt(localStorage.getItem('bonusBalance') || '0') 
+            }),
+            ...(role === 'Seller' && { 
+              selectedStore: JSON.parse(localStorage.getItem('selectedStore') || 'null')
+            }),
+            ...demoContext
+          };
+
+          setUser(userData);
+          
+          // Attempt to navigate to the appropriate dashboard
+          const dashboardRoute = getDashboardRoute(role);
+          navigate(dashboardRoute);
+        } catch (error) {
+          console.error('User initialization error:', error);
+        }
+      }
+      
+      setLoading(false);
+    };
+
+    initializeUser();
   }, [navigate]);
 
   // Login method with demo account support
   const login = async (email, password) => {
-    console.log('Login attempt:', { email, password });
-    
     try {
       setLoading(true);
       
@@ -107,8 +133,6 @@ export const AuthProvider = ({ children }) => {
       const demoAccount = demoAccounts.find(
         account => account.email === email && account.password === password
       );
-      
-      console.log('Demo account found:', demoAccount);
       
       if (demoAccount) {
         // Handle demo account login
@@ -143,7 +167,6 @@ export const AuthProvider = ({ children }) => {
         
         // Navigate to appropriate dashboard
         const dashboardRoute = getDashboardRoute(role);
-        console.log('Navigating to:', dashboardRoute);
         navigate(dashboardRoute);
         
         setLoading(false);
