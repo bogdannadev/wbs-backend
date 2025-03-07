@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }) => {
 
   // Helper function to get dashboard route
   const getDashboardRoute = (role) => {
+    console.log('Getting dashboard route for role:', role);
     switch (role) {
       case 'Buyer': return '/buyer';
       case 'Seller': return '/seller';
@@ -65,6 +66,8 @@ export const AuthProvider = ({ children }) => {
     const userId = localStorage.getItem('userId');
     const role = localStorage.getItem('role');
     const username = localStorage.getItem('username');
+
+    console.log('Checking existing login:', { token, userId, role, username });
 
     if (token && userId && role) {
       const userData = {
@@ -95,6 +98,8 @@ export const AuthProvider = ({ children }) => {
 
   // Login method with demo account support
   const login = async (email, password) => {
+    console.log('Login attempt:', { email, password });
+    
     try {
       setLoading(true);
       
@@ -102,6 +107,8 @@ export const AuthProvider = ({ children }) => {
       const demoAccount = demoAccounts.find(
         account => account.email === email && account.password === password
       );
+      
+      console.log('Demo account found:', demoAccount);
       
       if (demoAccount) {
         // Handle demo account login
@@ -136,6 +143,7 @@ export const AuthProvider = ({ children }) => {
         
         // Navigate to appropriate dashboard
         const dashboardRoute = getDashboardRoute(role);
+        console.log('Navigating to:', dashboardRoute);
         navigate(dashboardRoute);
         
         setLoading(false);
