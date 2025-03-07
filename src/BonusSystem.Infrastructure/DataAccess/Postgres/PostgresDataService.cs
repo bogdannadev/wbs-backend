@@ -8,7 +8,7 @@ namespace BonusSystem.Infrastructure.DataAccess.Postgres;
 /// <summary>
 /// PostgreSQL implementation of the data service
 /// </summary>
-public sealed class PostgresDataService : IDataService, IDisposable
+public class PostgresDataService : IDataService, IDisposable
 {
     private readonly BonusSystemDbContext _dbContext;
     private readonly ILoggerFactory _loggerFactory;
@@ -27,15 +27,12 @@ public sealed class PostgresDataService : IDataService, IDisposable
         _dbContext = dbContext;
         _loggerFactory = loggerFactory;
 
-        // Initialize repositories
+        // Initialize repositories with proper implementations
         Users = new PostgresUserRepository(dbContext, loggerFactory.CreateLogger<PostgresUserRepository>());
-
-        // For the prototype, we'll use placeholder implementations for other repositories
-        // These would be properly implemented for a full solution
-        Companies = new PostgresCompanyRepository();
+        Companies = new PostgresCompanyRepository(dbContext, loggerFactory.CreateLogger<PostgresCompanyRepository>());
         Stores = new PostgresStoreRepository(dbContext, loggerFactory.CreateLogger<PostgresStoreRepository>());
-        Transactions = new PostgresTransactionRepository();
-        Notifications = new PostgresNotificationRepository();
+        Transactions = new PostgresTransactionRepository(dbContext, loggerFactory.CreateLogger<PostgresTransactionRepository>());
+        Notifications = new PostgresNotificationRepository(dbContext, loggerFactory.CreateLogger<PostgresNotificationRepository>());
     }
 
     public void Dispose()
@@ -44,7 +41,7 @@ public sealed class PostgresDataService : IDataService, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    private void Dispose(bool disposing)
+    protected virtual void Dispose(bool disposing)
     {
         if (_disposed)
             return;
