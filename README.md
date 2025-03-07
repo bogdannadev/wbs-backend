@@ -45,7 +45,7 @@ docker-compose up -d
 
 This will start the following services:
 
-- **API**: .NET 9 API (http://localhost:5001, https://localhost:5002)
+- **API**: .NET 9 API (http://localhost:5001)
 - **PostgreSQL**: Database (localhost:5432)
 - **pgAdmin**: Database management tool (http://localhost:5050)
 
@@ -62,11 +62,11 @@ All configuration is stored in the `.env` file at the root of the project. You c
 
 The project uses standardized ports for all services:
 
-| Service          | HTTP Port | HTTPS Port |
-|------------------|-----------|------------|
-| BonusSystem API  | 5001      | 5002       |
-| PostgreSQL       | 5432      | -          |
-| pgAdmin          | 5050      | -          |
+| Service          | Port  |
+|------------------|-------|
+| BonusSystem API  | 5001  |
+| PostgreSQL       | 5432  |
+| pgAdmin          | 5050  |
 
 For more details on port configuration and best practices, see the [Port Configuration Guide](docs/Port-Configuration.md).
 
@@ -100,6 +100,12 @@ docker-compose down -v
 
 - [Port Configuration Guide](docs/Port-Configuration.md)
 - [PostgreSQL Implementation](docs/PostgreSQL-Implementation.md)
+
+## Notes on HTTPS
+
+- The Docker development environment uses HTTP only for simplicity
+- When running locally with `dotnet run`, HTTPS is available
+- For production deployment, proper HTTPS configuration should be implemented
 
 ## License
 
