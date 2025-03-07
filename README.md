@@ -51,12 +51,24 @@ This will start the following services:
 
 3. Access the services:
 
-- **API Swagger UI**: http://localhost:5001/swagger
+- **API Documentation**: http://localhost:5001/api-docs
 - **pgAdmin**: http://localhost:5050 (Email: admin@bonussystem.com, Password: admin)
 
 ### Environment Variables
 
 All configuration is stored in the `.env` file at the root of the project. You can modify these values to change ports, credentials, etc.
+
+### Port Configuration
+
+The project uses standardized ports for all services:
+
+| Service          | HTTP Port | HTTPS Port |
+|------------------|-----------|------------|
+| BonusSystem API  | 5001      | 5002       |
+| PostgreSQL       | 5432      | -          |
+| pgAdmin          | 5050      | -          |
+
+For more details on port configuration and best practices, see the [Port Configuration Guide](docs/Port-Configuration.md).
 
 ### Stopping the Environment
 
@@ -83,6 +95,11 @@ docker-compose down -v
 2. Implement role-specific endpoints in their respective feature folders
 3. Use BFF services to implement business logic
 4. Maintain separation of concerns between layers
+
+## Documentation
+
+- [Port Configuration Guide](docs/Port-Configuration.md)
+- [PostgreSQL Implementation](docs/PostgreSQL-Implementation.md)
 
 ## License
 
