@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BonusSystem.Infrastructure.DataAccess.Postgres.Entities;
 
-public class TransactionEntity
+public sealed class TransactionEntity
 {
     [Key]
     public Guid Id { get; set; }
@@ -30,11 +30,11 @@ public class TransactionEntity
 
     // Navigation properties
     [ForeignKey(nameof(UserId))]
-    public virtual UserEntity? User { get; set; }
+    public UserEntity? User { get; set; }
     
     [ForeignKey(nameof(CompanyId))]
-    public virtual CompanyEntity? Company { get; set; }
+    public CompanyEntity? Company { get; set; }
     
     [ForeignKey(nameof(StoreId))]
-    public virtual StoreEntity? Store { get; set; }
+    public StoreEntity? Store { get; set; }
 }
