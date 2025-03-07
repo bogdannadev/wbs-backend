@@ -55,22 +55,50 @@ export const AuthProvider = ({ children }) => {
     const username = localStorage.getItem('username');
 
     if (token && userId && role) {
-      setUser({
+      const userData = {
         id: userId,
         role,
         username: username || 'User',
-        // Add additional user data if available in localStorage
         ...(role === 'Buyer' && { 
           bonusBalance: parseInt(localStorage.getItem('bonusBalance') || '0') 
         }),
         ...(role === 'Seller' && { 
           selectedStore: JSON.parse(localStorage.getItem('selectedStore') || 'null')
         })
-      });
+      };
+
+      setUser(userData);
+      navigateByRole(role);
     }
     
     setLoading(false);
   }, []);
+
+  // Explicit navigation function with logging
+  const navigateByRole = (role) => {
+    console.log('Navigating for role:', role);
+    try {
+      switch (role) {
+        case 'Buyer':
+          window.location.href = '/buyer';
+          break;
+        case 'Seller':
+          window.location.href = '/seller';
+          break;
+        case 'SystemAdmin':
+          window.location.href = '/admin';
+          break;
+        case 'CompanyObserver':
+        case 'SystemObserver':
+          window.location.href = '/observer';
+          break;
+        default:
+          window.location.href = '/';
+      }
+    } catch (error) {
+      console.error('Navigation error:', error);
+    }
+  };
 
   // Login method with demo account support
   const login = async (email, password) => {
@@ -111,7 +139,7 @@ export const AuthProvider = ({ children }) => {
           ...(role === 'Seller' && { selectedStore })
         });
         
-        // Redirect based on role
+        // Redirect based on role using window.location
         navigateByRole(role);
         
         setLoading(false);
@@ -131,7 +159,7 @@ export const AuthProvider = ({ children }) => {
         role,
       });
       
-      // Redirect based on role
+      // Redirect based on role using window.location
       navigateByRole(role);
       
       setLoading(false);
@@ -143,7 +171,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Register method
+  // Register method (similar modification)
   const register = async (userData) => {
     try {
       setLoading(true);
@@ -159,7 +187,7 @@ export const AuthProvider = ({ children }) => {
         role,
       });
       
-      // Redirect based on role
+      // Redirect based on role using window.location
       navigateByRole(role);
       
       setLoading(false);
@@ -182,28 +210,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('selectedStore');
     
     setUser(null);
-    navigate('/');
-  };
-
-  // Helper function to navigate based on role
-  const navigateByRole = (role) => {
-    switch (role) {
-      case 'Buyer':
-        navigate('/buyer');
-        break;
-      case 'Seller':
-        navigate('/seller');
-        break;
-      case 'SystemAdmin':
-        navigate('/admin');
-        break;
-      case 'CompanyObserver':
-      case 'SystemObserver':
-        navigate('/observer');
-        break;
-      default:
-        navigate('/');
-    }
+    window.location.href = '/';
   };
 
   return (
