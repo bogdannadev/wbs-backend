@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { 
   Dashboard as DashboardIcon, 
   History as HistoryIcon, 
@@ -18,7 +18,6 @@ const BuyerDashboard = () => {
   const [userContext, setUserContext] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserContext = async () => {
@@ -72,6 +71,7 @@ const BuyerDashboard = () => {
         <Route path="/transactions" element={<BuyerTransactions />} />
         <Route path="/qrcode" element={<BuyerQrCode />} />
         <Route path="/stores" element={<BuyerStores />} />
+        <Route path="*" element={<Navigate to="/buyer" replace />} />
       </Routes>
     </DashboardLayout>
   );
