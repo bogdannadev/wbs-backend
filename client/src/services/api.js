@@ -2,6 +2,11 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || '';
 
+// Helper function to determine if we're in demo mode
+export const isDemoMode = () => {
+  return true; // For prototype, we're always in demo mode
+};
+
 const api = axios.create({
   baseURL: API_URL,
   headers: {

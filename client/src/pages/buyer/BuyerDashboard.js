@@ -11,10 +11,14 @@ import BuyerHome from './BuyerHome';
 import BuyerTransactions from './BuyerTransactions';
 import BuyerQrCode from './BuyerQrCode';
 import BuyerStores from './BuyerStores';
-import { buyerService } from '../../services/api';
+import { buyerService, isDemoMode } from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 import { Paper, Typography, Box, CircularProgress } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 const BuyerDashboard = () => {
+  const { user } = useAuth();
+  const { t } = useTranslation();
   const [userContext, setUserContext] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,24 +27,43 @@ const BuyerDashboard = () => {
     const fetchUserContext = async () => {
       try {
         setLoading(true);
+        
+        if (isDemoMode()) {
+          // If in demo mode, use data from localStorage/auth context
+          setUserContext({
+            username: user?.username || localStorage.getItem('username') || 'Demo User',
+            role: 'Buyer',
+            bonusBalance: user?.bonusBalance || parseInt(localStorage.getItem('bonusBalance') || '450')
+          });
+          setLoading(false);
+          return;
+        }
+        
+        // Try the real API
         const response = await buyerService.getContext();
         setUserContext(response.data.context);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching user context:', error);
-        setError('Failed to load user data. Please try again later.');
+        // Fall back to demo data even if not explicitly in demo mode
+        setUserContext({
+          username: user?.username || localStorage.getItem('username') || 'User',
+          role: 'Buyer',
+          bonusBalance: parseInt(localStorage.getItem('bonusBalance') || '450')
+        });
+        setError('Unable to connect to the server. Using demo mode.');
         setLoading(false);
       }
     };
     
     fetchUserContext();
-  }, []);
+  }, [user]);
 
   const menuItems = [
-    { label: 'Dashboard', path: '/buyer', icon: <DashboardIcon /> },
-    { label: 'Transactions', path: '/buyer/transactions', icon: <HistoryIcon /> },
-    { label: 'QR Code', path: '/buyer/qrcode', icon: <QrCodeIcon /> },
-    { label: 'Find Stores', path: '/buyer/stores', icon: <StoreIcon /> },
+    { label: t('menu.dashboard'), translationKey: 'menu.dashboard', path: '/buyer', icon: <DashboardIcon /> },
+    { label: t('menu.transactionHistory'), translationKey: 'menu.transactionHistory', path: '/buyer/transactions', icon: <HistoryIcon /> },
+    { label: t('menu.qrCode'), translationKey: 'menu.qrCode', path: '/buyer/qrcode', icon: <QrCodeIcon /> },
+    { label: t('menu.findStores'), translationKey: 'menu.findStores', path: '/buyer/stores', icon: <StoreIcon /> },
   ];
 
   if (loading) {
@@ -51,21 +74,13 @@ const BuyerDashboard = () => {
     );
   }
 
-  if (error) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <Paper sx={{ p: 3, maxWidth: 500 }}>
-          <Typography variant="h6" color="error" gutterBottom>
-            Error
-          </Typography>
-          <Typography>{error}</Typography>
-        </Paper>
-      </Box>
-    );
-  }
-
   return (
-    <DashboardLayout title="Buyer Dashboard" menuItems={menuItems}>
+    <DashboardLayout title={t('dashboard.buyer')} menuItems={menuItems}>
+      {error && (
+        <Paper sx={{ p: 2, mb: 3, bgcolor: 'warning.light' }}>
+          <Typography color="warning.dark">{error}</Typography>
+        </Paper>
+      )}
       <Routes>
         <Route path="/" element={<BuyerHome userContext={userContext} />} />
         <Route path="/transactions" element={<BuyerTransactions />} />

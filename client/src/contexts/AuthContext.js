@@ -47,17 +47,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Mock services for demo accounts
-  const getDemoServiceByRole = (role) => {
-    switch (role) {
-      case 'Buyer': return buyerService;
-      case 'Seller': return sellerService;
-      case 'SystemAdmin': return adminService;
-      case 'CompanyObserver': return observerService;
-      default: return null;
-    }
-  };
-
   // Helper function to get dashboard route
   const getDashboardRoute = (role) => {
     switch (role) {
@@ -76,45 +65,44 @@ export const AuthProvider = ({ children }) => {
     const userId = localStorage.getItem('userId');
     const role = localStorage.getItem('role');
     const username = localStorage.getItem('username');
-
-    const fetchDemoContext = async (role) => {
-      try {
-        const service = getDemoServiceByRole(role);
-        if (service) {
-          const response = await service.getContext();
-          return response.data.context;
-        }
-      } catch (error) {
-        console.error('Error fetching demo context:', error);
-        return null;
-      }
-    };
+    const demoMode = localStorage.getItem('demoMode');
 
     const initializeUser = async () => {
       if (token && userId && role) {
         try {
-          const demoContext = await fetchDemoContext(role);
-          
-          const userData = {
-            id: userId,
-            role,
-            username: username || 'User',
-            ...(role === 'Buyer' && { 
-              bonusBalance: parseInt(localStorage.getItem('bonusBalance') || '0') 
-            }),
-            ...(role === 'Seller' && { 
-              selectedStore: JSON.parse(localStorage.getItem('selectedStore') || 'null')
-            }),
-            ...demoContext
-          };
+          // For demo mode, we don't need to fetch any context from the server
+          if (demoMode === 'true') {
+            const userData = {
+              id: userId,
+              role,
+              username: username || 'Demo User',
+              ...(role === 'Buyer' && { 
+                bonusBalance: parseInt(localStorage.getItem('bonusBalance') || '0') 
+              }),
+              ...(role === 'Seller' && { 
+                selectedStore: JSON.parse(localStorage.getItem('selectedStore') || 'null')
+              })
+            };
 
-          setUser(userData);
-          
-          // Attempt to navigate to the appropriate dashboard
-          const dashboardRoute = getDashboardRoute(role);
-          navigate(dashboardRoute);
+            setUser(userData);
+            
+            // Navigate to the appropriate dashboard if not already there
+            const dashboardRoute = getDashboardRoute(role);
+            if (!window.location.pathname.startsWith(dashboardRoute)) {
+              navigate(dashboardRoute);
+            }
+          } else {
+            // Non-demo mode, attempt to validate the token by fetching user context
+            // This is simplified - in a real app, you might have a validate token endpoint
+            navigate(getDashboardRoute(role));
+          }
         } catch (error) {
           console.error('User initialization error:', error);
+          // Clear invalid auth data
+          localStorage.removeItem('token');
+          localStorage.removeItem('userId');
+          localStorage.removeItem('role');
+          localStorage.removeItem('demoMode');
         }
       }
       
@@ -137,6 +125,9 @@ export const AuthProvider = ({ children }) => {
       if (demoAccount) {
         // Handle demo account login
         const { userId, role, username, bonusBalance, selectedStore } = demoAccount;
+        
+        // Set demo mode flag
+        localStorage.setItem('demoMode', 'true');
         
         // Mock token for demo purposes
         const token = `demo-token-${role.toLowerCase()}-${Date.now()}`;
@@ -174,6 +165,8 @@ export const AuthProvider = ({ children }) => {
       }
       
       // If not a demo account, try the real API
+      localStorage.setItem('demoMode', 'false');
+      
       const response = await authService.login({ email, password });
       const { userId, token, role } = response.data;
       
@@ -203,6 +196,10 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       setLoading(true);
+      
+      // For demo, we'll treat registration as always using real API
+      localStorage.setItem('demoMode', 'false');
+      
       const response = await authService.register(userData);
       const { userId, token, role } = response.data;
       
@@ -237,6 +234,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('username');
     localStorage.removeItem('bonusBalance');
     localStorage.removeItem('selectedStore');
+    localStorage.removeItem('demoMode');
     
     setUser(null);
     navigate('/');

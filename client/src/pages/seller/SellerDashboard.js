@@ -11,10 +11,14 @@ import SellerHome from './SellerHome';
 import SellerTransactions from './SellerTransactions';
 import SellerTransactionForm from './SellerTransactionForm';
 import SellerStores from './SellerStores';
-import { sellerService } from '../../services/api';
+import { sellerService, isDemoMode } from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 import { Paper, Typography, Box, CircularProgress } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 const SellerDashboard = () => {
+  const { user } = useAuth();
+  const { t } = useTranslation();
   const [userContext, setUserContext] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,24 +27,51 @@ const SellerDashboard = () => {
     const fetchUserContext = async () => {
       try {
         setLoading(true);
+        
+        if (isDemoMode()) {
+          // If in demo mode, use data from localStorage/auth context
+          const selectedStore = user?.selectedStore || 
+                                JSON.parse(localStorage.getItem('selectedStore') || 'null') || 
+                                { id: 2, name: 'Demo Store', company: 'Demo Company' };
+          
+          setUserContext({
+            username: user?.username || localStorage.getItem('username') || 'Demo Seller',
+            role: 'Seller',
+            selectedStore
+          });
+          setLoading(false);
+          return;
+        }
+        
+        // Try the real API
         const response = await sellerService.getContext();
         setUserContext(response.data.context);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching user context:', error);
-        setError('Failed to load user data. Please try again later.');
+        // Fall back to demo data even if not explicitly in demo mode
+        const selectedStore = user?.selectedStore || 
+                            JSON.parse(localStorage.getItem('selectedStore') || 'null') || 
+                            { id: 2, name: 'Demo Store', company: 'Demo Company' };
+        
+        setUserContext({
+          username: user?.username || localStorage.getItem('username') || 'Demo Seller',
+          role: 'Seller',
+          selectedStore
+        });
+        setError('Unable to connect to the server. Using demo mode.');
         setLoading(false);
       }
     };
     
     fetchUserContext();
-  }, []);
+  }, [user]);
 
   const menuItems = [
-    { label: 'Dashboard', path: '/seller', icon: <DashboardIcon /> },
-    { label: 'New Transaction', path: '/seller/transaction', icon: <ShoppingCartIcon /> },
-    { label: 'Transaction History', path: '/seller/transactions', icon: <HistoryIcon /> },
-    { label: 'Store Selection', path: '/seller/stores', icon: <StoreIcon /> }
+    { label: t('menu.dashboard'), translationKey: 'menu.dashboard', path: '/seller', icon: <DashboardIcon /> },
+    { label: t('menu.newTransaction'), translationKey: 'menu.newTransaction', path: '/seller/transaction', icon: <ShoppingCartIcon /> },
+    { label: t('menu.transactionHistory'), translationKey: 'menu.transactionHistory', path: '/seller/transactions', icon: <HistoryIcon /> },
+    { label: t('menu.storeSelection'), translationKey: 'menu.storeSelection', path: '/seller/stores', icon: <StoreIcon /> }
   ];
 
   if (loading) {
@@ -51,21 +82,13 @@ const SellerDashboard = () => {
     );
   }
 
-  if (error) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <Paper sx={{ p: 3, maxWidth: 500 }}>
-          <Typography variant="h6" color="error" gutterBottom>
-            Error
-          </Typography>
-          <Typography>{error}</Typography>
-        </Paper>
-      </Box>
-    );
-  }
-
   return (
-    <DashboardLayout title="Seller Dashboard" menuItems={menuItems}>
+    <DashboardLayout title={t('dashboard.seller')} menuItems={menuItems}>
+      {error && (
+        <Paper sx={{ p: 2, mb: 3, bgcolor: 'warning.light' }}>
+          <Typography color="warning.dark">{error}</Typography>
+        </Paper>
+      )}
       <Routes>
         <Route path="/" element={<SellerHome userContext={userContext} />} />
         <Route path="/transaction" element={<SellerTransactionForm />} />

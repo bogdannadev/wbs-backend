@@ -25,9 +25,12 @@ import {
   ShoppingCart as ShoppingCartIcon,
   Store as StoreIcon,
   AdminPanelSettings as AdminIcon,
-  BarChart as ChartIcon
+  BarChart as ChartIcon,
+  Translate as TranslateIcon
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../components/common/LanguageSwitcher';
 
 // Demo accounts for quick login
 const demoAccounts = [
@@ -38,7 +41,7 @@ const demoAccounts = [
     email: 'buyer@example.com',
     password: 'demo123',
     avatar: <ShoppingCartIcon />,
-    description: 'Regular user who earns and spends bonus points',
+    descriptionKey: 'Regular user who earns and spends bonus points',
     color: 'primary.main'
   },
   {
@@ -48,7 +51,7 @@ const demoAccounts = [
     email: 'seller@example.com',
     password: 'demo123',
     avatar: <StoreIcon />,
-    description: 'Retail employee who processes bonus transactions',
+    descriptionKey: 'Retail employee who processes bonus transactions',
     color: 'secondary.main'
   },
   {
@@ -58,7 +61,7 @@ const demoAccounts = [
     email: 'admin@example.com',
     password: 'demo123',
     avatar: <AdminIcon />,
-    description: 'Administrator who manages the entire bonus system',
+    descriptionKey: 'Administrator who manages the entire bonus system',
     color: 'error.main'
   },
   {
@@ -68,12 +71,13 @@ const demoAccounts = [
     email: 'observer@example.com',
     password: 'demo123',
     avatar: <ChartIcon />,
-    description: 'Analytics user who monitors system performance',
+    descriptionKey: 'Analytics user who monitors system performance',
     color: 'info.main'
   }
 ];
 
 const Login = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -133,9 +137,13 @@ const Login = () => {
         }}
       >
         <Paper elevation={3} sx={{ width: '100%', p: 4, borderRadius: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+            <LanguageSwitcher variant="button" />
+          </Box>
+          
           <Box sx={{ textAlign: 'center', mb: 4 }}>
             <Typography variant="h3" component="h1" gutterBottom fontWeight="bold" color="primary">
-              BonusSystem
+              {t('app.title')}
             </Typography>
             <Typography variant="h6" color="text.secondary">
               Comprehensive Bonus Tracking and Management Platform
@@ -154,7 +162,7 @@ const Login = () => {
               <Card sx={{ height: '100%' }}>
                 <CardContent>
                   <Typography variant="h5" gutterBottom>
-                    Login
+                    {t('login.title')}
                   </Typography>
                   <Divider sx={{ mb: 3 }} />
                   
@@ -164,7 +172,7 @@ const Login = () => {
                       required
                       fullWidth
                       id="email"
-                      label="Email Address"
+                      label={t('login.email')}
                       name="email"
                       autoComplete="email"
                       autoFocus
@@ -176,7 +184,7 @@ const Login = () => {
                       required
                       fullWidth
                       name="password"
-                      label="Password"
+                      label={t('login.password')}
                       type="password"
                       id="password"
                       autoComplete="current-password"
@@ -190,7 +198,7 @@ const Login = () => {
                       sx={{ mt: 3, mb: 2 }}
                       disabled={loading}
                     >
-                      {loading ? 'Logging in...' : 'Login'}
+                      {loading ? t('login.loggingIn') : t('login.loginButton')}
                     </Button>
                   </Box>
                 </CardContent>
@@ -247,7 +255,7 @@ const Login = () => {
                                 />
                               </Box>
                             }
-                            secondary={account.description}
+                            secondary={account.descriptionKey}
                           />
                         </ListItemButton>
                       </ListItem>
@@ -268,7 +276,7 @@ const Login = () => {
           
           <Box sx={{ mt: 4, textAlign: 'center' }}>
             <Typography variant="body2" color="text.secondary">
-              BonusSystem Prototype - A bonus tracking and management platform designed for companies and their customers.
+              {t('app.title')} Prototype - A bonus tracking and management platform designed for companies and their customers.
             </Typography>
           </Box>
         </Paper>

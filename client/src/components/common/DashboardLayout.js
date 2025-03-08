@@ -18,6 +18,8 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const drawerWidth = 240;
 
@@ -26,6 +28,7 @@ const DashboardLayout = ({ title, menuItems, children }) => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -36,11 +39,27 @@ const DashboardLayout = ({ title, menuItems, children }) => {
     setMobileOpen(false);
   };
 
+  // Fix for the selected menu item logic: highlights parent item for nested routes
+  const isMenuItemSelected = (itemPath) => {
+    if (location.pathname === itemPath) {
+      return true;
+    }
+    
+    // Special handling for dashboard items - only highlight exact matches
+    if (itemPath.endsWith('/buyer') || itemPath.endsWith('/seller') || 
+        itemPath.endsWith('/admin') || itemPath.endsWith('/observer')) {
+      return location.pathname === itemPath;
+    }
+    
+    // For other items, highlight if the current path starts with the item path
+    return location.pathname.startsWith(itemPath);
+  };
+
   const drawer = (
     <div>
       <Toolbar>
         <Typography variant="h6" noWrap component="div">
-          BonusSystem
+          {t('app.title')}
         </Typography>
       </Toolbar>
       <Divider />
@@ -48,13 +67,13 @@ const DashboardLayout = ({ title, menuItems, children }) => {
         {menuItems.map((item) => (
           <ListItem key={item.path} disablePadding>
             <ListItemButton 
-              selected={location.pathname === item.path}
+              selected={isMenuItemSelected(item.path)}
               onClick={() => handleMenuClick(item.path)}
             >
               <ListItemIcon>
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.label} />
+              <ListItemText primary={t(item.translationKey || item.label)} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -85,8 +104,9 @@ const DashboardLayout = ({ title, menuItems, children }) => {
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             {title}
           </Typography>
+          <LanguageSwitcher variant="icon" />
           <Button color="inherit" onClick={logout}>
-            Logout
+            {t('app.logout')}
           </Button>
         </Toolbar>
       </AppBar>

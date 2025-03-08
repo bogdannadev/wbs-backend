@@ -5,6 +5,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
+// i18n configuration
+import './i18n/i18n';
+
 // Pages
 import Login from './pages/Login';
 import BuyerDashboard from './pages/buyer/BuyerDashboard';
