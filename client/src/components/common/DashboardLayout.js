@@ -36,6 +36,20 @@ const DashboardLayout = ({ title, menuItems, children }) => {
     setMobileOpen(false);
   };
 
+  // Improved menu item selection logic to handle nested routes
+  const isMenuItemSelected = (itemPath) => {
+    // Exact match
+    if (location.pathname === itemPath) {
+      return true;
+    }
+    
+    // Handle nested routes - check if current path starts with menu item path
+    // Exclude root paths like '/buyer' to avoid highlighting for all child routes
+    const isRootPath = ['/', '/buyer', '/seller', '/admin', '/observer'].includes(itemPath);
+    
+    return !isRootPath && location.pathname.startsWith(itemPath);
+  };
+
   const drawer = (
     <div>
       <Toolbar>
@@ -48,7 +62,7 @@ const DashboardLayout = ({ title, menuItems, children }) => {
         {menuItems.map((item) => (
           <ListItem key={item.path} disablePadding>
             <ListItemButton 
-              selected={location.pathname === item.path}
+              selected={isMenuItemSelected(item.path)}
               onClick={() => handleMenuClick(item.path)}
             >
               <ListItemIcon>
