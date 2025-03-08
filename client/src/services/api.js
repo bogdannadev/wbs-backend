@@ -4,7 +4,7 @@ const API_URL = process.env.REACT_APP_API_URL || '';
 
 // Helper function to determine if we're in demo mode
 export const isDemoMode = () => {
-  return true; // For prototype, we're always in demo mode
+  return localStorage.getItem('demoMode') === 'true';
 };
 
 const api = axios.create({
@@ -30,6 +30,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // If in demo mode, handle differently to prevent redirects on API failures
+    if (isDemoMode()) {
+      console.error('API error in demo mode:', error);
+      // Return a rejected promise but don't clear auth
+      return Promise.reject(error);
+    }
+    
     if (error.response && error.response.status === 401) {
       // Clear token and redirect to login page
       localStorage.removeItem('token');

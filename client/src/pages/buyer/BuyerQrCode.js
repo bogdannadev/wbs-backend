@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { QRCodeCanvas } from 'qrcode.react';
-import { buyerService } from '../../services/api';
+import { buyerService, isDemoMode } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 
 const BuyerQrCode = () => {
@@ -30,13 +30,28 @@ const BuyerQrCode = () => {
     try {
       setLoading(true);
       setError('');
-      const response = await buyerService.generateQrCode();
-      setQrCode(response.data.qrCode);
+      
+      // Check if in demo mode
+      if (isDemoMode()) {
+        // For demo, generate a mock QR code
+        const userId = localStorage.getItem('userId') || user?.id || 'demo-user';
+        setQrCode(`BONUS-USER-${userId}-${Date.now()}`);
+      } else {
+        // Real API call for non-demo mode
+        const response = await buyerService.generateQrCode();
+        setQrCode(response.data.qrCode);
+      }
+      
       setLoading(false);
     } catch (error) {
-      setError('Failed to generate QR code. Please try again.');
-      setLoading(false);
       console.error('Error generating QR code:', error);
+      
+      // Fallback to a mock QR code
+      const userId = localStorage.getItem('userId') || user?.id || 'demo-user';
+      setQrCode(`BONUS-USER-${userId}-${Date.now()}`);
+      
+      setError('Could not connect to server. Using demo QR code.');
+      setLoading(false);
     }
   };
 

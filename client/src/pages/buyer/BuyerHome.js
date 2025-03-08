@@ -1,27 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Paper, Typography, Box, Skeleton, Divider, List, ListItem, ListItemText, Card, CardContent } from '@mui/material';
-import { buyerService } from '../../services/api';
+import { buyerService, isDemoMode } from '../../services/api';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { useAuth } from '../../contexts/AuthContext';
 
 const BuyerHome = ({ userContext }) => {
   const [bonusSummary, setBonusSummary] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
   
   useEffect(() => {
     const fetchBonusSummary = async () => {
       try {
         setLoading(true);
-        const response = await buyerService.getBalance();
-        setBonusSummary(response.data);
+        
+        // Check if in demo mode by looking for stored balance
+        const demoMode = isDemoMode();
+        const storedBonusBalance = localStorage.getItem('bonusBalance');
+        
+        if (demoMode && storedBonusBalance) {
+          // Create mock bonus summary for demo mode
+          const bonusBalance = parseInt(storedBonusBalance, 10);
+          const expiringAmount = Math.floor(bonusBalance * 0.2); // 20% expiring
+          
+          // Mock data
+          setBonusSummary({
+            currentBalance: bonusBalance,
+            expiringNextQuarter: expiringAmount,
+            recentTransactions: [
+              {
+                id: '1',
+                type: 'Earn',
+                amount: 50,
+                timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+                description: 'Purchase at Global Retail Store'
+              },
+              {
+                id: '2',
+                type: 'Spend',
+                amount: 25,
+                timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
+                description: 'Discount on Electronics'
+              },
+              {
+                id: '3',
+                type: 'Earn',
+                amount: 30,
+                timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
+                description: 'Purchase at Fashion Outlet'
+              }
+            ]
+          });
+        } else {
+          // Real API call for non-demo mode
+          const response = await buyerService.getBalance();
+          setBonusSummary(response.data);
+        }
+        
         setLoading(false);
       } catch (error) {
         console.error('Error fetching bonus summary:', error);
+        
+        // Fallback to mock data if API call fails
+        const fallbackBalance = user?.bonusBalance || 450;
+        setBonusSummary({
+          currentBalance: fallbackBalance,
+          expiringNextQuarter: Math.floor(fallbackBalance * 0.2),
+          recentTransactions: []
+        });
+        
         setLoading(false);
       }
     };
     
     fetchBonusSummary();
-  }, []);
+  }, [user]);
   
   // Prepare data for PieChart
   const preparePieData = () => {
@@ -41,7 +94,7 @@ const BuyerHome = ({ userContext }) => {
       <Grid item xs={12}>
         <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
           <Typography variant="h4" gutterBottom>
-            Welcome, {userContext?.username || 'User'}
+            Welcome, {userContext?.username || user?.username || 'User'}
           </Typography>
           <Typography variant="body1">
             Manage your bonus points and transactions from this dashboard.
