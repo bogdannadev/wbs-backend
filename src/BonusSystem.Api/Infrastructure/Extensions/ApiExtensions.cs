@@ -1,4 +1,6 @@
+using System.Reflection;
 using System.Text;
+using BonusSystem.Api.Infrastructure.Swagger;
 using BonusSystem.Core.Repositories;
 using BonusSystem.Core.Services.Implementations.BFF;
 using BonusSystem.Core.Services.Interfaces;
@@ -26,7 +28,12 @@ public static class ApiExtensions
             {
                 Title = "BonusSystem API",
                 Version = "v1",
-                Description = "A prototype API for the BonusSystem",
+                Description = "API for the BonusSystem - a bonus points loyalty program management platform with the following features:\n\n" +
+                              "- User management with different roles (Buyers, Sellers, Admins, Observers)\n" +
+                              "- Company and store registration and management\n" +
+                              "- Bonus points transactions (earning, spending, expiring)\n" +
+                              "- QR code generation for buyer identification\n" +
+                              "- Analytics and reporting",
                 Contact = new OpenApiContact
                 {
                     Name = "BonusSystem Team",
@@ -37,7 +44,7 @@ public static class ApiExtensions
             // Add JWT authentication to Swagger
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Description = "JWT Authorization header using the Bearer scheme",
+                Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer {token}' in the field below.",
                 Name = "Authorization",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
@@ -63,6 +70,22 @@ public static class ApiExtensions
             // Organize endpoints by tag
             c.TagActionsBy(api => new[] { api.GroupName ?? "Default" });
             c.DocInclusionPredicate((name, api) => true);
+            
+            // Add schema enhancement filter
+            c.DocumentFilter<SchemaEnhancementFilter>();
+            
+            // Customize operation IDs
+            c.CustomOperationIds(e => e.ActionDescriptor.EndpointMetadata
+                .OfType<RouteNameMetadata>()
+                .FirstOrDefault()?.RouteName);
+                
+            // Include XML comments if available
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            if (File.Exists(xmlPath))
+            {
+                c.IncludeXmlComments(xmlPath);
+            }
         });
 
         // Configure database options
@@ -159,6 +182,10 @@ public static class ApiExtensions
         }
 
         // Configure the HTTP request pipeline
+        
+        // Enable static files for Swagger UI customization
+        app.UseStaticFiles();
+        
         app.UseSwagger(c =>
         {
             c.RouteTemplate = "api-docs/{documentName}/swagger.json";
@@ -174,6 +201,7 @@ public static class ApiExtensions
             c.EnableDeepLinking();
             c.EnableFilter();
             c.EnableValidator();
+            c.DocumentTitle = "BonusSystem API Documentation";
         });
 
         app.UseHttpsRedirection();
