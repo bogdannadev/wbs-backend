@@ -11,6 +11,13 @@ public record UserDto
     public decimal BonusBalance { get; init; }
 }
 
+public record BuyerRegistrationDto
+{
+    public string UserName { get; init; } = string.Empty;
+    public string Email { get; init; } = string.Empty;
+    public string Password { get; init; } = string.Empty;
+}
+
 public record UserRegistrationDto
 {
     public string Username { get; init; } = string.Empty;
