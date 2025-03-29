@@ -12,7 +12,7 @@ public static class AuthEndpoints
             .WithTags("Authentication")
             .WithOpenApi();
 
-        group.MapPost("/buyer_register", AuthHandlers.Register)
+        group.MapPost("/buyer_register", AuthHandlers.BuyerRegister)
             .AllowAnonymous()
             .WithName("BuyerRegister")
             .WithOpenApi(operation =>
