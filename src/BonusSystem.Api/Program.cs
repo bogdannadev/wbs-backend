@@ -26,6 +26,8 @@ public class Program
 
         var app = builder.Build();
 
+        app.UseCors();
+        
         // Configure middleware
         app.UseApiMiddleware(app.Environment);
 
