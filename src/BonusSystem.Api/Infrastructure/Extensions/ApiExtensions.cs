@@ -20,6 +20,17 @@ public static class ApiExtensions
 {
     public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
     {
+        // Configure CORS - Allow everything
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
+        
         // Configure swagger
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
@@ -183,6 +194,8 @@ public static class ApiExtensions
 
         // Configure the HTTP request pipeline
         
+        // Use CORS before other middleware
+        app.UseCors();
         // Enable static files for Swagger UI customization
         app.UseStaticFiles();
         
