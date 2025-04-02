@@ -1,4 +1,16 @@
 ﻿# BonusSystem API Test Collection
+# ------------------------------------------------------------------------
+# DEMO INSTRUCTIONS
+# ------------------------------------------------------------------------
+# To use the extended demo with new companies, stores and sellers:
+# 1. First login as the Buyer (buyer1@example.com) to get a token
+# 2. View all available stores using the "Find Stores by Category" request
+#    with parameter "category=all" - this will now show all active stores
+# 3. Login as different sellers (seller1, techseller1, groceryseller1, fashionseller1) 
+#    to interact with different stores
+# 4. Use the requests in the EXTENDED DEMO OPERATIONS section to demonstrate 
+#    transactions across multiple companies and view the results
+# 
 # Enum Definitions:
 # - Company Status: 0=Pending, 1=Active, 2=Suspended, 3=Closed
 # - Transaction Type: 0=Earn, 1=Spend, 2=Expired, 3=SystemCredit, 4=Cancelled
@@ -6,9 +18,10 @@
 
 # Base Configuration
 @baseUrl = http://localhost:5001
+#@baseUrl = http://62.113.59.109:5001
 
 # Authentication Tokens (to be updated after login)
-@buyerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyMjIyMjIyMi0yMjIyLTIyMjItMjIyMi0yMjIyMjIyMjIyMjIiLCJyb2xlIjoiU2VsbGVyIiwibmJmIjoxNzQzNTkzNDc3LCJleHAiOjE3NzUxMjk0NzcsImlhdCI6MTc0MzU5MzQ3N30.PCTymatdbsa8Woy0xjNdan9tlC5e0XlxKOnBVggX58g
+@buyerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxMTExMTExMS0xMTExLTExMTEtMTExMS0xMTExMTExMTExMTEiLCJyb2xlIjoiQnV5ZXIiLCJuYmYiOjE3NDM2MDU2NzMsImV4cCI6MTc3NTE0MTY3MywiaWF0IjoxNzQzNjA1NjczfQ.zZU9ZrBgcvAYFeP0nYsHqbZVoxN99f09uiWuHpB7FoE
 @sellerToken = 
 @adminToken = 
 @observerToken = 
@@ -272,6 +285,115 @@ Authorization: Bearer {{observerToken}}
 Accept: application/json
 
 ###############################################
+# EXTENDED DEMO OPERATIONS
+###############################################
+
+# Find all available stores for buyers 
+# (this will show all the newly added stores)
+GET {{baseUrl}}/api/buyers/stores?category=all
+Authorization: Bearer {{buyerToken}}
+Accept: application/json
+
+###
+
+# Login as a TechGadgets seller
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "techseller1@example.com",
+    "password": "Password123"
+}
+
+###
+
+# Process Earn Transaction at TechGadgets store
+# (Update the sellerToken with the token from the TechGadgets seller login)
+POST {{baseUrl}}/api/sellers/transactions
+Authorization: Bearer {{sellerToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "buyerId": "11111111-1111-1111-1111-111111111111",
+    "amount": 200,
+    "type": 0,
+    "storeId": "CCCCCC01-0000-0000-0000-000000000000"
+}
+
+###
+
+# Process Spend Transaction at TechGadgets store
+POST {{baseUrl}}/api/sellers/transactions
+Authorization: Bearer {{sellerToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "buyerId": "11111111-1111-1111-1111-111111111111",
+    "amount": 75,
+    "type": 1,
+    "storeId": "CCCCCC01-0000-0000-0000-000000000000"
+}
+
+###
+
+# Get TechGadgets Store balance
+GET {{baseUrl}}/api/sellers/stores/CCCCCC01-0000-0000-0000-000000000000/balance
+Authorization: Bearer {{sellerToken}}
+Accept: application/json
+
+###
+
+# Login as a Fresh Groceries seller
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "groceryseller1@example.com",
+    "password": "Password123"
+}
+
+###
+
+# Process Earn Transaction at Fresh Groceries store
+# (Update the sellerToken with the token from the Fresh Groceries seller login)
+POST {{baseUrl}}/api/sellers/transactions
+Authorization: Bearer {{sellerToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "buyerId": "11111111-1111-1111-1111-111111111111",
+    "amount": 150,
+    "type": 0,
+    "storeId": "CCCCCC03-0000-0000-0000-000000000000"
+}
+
+###
+
+# Get Fresh Groceries store transactions
+GET {{baseUrl}}/api/sellers/stores/CCCCCC03-0000-0000-0000-000000000000/transactions
+Authorization: Bearer {{sellerToken}}
+Accept: application/json
+
+###
+
+# After all these transactions, check buyer's updated balance
+GET {{baseUrl}}/api/buyers/balance
+Authorization: Bearer {{buyerToken}}
+Accept: application/json
+
+###
+
+# Get all companies stats as an observer
+GET {{baseUrl}}/api/observers/companies
+Authorization: Bearer {{observerToken}}
+Accept: application/json
+
+###############################################
 # ADVANCED FILTERING
 ###############################################
 
@@ -284,5 +406,12 @@ Accept: application/json
 
 # Get Company-Specific Statistics
 GET {{baseUrl}}/api/observers/statistics?companyId=66666666-6666-6666-6666-666666666666&startDate=2024-01-01&endDate=2024-04-15
+Authorization: Bearer {{observerToken}}
+Accept: application/json
+
+###
+
+# Get TechGadgets Company-Specific Statistics
+GET {{baseUrl}}/api/observers/statistics?companyId=BBBBBB01-0000-0000-0000-000000000000
 Authorization: Bearer {{observerToken}}
 Accept: application/json
