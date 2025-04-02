@@ -53,8 +53,17 @@ public class SchemaEnhancementFilter : IDocumentFilter
         // Add descriptions for common DTOs
         AddSchemaDescription(swaggerDoc, "TransactionDto", "A transaction record in the bonus system");
         AddSchemaDescription(swaggerDoc, "TransactionRequestDto", "Request model for creating a new transaction");
+        AddSchemaDescription(swaggerDoc, "TransactionResultDto", "Response model containing the result of a transaction operation");
+        AddSchemaDescription(swaggerDoc, "BonusTransactionSummaryDto", "Summary of bonus transactions for a user including balance and recent activity");
+        AddSchemaDescription(swaggerDoc, "StoreBonusTransactionsDto", "Transaction history for a specific store");
+        
         AddSchemaDescription(swaggerDoc, "UserRegistrationDto", "Request model for registering a new user");
+        AddSchemaDescription(swaggerDoc, "BuyerRegistrationDto", "Simplified request model for registering a buyer user");
         AddSchemaDescription(swaggerDoc, "UserLoginDto", "Request model for user authentication");
+        AddSchemaDescription(swaggerDoc, "UserDto", "Basic user information");
+        AddSchemaDescription(swaggerDoc, "UserContextDto", "User context information including role and balance");
+        AddSchemaDescription(swaggerDoc, "PermittedActionDto", "An action permitted for the authenticated user");
+        
         AddSchemaDescription(swaggerDoc, "CompanyRegistrationDto", "Request model for registering a new company");
         AddSchemaDescription(swaggerDoc, "StoreRegistrationDto", "Request model for registering a new store");
     }

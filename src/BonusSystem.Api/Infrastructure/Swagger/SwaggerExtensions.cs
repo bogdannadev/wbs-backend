@@ -11,11 +11,39 @@ public static class SwaggerExtensions
     {
         if (!operation.Responses.ContainsKey(statusCode))
         {
-            operation.Responses[statusCode] = new OpenApiResponse { Description = description };
+            operation.Responses[statusCode] = new OpenApiResponse 
+            { 
+                Description = description,
+                Content = new Dictionary<string, OpenApiMediaType>
+                {
+                    ["application/json"] = new OpenApiMediaType
+                    {
+                        Schema = new OpenApiSchema
+                        {
+                            Type = "object"
+                        }
+                    }
+                }
+            };
         }
         else
         {
             operation.Responses[statusCode].Description = description;
+            
+            // Ensure content is defined
+            if (operation.Responses[statusCode].Content == null)
+            {
+                operation.Responses[statusCode].Content = new Dictionary<string, OpenApiMediaType>
+                {
+                    ["application/json"] = new OpenApiMediaType
+                    {
+                        Schema = new OpenApiSchema
+                        {
+                            Type = "object"
+                        }
+                    }
+                };
+            }
         }
     }
 }

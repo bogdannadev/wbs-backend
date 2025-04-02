@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 using BonusSystem.Api.Infrastructure.Swagger;
+using BonusSystem.Api.Infrastructure.Swagger.Documentation;
 using BonusSystem.Core.Repositories;
 using BonusSystem.Core.Services.Implementations.BFF;
 using BonusSystem.Core.Services.Interfaces;
@@ -13,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BonusSystem.Api.Infrastructure.Extensions;
 
@@ -31,8 +34,10 @@ public static class ApiExtensions
             });
         });
         
-        // Configure swagger
+        // Configure swagger and OpenAPI
         services.AddEndpointsApiExplorer();
+        
+        // Configure Swagger with examples
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo
@@ -85,6 +90,11 @@ public static class ApiExtensions
             // Add schema enhancement filter
             c.DocumentFilter<SchemaEnhancementFilter>();
             
+            // Add response example providers
+            c.OperationFilter<AuthExamples>();
+            c.OperationFilter<TransactionExamples>();
+            c.OperationFilter<CompanyStoreExamples>();
+            
             // Customize operation IDs
             c.CustomOperationIds(e => e.ActionDescriptor.EndpointMetadata
                 .OfType<RouteNameMetadata>()
@@ -97,7 +107,16 @@ public static class ApiExtensions
             {
                 c.IncludeXmlComments(xmlPath);
             }
+            
+            // Configure examples for response content types
+            c.ExampleFilters();
         });
+        
+        // Register Swagger example providers 
+        services.AddSwaggerExamplesFromAssemblyOf<Program>();
+        
+        // Configure Swagger with custom options
+        services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfigurationOptions>();
 
         // Configure database options
         services.Configure<AppDbOptions>(

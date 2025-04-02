@@ -60,7 +60,7 @@ public class PostgresInitializer
                 Username = "buyer1",
                 Email = "buyer1@example.com",
                 Role = UserRole.Buyer,
-                BonusBalance = 150,
+                BonusBalance = 25000,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = true
             },
