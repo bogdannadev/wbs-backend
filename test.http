@@ -1,0 +1,288 @@
+﻿# BonusSystem API Test Collection
+# Enum Definitions:
+# - Company Status: 0=Pending, 1=Active, 2=Suspended, 3=Closed
+# - Transaction Type: 0=Earn, 1=Spend, 2=Expired, 3=SystemCredit, 4=Cancelled
+# - Notification Type: 0=System, 1=Transaction, 2=Balance, 3=Promotion, 4=Warning
+
+# Base Configuration
+@baseUrl = http://localhost:5001
+
+# Authentication Tokens (to be updated after login)
+@buyerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyMjIyMjIyMi0yMjIyLTIyMjItMjIyMi0yMjIyMjIyMjIyMjIiLCJyb2xlIjoiU2VsbGVyIiwibmJmIjoxNzQzNTkzNDc3LCJleHAiOjE3NzUxMjk0NzcsImlhdCI6MTc0MzU5MzQ3N30.PCTymatdbsa8Woy0xjNdan9tlC5e0XlxKOnBVggX58g
+@sellerToken = 
+@adminToken = 
+@observerToken = 
+
+###############################################
+# AUTHENTICATION WORKFLOWS
+###############################################
+
+# Login as Buyer
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "buyer1@example.com",
+    "password": "Password123"
+}
+
+###
+
+# Login as Seller
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "seller1@example.com",
+    "password": "Password123"
+}
+
+###
+
+# Login as Admin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "admin1@example.com",
+    "password": "Password123"
+}
+
+###
+
+# Login as Observer
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "observer1@example.com",
+    "password": "Password123"
+}
+
+###############################################
+# BUYER OPERATIONS
+###############################################
+
+# Get Buyer Context
+GET {{baseUrl}}/api/buyers/context
+Authorization: Bearer {{buyerToken}}
+Accept: application/json
+
+###
+
+# Get Buyer Balance
+GET {{baseUrl}}/api/buyers/balance
+Authorization: Bearer {{buyerToken}}
+Accept: application/json
+
+###
+
+# Get Buyer Transaction History
+GET {{baseUrl}}/api/buyers/transactions
+Authorization: Bearer {{buyerToken}}
+Accept: application/json
+
+###
+
+# Generate Buyer QR Code
+GET {{baseUrl}}/api/buyers/qrcode
+Authorization: Bearer {{buyerToken}}
+Accept: application/json
+
+###
+
+# Find Stores by Category
+GET {{baseUrl}}/api/buyers/stores?category=all
+Authorization: Bearer {{buyerToken}}
+Accept: application/json
+
+###
+
+# Cancel Specific Transaction
+POST {{baseUrl}}/api/buyers/transactions/aaaaaaaa-bbbb-cccc-dddd-111111111111/cancel
+Authorization: Bearer {{buyerToken}}
+Accept: application/json
+
+###############################################
+# SELLER OPERATIONS
+###############################################
+
+# Process Earn Transaction
+POST {{baseUrl}}/api/sellers/transactions
+Authorization: Bearer {{sellerToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "buyerId": "11111111-1111-1111-1111-111111111111",
+    "amount": 150,
+    "type": 0,
+    "storeId": "77777777-7777-7777-7777-777777777777"
+}
+
+###
+
+# Process Spend Transaction
+POST {{baseUrl}}/api/sellers/transactions
+Authorization: Bearer {{sellerToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "buyerId": "11111111-1111-1111-1111-111111111111",
+    "amount": 50,
+    "type": 1,
+    "storeId": "77777777-7777-7777-7777-777777777777"
+}
+
+###
+
+# Get Buyer Balance (Seller View)
+GET {{baseUrl}}/api/sellers/buyers/11111111-1111-1111-1111-111111111111/balance
+Authorization: Bearer {{sellerToken}}
+Accept: application/json
+
+###
+
+# Get Store Balance
+GET {{baseUrl}}/api/sellers/stores/77777777-7777-7777-7777-777777777777/balance
+Authorization: Bearer {{sellerToken}}
+Accept: application/json
+
+###
+
+# Get Store Transactions
+GET {{baseUrl}}/api/sellers/stores/77777777-7777-7777-7777-777777777777/transactions
+Authorization: Bearer {{sellerToken}}
+Accept: application/json
+
+###############################################
+# ADMIN OPERATIONS
+###############################################
+
+# Register New Company
+POST {{baseUrl}}/api/admin/companies
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "New Test Company",
+    "contactEmail": "contact@newtestcompany.com",
+    "contactPhone": "+1-555-123-7890",
+    "initialBonusBalance": 500000
+}
+
+###
+
+# Update Company Status
+PUT {{baseUrl}}/api/admin/companies/66666666-6666-6666-6666-666666666666/status
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+1
+
+###
+
+# Create Pending Store Registration
+POST {{baseUrl}}/api/admin/stores
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "companyId": "66666666-6666-6666-6666-666666666666",
+    "name": "Pending Test Store",
+    "location": "Riverside",
+    "address": "789 River Rd, Anytown, AN 12345",
+    "contactPhone": "+1-555-789-0123",
+    "sellerIds": []
+}
+
+###
+
+# Moderate Store (Approve Pending Registration)
+PUT {{baseUrl}}/api/admin/stores/some-store-id/moderate?approve=true
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+###
+
+# Credit Company Balance
+POST {{baseUrl}}/api/admin/companies/66666666-6666-6666-6666-666666666666/credit
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+100000
+
+###
+
+# Get System Transactions
+GET {{baseUrl}}/api/admin/transactions?companyId=66666666-6666-6666-6666-666666666666
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+###
+
+# Send System Notification
+POST {{baseUrl}}/api/admin/notifications?recipientId=11111111-1111-1111-1111-111111111111
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "message": "Special promotion this weekend!",
+    "type": 3
+}
+
+###############################################
+# OBSERVER OPERATIONS
+###############################################
+
+# Get Observer Context
+GET {{baseUrl}}/api/observers/context
+Authorization: Bearer {{observerToken}}
+Accept: application/json
+
+###
+
+# Get System-Wide Statistics
+GET {{baseUrl}}/api/observers/statistics
+Authorization: Bearer {{observerToken}}
+Accept: application/json
+
+###
+
+# Get Transaction Summary
+GET {{baseUrl}}/api/observers/transactions/summary?companyId=66666666-6666-6666-6666-666666666666
+Authorization: Bearer {{observerToken}}
+Accept: application/json
+
+###
+
+# Get Companies Overview
+GET {{baseUrl}}/api/observers/companies
+Authorization: Bearer {{observerToken}}
+Accept: application/json
+
+###############################################
+# ADVANCED FILTERING
+###############################################
+
+# Filter Transactions by Date Range
+GET {{baseUrl}}/api/admin/transactions?startDate=2024-03-01&endDate=2024-04-15
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+###
+
+# Get Company-Specific Statistics
+GET {{baseUrl}}/api/observers/statistics?companyId=66666666-6666-6666-6666-666666666666&startDate=2024-01-01&endDate=2024-04-15
+Authorization: Bearer {{observerToken}}
+Accept: application/json

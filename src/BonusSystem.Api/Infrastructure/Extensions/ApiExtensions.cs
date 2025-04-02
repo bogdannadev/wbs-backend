@@ -94,6 +94,9 @@ public static class ApiExtensions
             c.OperationFilter<AuthExamples>();
             c.OperationFilter<TransactionExamples>();
             c.OperationFilter<CompanyStoreExamples>();
+            c.OperationFilter<AdminExamples>();
+            c.OperationFilter<ObserverExamples>();
+            c.OperationFilter<BuyerSpecialtyExamples>();
             
             // Customize operation IDs
             c.CustomOperationIds(e => e.ActionDescriptor.EndpointMetadata

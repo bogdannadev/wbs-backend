@@ -139,6 +139,22 @@ public class PostgresInitializer
         };
 
         await _dbContext.Stores.AddAsync(store);
+        
+        // Create second sample store
+        var store2 = new StoreEntity
+        {
+            Id = Guid.Parse("88888888-7777-6666-5555-444444444444"),
+            CompanyId = company.Id,
+            Name = "Electronics Store",
+            Location = "Uptown",
+            Address = "456 High St, Anytown, AN 12345",
+            ContactPhone = "+1-555-456-7890",
+            Status = StoreStatus.Active,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _dbContext.Stores.AddAsync(store2);
 
         // Create sample store seller assignment
         var storeSellerAssignment = new StoreSellerEntity
@@ -166,6 +182,54 @@ public class PostgresInitializer
         };
 
         await _dbContext.Transactions.AddAsync(transaction);
+        
+        // Additional transactions for comprehensive testing
+        var additionalTransactions = new List<TransactionEntity>
+        {
+            // A spending transaction for buyer1
+            new()
+            {
+                Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-111111111111"),
+                UserId = users[0].Id, // buyer1
+                CompanyId = company.Id,
+                StoreId = store.Id,
+                Amount = 75,
+                Type = TransactionType.Spend,
+                Timestamp = DateTime.UtcNow.AddDays(-2),
+                Status = TransactionStatus.Completed,
+                Description = "Sample bonus spending transaction"
+            },
+            
+            // An expired transaction
+            new()
+            {
+                Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-222222222222"),
+                UserId = users[0].Id, // buyer1
+                CompanyId = company.Id,
+                StoreId = store.Id,
+                Amount = 50,
+                Type = TransactionType.Expire,
+                Timestamp = DateTime.UtcNow.AddDays(-10),
+                Status = TransactionStatus.Completed,
+                Description = "Expired bonus points"
+            },
+            
+            // A transaction for seller1
+            new()
+            {
+                Id = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-333333333333"),
+                UserId = users[1].Id, // seller1
+                CompanyId = company.Id,
+                StoreId = store.Id,
+                Amount = 200,
+                Type = TransactionType.Earn,
+                Timestamp = DateTime.UtcNow.AddDays(-5),
+                Status = TransactionStatus.Completed,
+                Description = "Seller bonus transaction"
+            }
+        };
+
+        await _dbContext.Transactions.AddRangeAsync(additionalTransactions);
 
         // Create sample notification
         var notification = new NotificationEntity
@@ -179,6 +243,19 @@ public class PostgresInitializer
         };
 
         await _dbContext.Notifications.AddAsync(notification);
+        
+        // Create second notification
+        var notification2 = new NotificationEntity
+        {
+            Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+            RecipientId = users[0].Id, // buyer1
+            Message = "Your bonus points will expire in 30 days",
+            Type = NotificationType.Expiration,
+            CreatedAt = DateTime.UtcNow.AddDays(-5),
+            IsRead = true
+        };
+
+        await _dbContext.Notifications.AddAsync(notification2);
 
         await _dbContext.SaveChangesAsync();
         _logger.LogInformation("Database seeded successfully");
