@@ -33,10 +33,7 @@ public class BuyerSpecialtyExamples : IOperationFilter
         {
             var example = new OpenApiObject
             {
-                ["qrCode"] = new OpenApiString("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyOTAgMjkwIj48cGF0aCBkPSJNMywzaDE3djE3aC0xN3pNMjcwLDNoMTd2MTdoLTE3ek0zLDI3MGgxN3YxN2gtMTd6TTIwLDIwaDI1MHYyNTBoLTI1MHoiIGZpbGw9ImJsYWNrIj48L3BhdGg+PC9zdmc+"),
-                ["userId"] = new OpenApiString("11111111-1111-1111-1111-111111111111"),
-                ["username"] = new OpenApiString("buyer1"),
-                ["expirationTimestamp"] = new OpenApiDateTime(DateTime.UtcNow.AddMinutes(15))
+                ["qrCode"] = new OpenApiString("BONUS-USER-11111111111111111111111111111111")
             };
             
             successResponse.Content["application/json"].Example = example;
