@@ -10,12 +10,12 @@ services:
     ports:
       - "${API_HTTP_PORT:-5001}:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=http://+:8080
-      - AppDb__Type=${APP_DB_TYPE:-Postgres}
-      - AppDb__JwtSecret=${APP_JWT_SECRET:-SuperSecretKeyForDevPurposesOnly1234567890!}
-      - AppDb__TokenExpirationMinutes=${APP_TOKEN_EXPIRATION:-60}
-      - PostgresOptions__ConnectionString=Host=postgres;Database=${POSTGRES_DB:-bonussystem};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}
+      - AppDb__Type=${APP_DB_TYPE}
+      - AppDb__JwtSecret=${APP_JWT_SECRET}
+      - AppDb__TokenExpirationMinutes=${APP_TOKEN_EXPIRATION}
+      - PostgresOptions__ConnectionString=Host=postgres;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - PostgresOptions__EnableDetailedLogging=true
     volumes:
       - ./src:/src
