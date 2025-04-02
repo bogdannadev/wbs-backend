@@ -66,7 +66,8 @@ public class InMemoryStoreRepository : InMemoryRepository<StoreDto, Guid>, IStor
 
         // Assign seller to store
         var sellerId = Guid.Parse("22222222-2222-2222-2222-222222222222"); // seller1 from UserRepository
-        AddSellerToStoreAsync(Guid.Parse("77777777-7777-7777-7777-777777777777"), sellerId).Wait(); // Add seller1 to Alpha Downtown
+        AddSellerToStoreAsync(Guid.Parse("77777777-7777-7777-7777-777777777777"), sellerId)
+            .Wait(); // Add seller1 to Alpha Downtown
     }
 
     public Task<IEnumerable<StoreDto>> GetStoresByCompanyIdAsync(Guid companyId)
@@ -120,11 +121,7 @@ public class InMemoryStoreRepository : InMemoryRepository<StoreDto, Guid>, IStor
 
     public Task<IEnumerable<StoreDto>> GetStoresByCategoryAsync(string category)
     {
-        // For prototype, just treat the category as a substring of the store name
-        var stores = _entities.Values.Where(s => 
-            s.Name.Contains(category, StringComparison.OrdinalIgnoreCase) ||
-            s.Location.Contains(category, StringComparison.OrdinalIgnoreCase));
-        
+        var stores = _entities.Values.Where(s => s.Status == StoreStatus.Active);
         return Task.FromResult(stores);
     }
 

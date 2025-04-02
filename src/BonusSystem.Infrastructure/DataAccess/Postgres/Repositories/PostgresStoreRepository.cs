@@ -54,10 +54,10 @@ public class PostgresStoreRepository : IStoreRepository
             var entity = MapToEntity(dto);
             entity.CreatedAt = DateTime.UtcNow;
             entity.UpdatedAt = DateTime.UtcNow;
-            
+
             await _dbContext.Stores.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
-            
+
             return entity.Id;
         }
         catch (Exception ex)
@@ -83,9 +83,9 @@ public class PostgresStoreRepository : IStoreRepository
             entity.ContactPhone = dto.ContactPhone;
             entity.Status = dto.Status;
             entity.UpdatedAt = DateTime.UtcNow;
-            
+
             await _dbContext.SaveChangesAsync();
-            
+
             return true;
         }
         catch (Exception ex)
@@ -107,7 +107,7 @@ public class PostgresStoreRepository : IStoreRepository
 
             _dbContext.Stores.Remove(entity);
             await _dbContext.SaveChangesAsync();
-            
+
             return true;
         }
         catch (Exception ex)
@@ -124,7 +124,7 @@ public class PostgresStoreRepository : IStoreRepository
             var entities = await _dbContext.Stores.AsNoTracking()
                 .Where(s => s.CompanyId == companyId)
                 .ToListAsync();
-            
+
             return entities.Select(MapToDto);
         }
         catch (Exception ex)
@@ -147,7 +147,7 @@ public class PostgresStoreRepository : IStoreRepository
             entity.Status = status;
             entity.UpdatedAt = DateTime.UtcNow;
             await _dbContext.SaveChangesAsync();
-            
+
             return true;
         }
         catch (Exception ex)
@@ -164,7 +164,7 @@ public class PostgresStoreRepository : IStoreRepository
             // First check if this assignment already exists
             var exists = await _dbContext.StoreSellers.AnyAsync(
                 ss => ss.StoreId == storeId && ss.UserId == sellerId);
-            
+
             if (exists)
             {
                 return true; // Already assigned
@@ -178,10 +178,10 @@ public class PostgresStoreRepository : IStoreRepository
                 UserId = sellerId,
                 AssignedAt = DateTime.UtcNow
             };
-            
+
             await _dbContext.StoreSellers.AddAsync(assignment);
             await _dbContext.SaveChangesAsync();
-            
+
             return true;
         }
         catch (Exception ex)
@@ -197,7 +197,7 @@ public class PostgresStoreRepository : IStoreRepository
         {
             var assignment = await _dbContext.StoreSellers
                 .FirstOrDefaultAsync(ss => ss.StoreId == storeId && ss.UserId == sellerId);
-            
+
             if (assignment == null)
             {
                 return false; // No such assignment exists
@@ -205,7 +205,7 @@ public class PostgresStoreRepository : IStoreRepository
 
             _dbContext.StoreSellers.Remove(assignment);
             await _dbContext.SaveChangesAsync();
-            
+
             return true;
         }
         catch (Exception ex)
@@ -227,7 +227,7 @@ public class PostgresStoreRepository : IStoreRepository
             var sellers = await _dbContext.Users
                 .Where(u => sellerIds.Contains(u.Id))
                 .ToListAsync();
-            
+
             return sellers.Select(seller => new UserDto
             {
                 Id = seller.Id,
@@ -248,13 +248,11 @@ public class PostgresStoreRepository : IStoreRepository
     {
         try
         {
-            // For a proper implementation, you would need a Categories table and relationships
-            // For this prototype, we're just doing a simple search by name/location
-            var entities = await _dbContext.Stores.AsNoTracking()
-                .Where(s => s.Name.Contains(category) || s.Location.Contains(category))
+            var allStores = await _dbContext.Stores.AsNoTracking()
+                .Where(s => s.Status == StoreStatus.Active)
                 .ToListAsync();
-            
-            return entities.Select(MapToDto);
+
+            return allStores.Select(MapToDto);
         }
         catch (Exception ex)
         {
@@ -273,7 +271,7 @@ public class PostgresStoreRepository : IStoreRepository
             var transactionsSum = await _dbContext.Transactions
                 .Where(t => t.StoreId == storeId && t.Status == TransactionStatus.Completed)
                 .SumAsync(t => t.Type == TransactionType.Earn ? t.Amount : -t.Amount);
-            
+
             return transactionsSum;
         }
         catch (Exception ex)
