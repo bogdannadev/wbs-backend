@@ -13,7 +13,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
       - ASPNETCORE_URLS=http://+:8080
       - AppDb__Type=${APP_DB_TYPE:-Postgres}
-      - AppDb__JwtSecret=${APP_JWT_SECRET:-DevSecretKey123!}
+      - AppDb__JwtSecret=${APP_JWT_SECRET:-SuperSecretKeyForDevPurposesOnly1234567890!}
       - AppDb__TokenExpirationMinutes=${APP_TOKEN_EXPIRATION:-60}
       - PostgresOptions__ConnectionString=Host=postgres;Database=${POSTGRES_DB:-bonussystem};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}
       - PostgresOptions__EnableDetailedLogging=true
