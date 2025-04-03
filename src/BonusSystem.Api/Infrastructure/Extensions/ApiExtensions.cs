@@ -7,7 +7,7 @@ using BonusSystem.Core.Services.Implementations.BFF;
 using BonusSystem.Core.Services.Interfaces;
 using BonusSystem.Infrastructure.Auth;
 using BonusSystem.Infrastructure.DataAccess;
-using BonusSystem.Infrastructure.DataAccess.Postgres;
+using BonusSystem.Infrastructure.DataAccess.EntityFramework;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -36,6 +36,104 @@ public static class ApiExtensions
         // Configure swagger and OpenAPI
         services.AddEndpointsApiExplorer();
 
+        // Configure swagger with examples
+        ConfigureSwagger(services);
+
+        // Configure database options
+        services.Configure<AppDbOptions>(
+            configuration.GetSection(AppDbOptions.Position));
+
+        // Configure Entity Framework context
+        ConfigureEntityFramework(services, configuration);
+
+        // Register authentication service
+        services.AddScoped<IAuthenticationService, JwtAuthenticationService>();
+
+        // Register BFF services
+        services.AddScoped<IBuyerBffService, BuyerBffService>();
+        services.AddScoped<ISellerBffService, SellerBffService>();
+        services.AddScoped<IAdminBffService, AdminBffService>();
+        services.AddScoped<IObserverBffService, ObserverBffService>();
+
+        // Configure Authentication
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                var jwtSecret = configuration["AppDb:JwtSecret"];
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret ?? string.Empty)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+        services.AddAuthorization();
+
+        return services;
+    }
+
+    public static WebApplication UseApiMiddleware(this WebApplication app, IWebHostEnvironment env)
+    {
+        // Initialize database if using PostgreSQL
+        using (var scope = app.Services.CreateScope())
+        {
+            try
+            {
+                var context = scope.ServiceProvider.GetRequiredService<BonusSystemContext>();
+                context.Database.Migrate();
+
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                logger.LogInformation("Database migrations applied sucessfully");
+            }
+            catch (Exception e)
+            {
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                logger.LogError(e, "An error occured while applying migrations");
+
+                if (env.IsDevelopment())
+                    throw;
+            }
+        }
+
+        // Configure the HTTP request pipeline
+
+        // Use CORS before other middleware
+        app.UseCors();
+        // Enable static files for Swagger UI customization
+        app.UseStaticFiles();
+
+        app.UseSwagger(c => { c.RouteTemplate = "api-docs/{documentName}/swagger.json"; });
+
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/api-docs/v1/swagger.json", "BonusSystem API v1");
+            c.RoutePrefix = "api-docs";
+            c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
+            c.DefaultModelsExpandDepth(0); // Hide models section by default
+            c.DisplayRequestDuration();
+            c.EnableDeepLinking();
+            c.EnableFilter();
+            c.EnableValidator();
+            c.DocumentTitle = "BonusSystem API Documentation";
+        });
+
+        app.UseHttpsRedirection();
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        // Add a root endpoint that redirects to API docs
+        app.MapGet("/", () => Results.Redirect("/api-docs"))
+            .ExcludeFromDescription();
+
+        return app;
+    }
+
+    private static void ConfigureSwagger(IServiceCollection services)
+    {
         // Configure Swagger with examples
         services.AddSwaggerGen(c =>
         {
@@ -121,122 +219,44 @@ public static class ApiExtensions
 
         // Configure Swagger with custom options
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, SwaggerConfigurationOptions>();
+    }
 
-        // Configure database options
-        services.Configure<AppDbOptions>(
-            configuration.GetSection(AppDbOptions.Position));
+    private static void ConfigureEntityFramework(IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-        // Configure PostgreSQL options
-        services.Configure<PostgresOptions>(
-            configuration.GetSection(PostgresOptions.Position));
-
-        // Register data services based on configuration
-        var dbType = configuration["AppDb:Type"];
-
-        // Configure PostgreSQL DbContext
-        services.AddDbContext<BonusSystemDbContext>((serviceProvider, options) =>
+        if (connectionString.IsNullOrEmpty())
+            throw new InvalidOperationException("Connection string not found in the configuration");
+        
+        // Configure the db context
+        services.AddDbContext<BonusSystemContext>(options =>
         {
-            var postgresOptions = serviceProvider.GetRequiredService<IOptions<PostgresOptions>>().Value;
-
-            options.UseNpgsql(postgresOptions.ConnectionString, npgsqlOptions =>
+            options.UseNpgsql(connectionString, npgOptions =>
             {
-                npgsqlOptions.MigrationsHistoryTable("__ef_migrations_history", "bonus");
-                npgsqlOptions.EnableRetryOnFailure(5);
+                npgOptions.MigrationsHistoryTable("__ef_migrations_history", "bonus");
+                npgOptions.EnableRetryOnFailure(5);
             });
-
-            if (postgresOptions.EnableDetailedLogging)
+            
+            // Enable detailed logging in development
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
             {
                 options.EnableSensitiveDataLogging();
                 options.EnableDetailedErrors();
             }
         });
 
-        // Register PostgreSQL data service
-        services.AddScoped<IDataService, PostgresDataService>();
+        services.AddScoped<IDataService, EntityFrameworkDataService>();
 
-        // Register PostgreSQL initializer
-        services.AddScoped<PostgresInitializer>();
-
-        // Register repositories based on data service
+        // Register repositories directly for cases when they're injected directly
         services.AddScoped<IUserRepository>(sp => sp.GetRequiredService<IDataService>().Users);
         services.AddScoped<ICompanyRepository>(sp => sp.GetRequiredService<IDataService>().Companies);
         services.AddScoped<IStoreRepository>(sp => sp.GetRequiredService<IDataService>().Stores);
         services.AddScoped<ITransactionRepository>(sp => sp.GetRequiredService<IDataService>().Transactions);
         services.AddScoped<INotificationRepository>(sp => sp.GetRequiredService<IDataService>().Notifications);
-
-        // Register authentication service
-        services.AddScoped<IAuthenticationService, JwtAuthenticationService>();
-
-        // Register BFF services
-        services.AddScoped<IBuyerBffService, BuyerBffService>();
-        services.AddScoped<ISellerBffService, SellerBffService>();
-        services.AddScoped<IAdminBffService, AdminBffService>();
-        services.AddScoped<IObserverBffService, ObserverBffService>();
-
-        // Configure Authentication
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                var jwtSecret = configuration["AppDb:JwtSecret"];
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret ?? string.Empty)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
-
-        services.AddAuthorization();
-
-        return services;
     }
 
-    public static WebApplication UseApiMiddleware(this WebApplication app, IWebHostEnvironment env)
+    private static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
     {
-        // Initialize database if using PostgreSQL
-        var dbType = app.Configuration["AppDb:Type"];
-        if (dbType?.ToLower() == "postgres")
-        {
-            using (var scope = app.Services.CreateScope())
-            {
-                var initializer = scope.ServiceProvider.GetRequiredService<PostgresInitializer>();
-                initializer.InitializeAsync().GetAwaiter().GetResult();
-            }
-        }
-
-        // Configure the HTTP request pipeline
-
-        // Use CORS before other middleware
-        app.UseCors();
-        // Enable static files for Swagger UI customization
-        app.UseStaticFiles();
-
-        app.UseSwagger(c => { c.RouteTemplate = "api-docs/{documentName}/swagger.json"; });
-
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/api-docs/v1/swagger.json", "BonusSystem API v1");
-            c.RoutePrefix = "api-docs";
-            c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
-            c.DefaultModelsExpandDepth(0); // Hide models section by default
-            c.DisplayRequestDuration();
-            c.EnableDeepLinking();
-            c.EnableFilter();
-            c.EnableValidator();
-            c.DocumentTitle = "BonusSystem API Documentation";
-        });
-
-        app.UseHttpsRedirection();
-        app.UseAuthentication();
-        app.UseAuthorization();
-
-        // Add a root endpoint that redirects to API docs
-        app.MapGet("/", () => Results.Redirect("/api-docs"))
-            .ExcludeFromDescription();
-
-        return app;
+        
     }
 }

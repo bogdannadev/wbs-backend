@@ -1,6 +1,5 @@
 using BonusSystem.Core.Repositories;
 using BonusSystem.Infrastructure.DataAccess.Entities;
-using BonusSystem.Infrastructure.DataAccess.Postgres;
 using BonusSystem.Shared.Dtos;
 using BonusSystem.Shared.Models;
 using Microsoft.EntityFrameworkCore;
