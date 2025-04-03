@@ -21,6 +21,9 @@ public class BonusSystemContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         
+        // Set schema name
+        modelBuilder.HasDefaultSchema("bonus_system");
+        
         // Apply configurations
         modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
         modelBuilder.ApplyConfiguration(new CompanyEntityConfiguration());
