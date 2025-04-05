@@ -76,7 +76,7 @@ public static class ApiExtensions
         return services;
     }
 
-    public static WebApplication UseApiMiddleware(this WebApplication app, IWebHostEnvironment env)
+    public static void UseApiMiddleware(this WebApplication app, IWebHostEnvironment env)
     {
         // Initialize database if using PostgreSQL
         using (var scope = app.Services.CreateScope())
@@ -84,10 +84,15 @@ public static class ApiExtensions
             try
             {
                 var context = scope.ServiceProvider.GetRequiredService<BonusSystemContext>();
-                context.Database.Migrate();
-
                 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-                logger.LogInformation("Database migrations applied successfully");
+
+                if (context.Database.GetPendingMigrations().Any())
+                {
+                    context.Database.Migrate();
+                    logger.LogInformation("Database migrations applied successfully");
+                }
+
+                
             }
             catch (Exception e)
             {
@@ -128,8 +133,6 @@ public static class ApiExtensions
         // Add a root endpoint that redirects to API docs
         app.MapGet("/", () => Results.Redirect("/api-docs"))
             .ExcludeFromDescription();
-
-        return app;
     }
 
     private static void ConfigureSwagger(IServiceCollection services)
@@ -225,7 +228,7 @@ public static class ApiExtensions
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-        if (connectionString.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(connectionString))
             throw new InvalidOperationException("Connection string not found in the configuration");
         
         // Configure the db context
@@ -233,7 +236,7 @@ public static class ApiExtensions
         {
             options.UseNpgsql(connectionString, npgOptions =>
             {
-                npgOptions.MigrationsHistoryTable("__ef_migrations_history", "bonus");
+                npgOptions.MigrationsAssembly(typeof(BonusSystemContext).Assembly.GetName().Name);
                 npgOptions.EnableRetryOnFailure(5);
             });
             
@@ -254,9 +257,5 @@ public static class ApiExtensions
         services.AddScoped<ITransactionRepository>(sp => sp.GetRequiredService<IDataService>().Transactions);
         services.AddScoped<INotificationRepository>(sp => sp.GetRequiredService<IDataService>().Notifications);
     }
-
-    private static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
-    {
-        
-    }
+    
 }

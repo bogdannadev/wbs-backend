@@ -8,7 +8,7 @@ public sealed class BonusSystemContext : DbContext
 {
     public BonusSystemContext(DbContextOptions<BonusSystemContext> options) : base(options)
     {
-        Database.EnsureCreated();
+        // Do not call Database.EnsureCreated() here as it conflicts with migrations
     }
     
     public DbSet<UserEntity> Users { get; set; } = null!;
