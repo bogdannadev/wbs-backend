@@ -32,7 +32,7 @@ public static class SellerEndpoints
                 return operation;
             });
 
-        group.MapPost("/transactions", SellerHandlers.ProcessTransaction)
+        group.MapPost("/transactions/process", SellerHandlers.ProcessTransaction)
             .WithName("ProcessTransaction")
             .RequireAuthorization()
             .WithOpenApi(operation => 
@@ -90,7 +90,7 @@ public static class SellerEndpoints
                 return operation;
             });
 
-        group.MapGet("/stores/{userId}/balance", SellerHandlers.GetStoreBalance)
+        group.MapGet("/balance", SellerHandlers.GetStoreBalance)
             .WithName("GetStoreBalanceForSeller")
             .RequireAuthorization()
             .WithOpenApi(operation => 
@@ -108,7 +108,7 @@ public static class SellerEndpoints
                 return operation;
             });
 
-        group.MapGet("/stores/{userId}/transactions", SellerHandlers.GetStoreTransactions)
+        group.MapGet("/transactions/list", SellerHandlers.GetStoreTransactions)
             .WithName("GetStoreTransactionsForSeller")
             .RequireAuthorization()
             .WithOpenApi(operation => 
