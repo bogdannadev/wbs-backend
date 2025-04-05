@@ -4,10 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BonusSystem.Infrastructure.DataAccess.EntityFramework;
 
-public class BonusSystemContext : DbContext
+public sealed class BonusSystemContext : DbContext
 {
     public BonusSystemContext(DbContextOptions<BonusSystemContext> options) : base(options)
     {
+        Database.EnsureCreated();
     }
     
     public DbSet<UserEntity> Users { get; set; } = null!;
