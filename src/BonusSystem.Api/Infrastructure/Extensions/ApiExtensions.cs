@@ -87,7 +87,7 @@ public static class ApiExtensions
                 context.Database.Migrate();
 
                 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-                logger.LogInformation("Database migrations applied sucessfully");
+                logger.LogInformation("Database migrations applied successfully");
             }
             catch (Exception e)
             {
