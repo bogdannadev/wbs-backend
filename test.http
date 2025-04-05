@@ -3,10 +3,10 @@
 # DEMO INSTRUCTIONS
 # ------------------------------------------------------------------------
 # To use the extended demo with new companies, stores and sellers:
-# 1. First login as the Buyer (buyer1@example.com) to get a token
+# 1. First login as the Buyer (customer1@example.com) to get a token
 # 2. View all available stores using the "Find Stores by Category" request
 #    with parameter "category=all" - this will now show all active stores
-# 3. Login as different sellers (seller1, techseller1, groceryseller1, fashionseller1) 
+# 3. Login as different sellers (seller1@megamart.com, seller2@megamart.com) 
 #    to interact with different stores
 # 4. Use the requests in the EXTENDED DEMO OPERATIONS section to demonstrate 
 #    transactions across multiple companies and view the results
@@ -22,7 +22,7 @@
 
 # Authentication Tokens (to be updated after login)
 @buyerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI2NjY2NjY2Ni02NjY2LTY2NjYtNjY2Ni02NjY2NjY2NjY2NjYiLCJyb2xlIjoiQnV5ZXIiLCJuYmYiOjE3NDM4NzgyMzAsImV4cCI6MTc3NTQxNDIzMCwiaWF0IjoxNzQzODc4MjMwfQ.HPMHAVbkesaa70xQixko2iufNZRcjbSJtAx3xfzFsNg
-@sellerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtNDQ0NC00NDQ0NDQ0NDQ0NDQiLCJyb2xlIjoiU2VsbGVyIiwibmJmIjoxNzQzODgxMzI4LCJleHAiOjE3NzU0MTczMjgsImlhdCI6MTc0Mzg4MTMyOH0.d5idLDCtsLXgjKaPrtL4gt5G0XAzDOOfeYAa4TW5suY
+@sellerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtNDQ0NC00NDQ0NDQ0NDQ0NDQiLCJyb2xlIjoiU2VsbGVyIiwibmJmIjoxNzQzODc4MjQyLCJleHAiOjE3NzU0MTQyNDIsImlhdCI6MTc0Mzg3ODI0Mn0.Ql4mxKsjow0M6RnOlvBDP6tErJASmVwREDMLXHrpAKo
 @adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxMTExMTExMS0xMTExLTExMTEtMTExMS0xMTExMTExMTExMTEiLCJyb2xlIjoiU3lzdGVtQWRtaW4iLCJuYmYiOjE3NDM4NzgyNjQsImV4cCI6MTc3NTQxNDI2NCwiaWF0IjoxNzQzODc4MjY0fQ.NRxNuI7Un6m7hOO4DDIAVcejEhKiTUKJHNbr3Nb4IRI
 @observerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyMjIyMjIyMi0yMjIyLTIyMjItMjIyMi0yMjIyMjIyMjIyMjIiLCJyb2xlIjoiQ29tcGFueU9ic2VydmVyIiwibmJmIjoxNzQzODc4Mjc4LCJleHAiOjE3NzU0MTQyNzgsImlhdCI6MTc0Mzg3ODI3OH0.q7-qXJwW1OxxUqoHtLu91N3iTqh3lswM266Kbr6q-do
 
@@ -125,13 +125,13 @@ Accept: application/json
 ###############################################
 
 # Process Earn Transaction
-POST {{baseUrl}}/api/sellers/transactions
+POST {{baseUrl}}/api/sellers/transactions/process
 Authorization: Bearer {{sellerToken}}
 Content-Type: application/json
 Accept: application/json
 
 {
-    "userId": "66666666-6666-6666-6666-666666666666",
+    "buyerId": "66666666-6666-6666-6666-666666666666",
     "amount": 150,
     "type": 0
 }
@@ -139,13 +139,13 @@ Accept: application/json
 ###
 
 # Process Spend Transaction
-POST {{baseUrl}}/api/sellers/transactions
+POST {{baseUrl}}/api/sellers/transactions/process
 Authorization: Bearer {{sellerToken}}
 Content-Type: application/json
 Accept: application/json
 
 {
-    "userId": "66666666-6666-6666-6666-666666666666",
+    "buyerId": "66666666-6666-6666-6666-666666666666",
     "amount": 50,
     "type": 1
 }
@@ -159,15 +159,15 @@ Accept: application/json
 
 ###
 
-# Get Store Balance (using seller's userId)
-GET {{baseUrl}}/api/sellers/stores/44444444-4444-4444-4444-444444444444/balance
+# Get Store Balance (using authenticated seller's identity)
+GET {{baseUrl}}/api/sellers/balance
 Authorization: Bearer {{sellerToken}}
 Accept: application/json
 
 ###
 
-# Get Store Transactions (using seller's userId)
-GET {{baseUrl}}/api/sellers/stores/44444444-4444-4444-4444-444444444444/transactions
+# Get Store Transactions (using authenticated seller's identity)
+GET {{baseUrl}}/api/sellers/transactions/list
 Authorization: Bearer {{sellerToken}}
 Accept: application/json
 
@@ -306,58 +306,58 @@ Accept: application/json
 
 ###
 
-# Process Earn Transaction at MegaMart Uptown store
+# Process Earn Transaction as seller2
 # (Update the sellerToken with the token from the seller2 login)
-POST {{baseUrl}}/api/sellers/transactions
+POST {{baseUrl}}/api/sellers/transactions/process
 Authorization: Bearer {{sellerToken}}
 Content-Type: application/json
 Accept: application/json
 
 {
-    "userId": "66666666-6666-6666-6666-666666666666",
+    "buyerId": "66666666-6666-6666-6666-666666666666",
     "amount": 200,
     "type": 0
 }
 
 ###
 
-# Process Spend Transaction at MegaMart Uptown store
-POST {{baseUrl}}/api/sellers/transactions
+# Process Spend Transaction as seller2
+POST {{baseUrl}}/api/sellers/transactions/process
 Authorization: Bearer {{sellerToken}}
 Content-Type: application/json
 Accept: application/json
 
 {
-    "userId": "66666666-6666-6666-6666-666666666666",
+    "buyerId": "66666666-6666-6666-6666-666666666666",
     "amount": 75,
     "type": 1
 }
 
 ###
 
-# Get MegaMart Uptown Store balance (using seller2's userId)
-GET {{baseUrl}}/api/sellers/stores/55555555-5555-5555-5555-555555555555/balance
+# Get Store Balance as seller2
+GET {{baseUrl}}/api/sellers/balance
 Authorization: Bearer {{sellerToken}}
 Accept: application/json
 
 ###
 
-# Process Earn Transaction for another customer
-POST {{baseUrl}}/api/sellers/transactions
+# Process Earn Transaction for another customer as seller2
+POST {{baseUrl}}/api/sellers/transactions/process
 Authorization: Bearer {{sellerToken}}
 Content-Type: application/json
 Accept: application/json
 
 {
-    "userId": "77777777-7777-7777-7777-777777777777",
+    "buyerId": "77777777-7777-7777-7777-777777777777",
     "amount": 150,
     "type": 0
 }
 
 ###
 
-# Get MegaMart Uptown store transactions (using seller2's userId)
-GET {{baseUrl}}/api/sellers/stores/55555555-5555-5555-5555-555555555555/transactions
+# Get Store Transactions as seller2
+GET {{baseUrl}}/api/sellers/transactions/list
 Authorization: Bearer {{sellerToken}}
 Accept: application/json
 
