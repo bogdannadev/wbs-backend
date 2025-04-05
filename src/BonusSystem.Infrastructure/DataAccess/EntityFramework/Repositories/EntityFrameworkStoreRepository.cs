@@ -261,6 +261,30 @@ public class EntityFrameworkStoreRepository : IStoreRepository
         }
     }
 
+    public async Task<StoreDto?> GetStoreBySellerIdAsync(Guid sellerId)
+    {
+        try
+        {
+            var assignment = await _dbContext.StoreSellerAssignments
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.UserId == sellerId);
+
+            if (assignment == null)
+                return null;
+
+            var store = await _dbContext.Stores
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.Id == assignment.StoreId);
+
+            return store != null ? MapToDto(store) : null;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error retrieving store for the seller ID {SellerId}", sellerId);
+            throw;
+        }
+    }
+
     public async Task<decimal> GetStoreBonusBalanceAsync(Guid storeId)
     {
         try
