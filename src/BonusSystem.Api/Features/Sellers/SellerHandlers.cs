@@ -106,18 +106,18 @@ public static class SellerHandlers
 
     public static async Task<IResult> GetStoreBalance(
         HttpContext httpContext,
-        Guid id,
+        Guid userId,
         ISellerBffService sellerService)
     {
-        var userId = GetUserIdFromContext(httpContext);
-        if (userId == null)
+        var userIdFromRequest = GetUserIdFromContext(httpContext);
+        if (userIdFromRequest == null)
         {
             return Results.Unauthorized();
         }
 
         try
         {
-            var balance = await sellerService.GetStoreBonusBalanceAsync(id);
+            var balance = await sellerService.GetStoreBonusBalanceByUserIdAsync(userId);
             return Results.Ok(new { balance });
         }
         catch (Exception ex)
@@ -128,18 +128,18 @@ public static class SellerHandlers
 
     public static async Task<IResult> GetStoreTransactions(
         HttpContext httpContext,
-        Guid id,
+        Guid userId,
         ISellerBffService sellerService)
     {
-        var userId = GetUserIdFromContext(httpContext);
-        if (userId == null)
+        var userIdFromRequest = GetUserIdFromContext(httpContext);
+        if (userIdFromRequest == null)
         {
             return Results.Unauthorized();
         }
 
         try
         {
-            var transactions = await sellerService.GetStoreBonusTransactionsAsync(id);
+            var transactions = await sellerService.GetStoreBonusTransactionsByUserIdAsync(userId);
             return Results.Ok(transactions);
         }
         catch (Exception ex)

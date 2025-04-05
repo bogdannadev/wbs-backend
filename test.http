@@ -22,7 +22,7 @@
 
 # Authentication Tokens (to be updated after login)
 @buyerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI2NjY2NjY2Ni02NjY2LTY2NjYtNjY2Ni02NjY2NjY2NjY2NjYiLCJyb2xlIjoiQnV5ZXIiLCJuYmYiOjE3NDM4NzgyMzAsImV4cCI6MTc3NTQxNDIzMCwiaWF0IjoxNzQzODc4MjMwfQ.HPMHAVbkesaa70xQixko2iufNZRcjbSJtAx3xfzFsNg
-@sellerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtNDQ0NC00NDQ0NDQ0NDQ0NDQiLCJyb2xlIjoiU2VsbGVyIiwibmJmIjoxNzQzODc4MjQyLCJleHAiOjE3NzU0MTQyNDIsImlhdCI6MTc0Mzg3ODI0Mn0.Ql4mxKsjow0M6RnOlvBDP6tErJASmVwREDMLXHrpAKo
+@sellerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtNDQ0NC00NDQ0NDQ0NDQ0NDQiLCJyb2xlIjoiU2VsbGVyIiwibmJmIjoxNzQzODgxMzI4LCJleHAiOjE3NzU0MTczMjgsImlhdCI6MTc0Mzg4MTMyOH0.d5idLDCtsLXgjKaPrtL4gt5G0XAzDOOfeYAa4TW5suY
 @adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxMTExMTExMS0xMTExLTExMTEtMTExMS0xMTExMTExMTExMTEiLCJyb2xlIjoiU3lzdGVtQWRtaW4iLCJuYmYiOjE3NDM4NzgyNjQsImV4cCI6MTc3NTQxNDI2NCwiaWF0IjoxNzQzODc4MjY0fQ.NRxNuI7Un6m7hOO4DDIAVcejEhKiTUKJHNbr3Nb4IRI
 @observerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyMjIyMjIyMi0yMjIyLTIyMjItMjIyMi0yMjIyMjIyMjIyMjIiLCJyb2xlIjoiQ29tcGFueU9ic2VydmVyIiwibmJmIjoxNzQzODc4Mjc4LCJleHAiOjE3NzU0MTQyNzgsImlhdCI6MTc0Mzg3ODI3OH0.q7-qXJwW1OxxUqoHtLu91N3iTqh3lswM266Kbr6q-do
 
@@ -131,10 +131,9 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "buyerId": "66666666-6666-6666-6666-666666666666",
+    "userId": "66666666-6666-6666-6666-666666666666",
     "amount": 150,
-    "type": 0,
-    "storeId": "DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD"
+    "type": 0
 }
 
 ###
@@ -146,10 +145,9 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "buyerId": "66666666-6666-6666-6666-666666666666",
+    "userId": "66666666-6666-6666-6666-666666666666",
     "amount": 50,
-    "type": 1,
-    "storeId": "DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD"
+    "type": 1
 }
 
 ###
@@ -161,15 +159,15 @@ Accept: application/json
 
 ###
 
-# Get Store Balance
-GET {{baseUrl}}/api/sellers/stores/DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD/balance
+# Get Store Balance (using seller's userId)
+GET {{baseUrl}}/api/sellers/stores/44444444-4444-4444-4444-444444444444/balance
 Authorization: Bearer {{sellerToken}}
 Accept: application/json
 
 ###
 
-# Get Store Transactions
-GET {{baseUrl}}/api/sellers/stores/DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD/transactions
+# Get Store Transactions (using seller's userId)
+GET {{baseUrl}}/api/sellers/stores/44444444-4444-4444-4444-444444444444/transactions
 Authorization: Bearer {{sellerToken}}
 Accept: application/json
 
@@ -316,10 +314,9 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "buyerId": "66666666-6666-6666-6666-666666666666",
+    "userId": "66666666-6666-6666-6666-666666666666",
     "amount": 200,
-    "type": 0,
-    "storeId": "EEEEEEEE-EEEE-EEEE-EEEE-EEEEEEEEEEEE"
+    "type": 0
 }
 
 ###
@@ -331,15 +328,15 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "buyerId": "66666666-6666-6666-6666-666666666666",
+    "userId": "66666666-6666-6666-6666-666666666666",
     "amount": 75,
     "type": 1
 }
 
 ###
 
-# Get MegaMart Uptown Store balance
-GET {{baseUrl}}/api/sellers/stores/EEEEEEEE-EEEE-EEEE-EEEE-EEEEEEEEEEEE/balance
+# Get MegaMart Uptown Store balance (using seller2's userId)
+GET {{baseUrl}}/api/sellers/stores/55555555-5555-5555-5555-555555555555/balance
 Authorization: Bearer {{sellerToken}}
 Accept: application/json
 
@@ -352,15 +349,15 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "buyerId": "77777777-7777-7777-7777-777777777777",
+    "userId": "77777777-7777-7777-7777-777777777777",
     "amount": 150,
     "type": 0
 }
 
 ###
 
-# Get MegaMart Uptown store transactions
-GET {{baseUrl}}/api/sellers/stores/EEEEEEEE-EEEE-EEEE-EEEE-EEEEEEEEEEEE/transactions
+# Get MegaMart Uptown store transactions (using seller2's userId)
+GET {{baseUrl}}/api/sellers/stores/55555555-5555-5555-5555-555555555555/transactions
 Authorization: Bearer {{sellerToken}}
 Accept: application/json
 

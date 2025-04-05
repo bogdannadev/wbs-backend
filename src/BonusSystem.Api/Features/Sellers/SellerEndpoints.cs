@@ -43,7 +43,6 @@ public static class SellerEndpoints
                     "- buyerId: Unique identifier of the buyer (from QR code scan)\n" +
                     "- amount: Bonus amount for the transaction (positive value)\n" +
                     "- type: Transaction type (0=Earn, 1=Spend)\n" +
-                    "- storeId: Unique identifier of the store where the transaction occurs\n\n" +
                     "Successful response contains the processed transaction details.";
                 
                 operation.EnsureResponse("200", "Transaction processed successfully");
@@ -73,7 +72,7 @@ public static class SellerEndpoints
                 return operation;
             });
 
-        group.MapGet("/buyers/{id}/balance", SellerHandlers.GetBuyerBalance)
+        group.MapGet("/buyers/{Id}/balance", SellerHandlers.GetBuyerBalance)
             .WithName("GetBuyerBalanceForSeller")
             .RequireAuthorization()
             .WithOpenApi(operation => 
@@ -91,7 +90,7 @@ public static class SellerEndpoints
                 return operation;
             });
 
-        group.MapGet("/stores/{id}/balance", SellerHandlers.GetStoreBalance)
+        group.MapGet("/stores/{userId}/balance", SellerHandlers.GetStoreBalance)
             .WithName("GetStoreBalanceForSeller")
             .RequireAuthorization()
             .WithOpenApi(operation => 
@@ -99,7 +98,7 @@ public static class SellerEndpoints
                 operation.Summary = "Get Store's Balance";
                 operation.Description = "Retrieves the current bonus balance for a specific store. Shows how many bonus points the store has available for distribution to buyers.\n\n" +
                     "Path parameters:\n" +
-                    "- id: The unique identifier (GUID) of the store\n\n" +
+                    "- id: The unique identifier (GUID) of the seller's user id\n\n" +
                     "Successful response contains the current bonus balance for the specified store.";
                 
                 operation.EnsureResponse("200", "Returns store's balance");
@@ -109,7 +108,7 @@ public static class SellerEndpoints
                 return operation;
             });
 
-        group.MapGet("/stores/{id}/transactions", SellerHandlers.GetStoreTransactions)
+        group.MapGet("/stores/{userId}/transactions", SellerHandlers.GetStoreTransactions)
             .WithName("GetStoreTransactionsForSeller")
             .RequireAuthorization()
             .WithOpenApi(operation => 
@@ -117,7 +116,7 @@ public static class SellerEndpoints
                 operation.Summary = "Get Store's Transactions";
                 operation.Description = "Retrieves the transaction history for a specific store. Shows all bonus point transactions that occurred at the store.\n\n" +
                     "Path parameters:\n" +
-                    "- id: The unique identifier (GUID) of the store\n\n" +
+                    "- id: The unique identifier (GUID) of the seller's user id\n\n" +
                     "Successful response contains a list of transactions with their details.";
                 
                 operation.EnsureResponse("200", "Returns store's transactions");
