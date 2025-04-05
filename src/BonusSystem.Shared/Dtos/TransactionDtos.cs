@@ -20,7 +20,7 @@ public record TransactionRequestDto
     public Guid BuyerId { get; init; }
     public decimal Amount { get; init; }
     public TransactionType Type { get; init; }
-    public Guid StoreId { get; init; }
+    
 }
 
 public record TransactionResultDto

@@ -14,5 +14,6 @@ public interface IStoreRepository : IRepository<StoreDto, Guid>
     Task<bool> RemoveSellerFromStoreAsync(Guid storeId, Guid sellerId);
     Task<IEnumerable<UserDto>> GetSellersByStoreIdAsync(Guid storeId);
     Task<IEnumerable<StoreDto>> GetStoresByCategoryAsync(string category);
+    Task<StoreDto?> GetStoreBySellerIdAsync(Guid sellerId);
     Task<decimal> GetStoreBonusBalanceAsync(Guid storeId);
 }

@@ -53,6 +53,17 @@ public class SellerBffService : BaseBffService, ISellerBffService
                 ErrorMessage = "Invalid seller"
             };
         }
+        
+        // Find seller's store
+        var store = await _dataService.Stores.GetStoreBySellerIdAsync(sellerId);
+        if (store == null || store.Status != StoreStatus.Active)
+        {
+            return new TransactionResultDto
+            {
+                Success = false,
+                ErrorMessage = "Seller is not assigned to an active store"
+            };
+        }
 
         // Check if buyer exists
         var buyer = await _dataService.Users.GetByIdAsync(request.BuyerId);
@@ -62,17 +73,6 @@ public class SellerBffService : BaseBffService, ISellerBffService
             {
                 Success = false,
                 ErrorMessage = "Invalid buyer"
-            };
-        }
-
-        // Check if store exists
-        var store = await _dataService.Stores.GetByIdAsync(request.StoreId);
-        if (store == null || store.Status != StoreStatus.Active)
-        {
-            return new TransactionResultDto
-            {
-                Success = false,
-                ErrorMessage = "Invalid or inactive store"
             };
         }
 
@@ -92,7 +92,7 @@ public class SellerBffService : BaseBffService, ISellerBffService
             Id = Guid.NewGuid(),
             UserId = request.BuyerId,
             CompanyId = store.CompanyId,
-            StoreId = request.StoreId,
+            StoreId = store.Id,
             Amount = request.Amount,
             Type = request.Type,
             Timestamp = DateTime.UtcNow,
