@@ -224,9 +224,16 @@ public class SellerBffService : BaseBffService, ISellerBffService
     /// <summary>
     /// Gets the bonus balance for a store
     /// </summary>
-    public Task<decimal> GetStoreBonusBalanceAsync(Guid storeId)
+    public async Task<decimal> GetStoreBonusBalanceAsync(Guid storeId)
     {
-        return _dataService.Stores.GetStoreBonusBalanceAsync(storeId);
+        return await _dataService.Stores.GetStoreBonusBalanceAsync(storeId);
+    }
+
+    public async Task<decimal> GetStoreBonusBalanceByUserIdAsync(Guid userId)
+    {
+        var storeBySeller = await _dataService.Stores.GetStoreBySellerIdAsync(userId);
+        
+        return await GetStoreBonusBalanceAsync(storeBySeller.Id);
     }
 
     /// <summary>
@@ -237,7 +244,7 @@ public class SellerBffService : BaseBffService, ISellerBffService
         var store = await _dataService.Stores.GetByIdAsync(storeId);
         if (store == null)
         {
-            return Enumerable.Empty<StoreBonusTransactionsDto>();
+            return [];
         }
 
         var transactions = await _dataService.Transactions.GetTransactionsByStoreIdAsync(storeId);
@@ -251,6 +258,17 @@ public class SellerBffService : BaseBffService, ISellerBffService
             Transactions = transactions.OrderByDescending(t => t.Timestamp).ToList()
         };
 
-        return new[] { result };
+        return [result];
+    }
+
+    public async Task<IEnumerable<StoreBonusTransactionsDto>> GetStoreBonusTransactionsByUserIdAsync(Guid userId)
+    {
+        var store = await _dataService.Stores.GetStoreBySellerIdAsync(userId);
+        if (store == null)
+        {
+            return [];
+        }
+
+        return await GetStoreBonusTransactionsAsync(store.Id);
     }
 }
