@@ -55,7 +55,7 @@ internal class StoreSeedData
             // FreshFoods Stores
             new StoreEntity
             {
-                Id = Guid.Parse("GGGGGGGG-GGGG-GGGG-GGGG-GGGGGGGGGGGG"),
+                Id = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAB"),
                 CompanyId = Guid.Parse("CCCCCCCC-CCCC-CCCC-CCCC-CCCCCCCCCCCC"),
                 Name = "FreshFoods Market Central",
                 Location = "Central District",

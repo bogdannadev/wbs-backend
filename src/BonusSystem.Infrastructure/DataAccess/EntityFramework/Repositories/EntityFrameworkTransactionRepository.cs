@@ -321,50 +321,62 @@ public class EntityFrameworkTransactionRepository : ITransactionRepository
 
     public async Task ProcessExpirationAsync(DateTime expirationDate)
     {
-        using var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
-            // Get all users with positive bonus balance
-            var usersWithBonus = await _dbContext.Users
-                .Where(u => u.BonusBalance > 0)
-                .ToListAsync();
+            var strategy = _dbContext.Database.CreateExecutionStrategy();
             
-            foreach (var user in usersWithBonus)
+            await strategy.ExecuteAsync(async () =>
             {
-                // Create an expiration transaction
-                var expirationTransaction = new BonusTransactionEntity
+                using var transaction = await _dbContext.Database.BeginTransactionAsync();
+                try
                 {
-                    Id = Guid.NewGuid(),
-                    UserId = user.Id,
-                    Amount = user.BonusBalance,
-                    Type = TransactionType.Expire,
-                    Status = TransactionStatus.Completed,
-                    Timestamp = expirationDate,
-                    Description = "Quarterly bonus expiration"
-                };
-                
-                // Add the expiration transaction
-                await _dbContext.BonusTransactions.AddAsync(expirationTransaction);
-                
-                // Reset user's balance to 0
-                user.BonusBalance = 0;
-            }
-            
-            // Get all companies
-            var companies = await _dbContext.Companies.ToListAsync();
-            
-            foreach (var company in companies)
-            {
-                // Reset company balance to original
-                company.BonusBalance = company.OriginalBonusBalance;
-            }
-            
-            await _dbContext.SaveChangesAsync();
-            await transaction.CommitAsync();
+                    // Get all users with positive bonus balance
+                    var usersWithBonus = await _dbContext.Users
+                        .Where(u => u.BonusBalance > 0)
+                        .ToListAsync();
+                    
+                    foreach (var user in usersWithBonus)
+                    {
+                        // Create an expiration transaction
+                        var expirationTransaction = new BonusTransactionEntity
+                        {
+                            Id = Guid.NewGuid(),
+                            UserId = user.Id,
+                            Amount = user.BonusBalance,
+                            Type = TransactionType.Expire,
+                            Status = TransactionStatus.Completed,
+                            Timestamp = expirationDate,
+                            Description = "Quarterly bonus expiration"
+                        };
+                        
+                        // Add the expiration transaction
+                        await _dbContext.BonusTransactions.AddAsync(expirationTransaction);
+                        
+                        // Reset user's balance to 0
+                        user.BonusBalance = 0;
+                    }
+                    
+                    // Get all companies
+                    var companies = await _dbContext.Companies.ToListAsync();
+                    
+                    foreach (var company in companies)
+                    {
+                        // Reset company balance to original
+                        company.BonusBalance = company.OriginalBonusBalance;
+                    }
+                    
+                    await _dbContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            });
         }
         catch (Exception ex)
         {
-            await transaction.RollbackAsync();
             _logger.LogError(ex, "Error processing bonus expiration for date {ExpirationDate}", expirationDate);
             throw;
         }

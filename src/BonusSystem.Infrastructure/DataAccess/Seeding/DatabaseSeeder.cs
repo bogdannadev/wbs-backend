@@ -28,18 +28,32 @@ public class DatabaseSeeder
             
             _logger.LogInformation("Starting database seeding...");
             
-            // Seed data in transaction
-            using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            // Create an execution strategy to handle retries properly
+            var strategy = _dbContext.Database.CreateExecutionStrategy();
             
-            await _dbContext.Users.AddRangeAsync(UserSeedData.GetUsers());
-            await _dbContext.Companies.AddRangeAsync(CompanySeedData.GetCompanies());
-            await _dbContext.Stores.AddRangeAsync(StoreSeedData.GetStores());
-            await _dbContext.StoreSellerAssignments.AddRangeAsync(StoreAssignmentSeedData.GetStoreSellers());
-            await _dbContext.BonusTransactions.AddRangeAsync(TransactionSeedData.GetTransactions());
+            await strategy.ExecuteAsync(async () =>
+            {
+                // Seed data in transaction
+                using var transaction = await _dbContext.Database.BeginTransactionAsync();
+                try
+                {
+                    await _dbContext.Users.AddRangeAsync(UserSeedData.GetUsers());
+                    await _dbContext.Companies.AddRangeAsync(CompanySeedData.GetCompanies());
+                    await _dbContext.Stores.AddRangeAsync(StoreSeedData.GetStores());
+                    await _dbContext.StoreSellerAssignments.AddRangeAsync(StoreAssignmentSeedData.GetStoreSellers());
+                    await _dbContext.BonusTransactions.AddRangeAsync(TransactionSeedData.GetTransactions());
 
-            await _dbContext.SaveChangesAsync();
+                    await _dbContext.SaveChangesAsync();
+                    
+                    await transaction.CommitAsync();
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            });
             
-            await transaction.CommitAsync();
             _logger.LogInformation("Database seeding completed successfully");
         }
         catch (Exception e)

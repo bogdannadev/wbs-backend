@@ -87,28 +87,40 @@ public class EntityFrameworkNotificationRepository : INotificationRepository
 
     public async Task<bool> SendBulkNotificationsAsync(IEnumerable<Guid> userIds, string message, NotificationType type)
     {
-        using var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
-            var notifications = userIds.Select(userId => new NotificationEntity
+            var strategy = _dbContext.Database.CreateExecutionStrategy();
+            
+            return await strategy.ExecuteAsync(async () =>
             {
-                Id = Guid.NewGuid(),
-                RecipientId = userId,
-                Message = message,
-                Type = type,
-                CreatedAt = DateTime.UtcNow,
-                IsRead = false
+                using var transaction = await _dbContext.Database.BeginTransactionAsync();
+                try
+                {
+                    var notifications = userIds.Select(userId => new NotificationEntity
+                    {
+                        Id = Guid.NewGuid(),
+                        RecipientId = userId,
+                        Message = message,
+                        Type = type,
+                        CreatedAt = DateTime.UtcNow,
+                        IsRead = false
+                    });
+
+                    await _dbContext.Notifications.AddRangeAsync(notifications);
+                    await _dbContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    return true;
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
             });
-
-            await _dbContext.Notifications.AddRangeAsync(notifications);
-            await _dbContext.SaveChangesAsync();
-            await transaction.CommitAsync();
-
-            return true;
         }
         catch (Exception ex)
         {
-            await transaction.RollbackAsync();
             _logger.LogError(ex, "Error sending bulk notifications to {UserCount} users", userIds.Count());
             throw;
         }
@@ -116,35 +128,47 @@ public class EntityFrameworkNotificationRepository : INotificationRepository
 
     public async Task<bool> SendNotificationToRoleAsync(UserRole role, string message, NotificationType type)
     {
-        using var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
-            // Find all users with the specified role
-            var userIds = await _dbContext.Users.AsNoTracking()
-                .Where(u => u.Role == role)
-                .Select(u => u.Id)
-                .ToListAsync();
-
-            // Create notifications for each user
-            var notifications = userIds.Select(userId => new NotificationEntity
+            var strategy = _dbContext.Database.CreateExecutionStrategy();
+            
+            return await strategy.ExecuteAsync(async () =>
             {
-                Id = Guid.NewGuid(),
-                RecipientId = userId,
-                Message = message,
-                Type = type,
-                CreatedAt = DateTime.UtcNow,
-                IsRead = false
+                using var transaction = await _dbContext.Database.BeginTransactionAsync();
+                try
+                {
+                    // Find all users with the specified role
+                    var userIds = await _dbContext.Users.AsNoTracking()
+                        .Where(u => u.Role == role)
+                        .Select(u => u.Id)
+                        .ToListAsync();
+
+                    // Create notifications for each user
+                    var notifications = userIds.Select(userId => new NotificationEntity
+                    {
+                        Id = Guid.NewGuid(),
+                        RecipientId = userId,
+                        Message = message,
+                        Type = type,
+                        CreatedAt = DateTime.UtcNow,
+                        IsRead = false
+                    });
+
+                    await _dbContext.Notifications.AddRangeAsync(notifications);
+                    await _dbContext.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    return true;
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
             });
-
-            await _dbContext.Notifications.AddRangeAsync(notifications);
-            await _dbContext.SaveChangesAsync();
-            await transaction.CommitAsync();
-
-            return true;
         }
         catch (Exception ex)
         {
-            await transaction.RollbackAsync();
             _logger.LogError(ex, "Error sending notifications to users with role {Role}", role);
             throw;
         }
