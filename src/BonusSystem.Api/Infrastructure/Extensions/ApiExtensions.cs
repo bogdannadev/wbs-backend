@@ -8,6 +8,7 @@ using BonusSystem.Core.Services.Interfaces;
 using BonusSystem.Infrastructure.Auth;
 using BonusSystem.Infrastructure.DataAccess;
 using BonusSystem.Infrastructure.DataAccess.EntityFramework;
+using BonusSystem.Infrastructure.DataAccess.Seeding;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -48,6 +49,9 @@ public static class ApiExtensions
 
         // Register authentication service
         services.AddScoped<IAuthenticationService, JwtAuthenticationService>();
+        
+        // Register DataSeeder
+        services.AddScoped<DatabaseSeeder>();
 
         // Register BFF services
         services.AddScoped<IBuyerBffService, BuyerBffService>();
@@ -92,7 +96,9 @@ public static class ApiExtensions
                     logger.LogInformation("Database migrations applied successfully");
                 }
 
-                
+                var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+                seeder.SeedAsync().Wait();
+
             }
             catch (Exception e)
             {
