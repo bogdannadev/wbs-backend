@@ -10,7 +10,11 @@ public class BonusTransactionEntityConfiguration : IEntityTypeConfiguration<Bonu
     {
         builder.ToTable("transactions");
 
-        builder.Property(t => t.Amount)
+        builder.Property(t => t.BonusAmount)
+            .HasPrecision(18, 2)
+            .IsRequired();
+
+        builder.Property(t => t.TotalCost)
             .HasPrecision(18, 2)
             .IsRequired();
 
