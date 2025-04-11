@@ -48,11 +48,11 @@ public class BuyerBffService : BaseBffService, IBuyerBffService
         // Calculate earned and spent amounts
         var earned = transactions
             .Where(t => t.Type == TransactionType.Earn && t.Status == TransactionStatus.Completed)
-            .Sum(t => t.Amount);
+            .Sum(t => t.BonusAmount);
 
         var spent = transactions
             .Where(t => t.Type == TransactionType.Spend && t.Status == TransactionStatus.Completed)
-            .Sum(t => t.Amount);
+            .Sum(t => t.BonusAmount);
 
         // Get current user balance
         var user = await _dataService.Users.GetByIdAsync(userId);
@@ -132,12 +132,12 @@ public class BuyerBffService : BaseBffService, IBuyerBffService
         if (transaction.Type == TransactionType.Earn)
         {
             // If it was an earn transaction, subtract the amount
-            newBalance -= transaction.Amount;
+            newBalance -= transaction.BonusAmount;
         }
         else if (transaction.Type == TransactionType.Spend)
         {
             // If it was a spend transaction, add the amount back
-            newBalance += transaction.Amount;
+            newBalance += transaction.BonusAmount;
         }
 
         await _dataService.Users.UpdateBalanceAsync(userId, newBalance);

@@ -8,7 +8,8 @@ public record TransactionDto
     public Guid? UserId { get; init; }
     public Guid? CompanyId { get; init; }
     public Guid? StoreId { get; init; }
-    public decimal Amount { get; init; }
+    public decimal BonusAmount { get; init; }
+    public decimal TotalCost { get; init; }
     public TransactionType Type { get; init; }
     public DateTime Timestamp { get; init; }
     public TransactionStatus Status { get; init; }
@@ -18,7 +19,8 @@ public record TransactionDto
 public record TransactionRequestDto
 {
     public Guid BuyerId { get; init; }
-    public decimal Amount { get; init; }
+    public decimal BonusAmount { get; init; }
+    public decimal TotalCost { get; set; }
     public TransactionType Type { get; init; }
     
 }

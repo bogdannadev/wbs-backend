@@ -114,7 +114,8 @@ public class AdminBffService : BaseBffService, IAdminBffService
             {
                 Id = Guid.NewGuid(),
                 CompanyId = companyId,
-                Amount = amount,
+                BonusAmount = amount,
+                TotalCost = 0.00m,
                 Type = TransactionType.AdminAdjustment,
                 Timestamp = DateTime.UtcNow,
                 Status = TransactionStatus.Completed,

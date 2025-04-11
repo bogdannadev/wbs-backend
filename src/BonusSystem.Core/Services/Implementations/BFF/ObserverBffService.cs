@@ -72,7 +72,7 @@ public class ObserverBffService : BaseBffService, IObserverBffService
         if (query.CompanyId.HasValue)
         {
             var companyTransactions = await _dataService.Transactions.GetTransactionsByCompanyIdAsync(query.CompanyId.Value);
-            totalBonusCirculation = companyTransactions.Sum(t => t.Type == TransactionType.Earn ? t.Amount : -t.Amount);
+            totalBonusCirculation = companyTransactions.Sum(t => t.Type == TransactionType.Earn ? t.BonusAmount : -t.BonusAmount);
             totalTransactions = companyTransactions.Count();
 
             var companyStores = await _dataService.Stores.GetStoresByCompanyIdAsync(query.CompanyId.Value);
@@ -113,7 +113,7 @@ public class ObserverBffService : BaseBffService, IObserverBffService
         return new TransactionDto
         {
             Id = Guid.Empty,
-            Amount = transactions.Sum(t => t.Type == TransactionType.Earn ? t.Amount : -t.Amount),
+            BonusAmount = transactions.Sum(t => t.Type == TransactionType.Earn ? t.BonusAmount : -t.BonusAmount),
             Type = TransactionType.AdminAdjustment,
             Timestamp = DateTime.UtcNow,
             Status = TransactionStatus.Completed,

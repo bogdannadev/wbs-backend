@@ -16,7 +16,8 @@ internal class TransactionSeedData
                 UserId = Guid.Parse("66666666-6666-6666-6666-666666666666"), // customer1
                 CompanyId = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"), // MegaMart
                 StoreId = Guid.Parse("DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD"), // MegaMart Downtown
-                Amount = 500.00m,
+                BonusAmount = 500.00m,
+                TotalCost = 1500.00m,
                 Type = TransactionType.Earn,
                 Timestamp = DateTime.UtcNow.AddDays(-7),
                 Status = TransactionStatus.Completed,
@@ -28,7 +29,8 @@ internal class TransactionSeedData
                 UserId = Guid.Parse("66666666-6666-6666-6666-666666666666"), // customer1
                 CompanyId = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"), // MegaMart
                 StoreId = Guid.Parse("DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD"), // MegaMart Downtown
-                Amount = 250.00m,
+                BonusAmount = 250.00m,
+                TotalCost = 1250.00m,
                 Type = TransactionType.Earn,
                 Timestamp = DateTime.UtcNow.AddDays(-5),
                 Status = TransactionStatus.Completed,
@@ -40,7 +42,8 @@ internal class TransactionSeedData
                 UserId = Guid.Parse("66666666-6666-6666-6666-666666666666"), // customer1
                 CompanyId = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"), // MegaMart
                 StoreId = Guid.Parse("DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD"), // MegaMart Downtown
-                Amount = 200.00m,
+                BonusAmount = 200.00m,
+                TotalCost = 1200.00m,
                 Type = TransactionType.Spend,
                 Timestamp = DateTime.UtcNow.AddDays(-2),
                 Status = TransactionStatus.Completed,
@@ -54,7 +57,8 @@ internal class TransactionSeedData
                 UserId = Guid.Parse("77777777-7777-7777-7777-777777777777"), // customer2
                 CompanyId = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"), // MegaMart
                 StoreId = Guid.Parse("EEEEEEEE-EEEE-EEEE-EEEE-EEEEEEEEEEEE"), // MegaMart Uptown
-                Amount = 350.00m,
+                BonusAmount = 350.00m,
+                TotalCost = 1350.00m,
                 Type = TransactionType.Earn,
                 Timestamp = DateTime.UtcNow.AddDays(-6),
                 Status = TransactionStatus.Completed,
@@ -66,7 +70,8 @@ internal class TransactionSeedData
                 UserId = Guid.Parse("77777777-7777-7777-7777-777777777777"), // customer2
                 CompanyId = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"), // MegaMart
                 StoreId = Guid.Parse("EEEEEEEE-EEEE-EEEE-EEEE-EEEEEEEEEEEE"), // MegaMart Uptown
-                Amount = 150.00m,
+                BonusAmount = 150.00m,
+                TotalCost = 1150.00m,
                 Type = TransactionType.Earn,
                 Timestamp = DateTime.UtcNow.AddDays(-4),
                 Status = TransactionStatus.Completed,
@@ -78,7 +83,8 @@ internal class TransactionSeedData
                 UserId = Guid.Parse("77777777-7777-7777-7777-777777777777"), // customer2
                 CompanyId = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"), // MegaMart
                 StoreId = Guid.Parse("EEEEEEEE-EEEE-EEEE-EEEE-EEEEEEEEEEEE"), // MegaMart Uptown
-                Amount = 100.00m,
+                BonusAmount = 100.00m,
+                TotalCost = 1100.00m,
                 Type = TransactionType.Spend,
                 Timestamp = DateTime.UtcNow.AddDays(-1),
                 Status = TransactionStatus.Completed,
@@ -92,7 +98,8 @@ internal class TransactionSeedData
                 UserId = Guid.Parse("88888888-8888-8888-8888-888888888888"), // customer3
                 CompanyId = Guid.Parse("BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB"), // TechHaven
                 StoreId = Guid.Parse("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF"), // TechHaven Mall
-                Amount = 1500.00m,
+                BonusAmount = 1500.00m,
+                TotalCost = 2500.00m,
                 Type = TransactionType.Earn,
                 Timestamp = DateTime.UtcNow.AddDays(-3),
                 Status = TransactionStatus.Completed,
@@ -104,7 +111,8 @@ internal class TransactionSeedData
                 UserId = Guid.Parse("88888888-8888-8888-8888-888888888888"), // customer3
                 CompanyId = Guid.Parse("BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB"), // TechHaven
                 StoreId = Guid.Parse("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF"), // TechHaven Mall
-                Amount = 200.00m,
+                BonusAmount = 200.00m,
+                TotalCost = 1200.00m,
                 Type = TransactionType.Earn,
                 Timestamp = DateTime.UtcNow.AddDays(-2),
                 Status = TransactionStatus.Completed,
@@ -116,7 +124,8 @@ internal class TransactionSeedData
                 UserId = Guid.Parse("88888888-8888-8888-8888-888888888888"), // customer3
                 CompanyId = Guid.Parse("BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB"), // TechHaven
                 StoreId = Guid.Parse("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF"), // TechHaven Mall
-                Amount = 300.00m,
+                BonusAmount = 300.00m,
+                TotalCost = 1300.00m,
                 Type = TransactionType.Spend,
                 Timestamp = DateTime.UtcNow.AddDays(-1).AddHours(-6),
                 Status = TransactionStatus.Completed,

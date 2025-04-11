@@ -238,7 +238,7 @@ public class EntityFrameworkCompanyRepository : ICompanyRepository
                 // Get transaction volume - this is a more complex calculation
                 var transactionVolume = await _dbContext.BonusTransactions
                     .Where(t => t.CompanyId == company.Id && t.Status == TransactionStatus.Completed)
-                    .SumAsync(t => t.Amount);
+                    .SumAsync(t => t.BonusAmount);
 
                 summaries.Add(new CompanySummaryDto
                 {

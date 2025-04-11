@@ -8,7 +8,8 @@ public class BonusTransactionEntity
     public Guid? UserId { get; set; }
     public Guid? CompanyId { get; set; }
     public Guid? StoreId { get; set; }
-    public decimal Amount { get; set; }
+    public decimal BonusAmount { get; set; }
+    public decimal TotalCost { get; set; }
     public TransactionType Type { get; set; }
     public DateTime Timestamp { get; set; }
     public TransactionStatus Status { get; set; }

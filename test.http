@@ -21,8 +21,8 @@
 #@baseUrl = http://62.113.59.109:5001
 
 # Authentication Tokens (to be updated after login)
-@buyerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI2NjY2NjY2Ni02NjY2LTY2NjYtNjY2Ni02NjY2NjY2NjY2NjYiLCJyb2xlIjoiQnV5ZXIiLCJuYmYiOjE3NDM4NzgyMzAsImV4cCI6MTc3NTQxNDIzMCwiaWF0IjoxNzQzODc4MjMwfQ.HPMHAVbkesaa70xQixko2iufNZRcjbSJtAx3xfzFsNg
-@sellerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtNDQ0NC00NDQ0NDQ0NDQ0NDQiLCJyb2xlIjoiU2VsbGVyIiwibmJmIjoxNzQzODc4MjQyLCJleHAiOjE3NzU0MTQyNDIsImlhdCI6MTc0Mzg3ODI0Mn0.Ql4mxKsjow0M6RnOlvBDP6tErJASmVwREDMLXHrpAKo
+@buyerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI2NjY2NjY2Ni02NjY2LTY2NjYtNjY2Ni02NjY2NjY2NjY2NjYiLCJyb2xlIjoiQnV5ZXIiLCJuYmYiOjE3NDQzNzE3MzIsImV4cCI6MTc3NTkwNzczMiwiaWF0IjoxNzQ0MzcxNzMyfQ.6MPFSfSJA-ZZ3rGepg0T30xMJ1HBNE0EfU3kM5X_6U8
+@sellerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtNDQ0NC00NDQ0NDQ0NDQ0NDQiLCJyb2xlIjoiU2VsbGVyIiwibmJmIjoxNzQ0MzcxNjc1LCJleHAiOjE3NzU5MDc2NzUsImlhdCI6MTc0NDM3MTY3NX0.HT9wxtncmzyjDZE2PsjUyScugW5QtAWdL9NMs0305QU
 @adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxMTExMTExMS0xMTExLTExMTEtMTExMS0xMTExMTExMTExMTEiLCJyb2xlIjoiU3lzdGVtQWRtaW4iLCJuYmYiOjE3NDM4NzgyNjQsImV4cCI6MTc3NTQxNDI2NCwiaWF0IjoxNzQzODc4MjY0fQ.NRxNuI7Un6m7hOO4DDIAVcejEhKiTUKJHNbr3Nb4IRI
 @observerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyMjIyMjIyMi0yMjIyLTIyMjItMjIyMi0yMjIyMjIyMjIyMjIiLCJyb2xlIjoiQ29tcGFueU9ic2VydmVyIiwibmJmIjoxNzQzODc4Mjc4LCJleHAiOjE3NzU0MTQyNzgsImlhdCI6MTc0Mzg3ODI3OH0.q7-qXJwW1OxxUqoHtLu91N3iTqh3lswM266Kbr6q-do
 
@@ -132,7 +132,8 @@ Accept: application/json
 
 {
     "buyerId": "66666666-6666-6666-6666-666666666666",
-    "amount": 150,
+    "bonusAmount": 150,
+    "totalCost": 1000,
     "type": 0
 }
 
@@ -146,7 +147,8 @@ Accept: application/json
 
 {
     "buyerId": "66666666-6666-6666-6666-666666666666",
-    "amount": 50,
+    "bonusAmount": 50,
+    "totalCost": 1000,
     "type": 1
 }
 
@@ -315,7 +317,8 @@ Accept: application/json
 
 {
     "buyerId": "66666666-6666-6666-6666-666666666666",
-    "amount": 200,
+    "totalCost": 1000,
+    "bonusAmount": 200,
     "type": 0
 }
 
@@ -329,7 +332,8 @@ Accept: application/json
 
 {
     "buyerId": "66666666-6666-6666-6666-666666666666",
-    "amount": 75,
+    "totalCost": 1000,
+    "bonusAmount": 75,
     "type": 1
 }
 
@@ -350,7 +354,8 @@ Accept: application/json
 
 {
     "buyerId": "77777777-7777-7777-7777-777777777777",
-    "amount": 150,
+    "bonusAmount": 150,
+    "totalCost": 1000,
     "type": 0
 }
 

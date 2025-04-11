@@ -3,6 +3,7 @@ using System;
 using BonusSystem.Infrastructure.DataAccess.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BonusSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(BonusSystemContext))]
-    partial class BonusSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20250411113032_Added_TotalCost_Property_in_TransactionEntity_Migration")]
+    partial class Added_TotalCost_Property_in_TransactionEntity_Migration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
