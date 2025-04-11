@@ -6,12 +6,6 @@
 - `docker-compose up -d` - Start the Docker environment with API, PostgreSQL and pgAdmin
 - `docker-compose build api` - Rebuild the API container
 
-## Test Commands
-- `dotnet test tests/BonusSystem.Tests.sln` - Run all tests
-- `dotnet test tests/BonusSystem.Api.Tests` - Run only API tests
-- `dotnet test --filter "FullyQualifiedName=Namespace.TestClass.TestMethod"` - Run a specific test
-- `dotnet test tests/BonusSystem.Tests.sln --collect:"XPlat Code Coverage"` - Run tests with coverage
-
 ## Naming Conventions
 - **Interfaces**: Prefix with "I" (e.g., `IUserRepository`)
 - **DTOs**: Suffix with "Dto" (e.g., `UserDto`, `TransactionDto`)
