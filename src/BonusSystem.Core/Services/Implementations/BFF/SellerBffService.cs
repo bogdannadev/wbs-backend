@@ -77,7 +77,7 @@ public class SellerBffService : BaseBffService, ISellerBffService
         }
 
         // For spend transactions, check if buyer has enough balance
-        if (request.Type == TransactionType.Spend && buyer.BonusBalance < request.Amount)
+        if (request.Type == TransactionType.Spend && buyer.BonusBalance < request.BonusAmount)
         {
             return new TransactionResultDto
             {
@@ -93,7 +93,8 @@ public class SellerBffService : BaseBffService, ISellerBffService
             UserId = request.BuyerId,
             CompanyId = store.CompanyId,
             StoreId = store.Id,
-            Amount = request.Amount,
+            BonusAmount = request.BonusAmount,
+            TotalCost = request.TotalCost,
             Type = request.Type,
             Timestamp = DateTime.UtcNow,
             Status = TransactionStatus.Completed,
@@ -107,11 +108,11 @@ public class SellerBffService : BaseBffService, ISellerBffService
         decimal newBuyerBalance = buyer.BonusBalance;
         if (request.Type == TransactionType.Earn)
         {
-            newBuyerBalance += request.Amount;
+            newBuyerBalance += request.BonusAmount;
         }
         else if (request.Type == TransactionType.Spend)
         {
-            newBuyerBalance -= request.Amount;
+            newBuyerBalance -= request.BonusAmount;
         }
 
         await _dataService.Users.UpdateBalanceAsync(buyer.Id, newBuyerBalance);
@@ -123,11 +124,11 @@ public class SellerBffService : BaseBffService, ISellerBffService
             decimal newCompanyBalance = company.BonusBalance;
             if (request.Type == TransactionType.Earn)
             {
-                newCompanyBalance -= request.Amount;
+                newCompanyBalance -= request.BonusAmount;
             }
             else if (request.Type == TransactionType.Spend)
             {
-                newCompanyBalance += request.Amount;
+                newCompanyBalance += request.BonusAmount;
             }
 
             await _dataService.Companies.UpdateBalanceAsync(company.Id, newCompanyBalance);
@@ -178,11 +179,11 @@ public class SellerBffService : BaseBffService, ISellerBffService
                 decimal newBalance = buyer.BonusBalance;
                 if (transaction.Type == TransactionType.Earn)
                 {
-                    newBalance -= transaction.Amount;
+                    newBalance -= transaction.BonusAmount;
                 }
                 else if (transaction.Type == TransactionType.Spend)
                 {
-                    newBalance += transaction.Amount;
+                    newBalance += transaction.BonusAmount;
                 }
 
                 await _dataService.Users.UpdateBalanceAsync(buyer.Id, newBalance);
@@ -198,11 +199,11 @@ public class SellerBffService : BaseBffService, ISellerBffService
                 decimal newBalance = company.BonusBalance;
                 if (transaction.Type == TransactionType.Earn)
                 {
-                    newBalance += transaction.Amount;
+                    newBalance += transaction.BonusAmount;
                 }
                 else if (transaction.Type == TransactionType.Spend)
                 {
-                    newBalance -= transaction.Amount;
+                    newBalance -= transaction.BonusAmount;
                 }
 
                 await _dataService.Companies.UpdateBalanceAsync(company.Id, newBalance);
@@ -248,7 +249,7 @@ public class SellerBffService : BaseBffService, ISellerBffService
         }
 
         var transactions = await _dataService.Transactions.GetTransactionsByStoreIdAsync(storeId);
-        var totalAmount = transactions.Sum(t => t.Amount);
+        var totalAmount = transactions.Sum(t => t.BonusAmount);
 
         var result = new StoreBonusTransactionsDto
         {
