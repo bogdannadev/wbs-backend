@@ -294,7 +294,7 @@ public class EntityFrameworkStoreRepository : IStoreRepository
             // Sum all completed transactions for this store
             var transactionsSum = await _dbContext.BonusTransactions
                 .Where(t => t.StoreId == storeId && t.Status == TransactionStatus.Completed)
-                .SumAsync(t => t.Type == TransactionType.Earn ? t.Amount : -t.Amount);
+                .SumAsync(t => t.Type == TransactionType.Earn ? t.BonusAmount : -t.BonusAmount);
 
             return transactionsSum;
         }
