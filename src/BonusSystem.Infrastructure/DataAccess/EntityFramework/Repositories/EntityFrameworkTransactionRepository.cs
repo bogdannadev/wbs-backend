@@ -76,7 +76,8 @@ public class EntityFrameworkTransactionRepository : ITransactionRepository
                 return false;
             }
 
-            entity.Amount = dto.Amount;
+            entity.TotalCost = dto.TotalCost;
+            entity.BonusAmount = dto.BonusAmount;
             entity.Type = dto.Type;
             entity.Status = dto.Status;
             entity.Description = dto.Description;
@@ -234,12 +235,12 @@ public class EntityFrameworkTransactionRepository : ITransactionRepository
             // Sum of all Earn transactions
             var totalEarned = await _dbContext.BonusTransactions.AsNoTracking()
                 .Where(t => t.Type == TransactionType.Earn && t.Status == TransactionStatus.Completed)
-                .SumAsync(t => t.Amount);
+                .SumAsync(t => t.BonusAmount);
             
             // Sum of all Spend transactions
             var totalSpent = await _dbContext.BonusTransactions.AsNoTracking()
                 .Where(t => t.Type == TransactionType.Spend && t.Status == TransactionStatus.Completed)
-                .SumAsync(t => t.Amount);
+                .SumAsync(t => t.BonusAmount);
             
             // Total circulation is Earned + Spent
             return totalEarned + totalSpent;
@@ -342,7 +343,7 @@ public class EntityFrameworkTransactionRepository : ITransactionRepository
                         {
                             Id = Guid.NewGuid(),
                             UserId = user.Id,
-                            Amount = user.BonusBalance,
+                            BonusAmount = user.BonusBalance,
                             Type = TransactionType.Expire,
                             Status = TransactionStatus.Completed,
                             Timestamp = expirationDate,
@@ -390,7 +391,8 @@ public class EntityFrameworkTransactionRepository : ITransactionRepository
             UserId = entity.UserId,
             CompanyId = entity.CompanyId,
             StoreId = entity.StoreId,
-            Amount = entity.Amount,
+            TotalCost = entity.TotalCost,
+            BonusAmount = entity.BonusAmount,
             Type = entity.Type,
             Timestamp = entity.Timestamp,
             Status = entity.Status,
@@ -406,7 +408,8 @@ public class EntityFrameworkTransactionRepository : ITransactionRepository
             UserId = dto.UserId,
             CompanyId = dto.CompanyId,
             StoreId = dto.StoreId,
-            Amount = dto.Amount,
+            TotalCost = dto.TotalCost,
+            BonusAmount = dto.BonusAmount,
             Type = dto.Type,
             Timestamp = dto.Timestamp,
             Status = dto.Status,
