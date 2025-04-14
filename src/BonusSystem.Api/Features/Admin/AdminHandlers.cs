@@ -192,6 +192,27 @@ public static class AdminHandlers
         }
     }
 
+    public static async Task<IResult> GetTransactionFeeReport(
+        HttpContext httpContext,
+        TransactionFeeRequest request,
+        IAdminBffService adminBffService)
+    {
+        var userId = GetUserIdFromContext(httpContext);
+        if (userId == null)
+        {
+            return Results.Unauthorized();
+        }
+
+        try
+        {
+            return Results.Ok(await adminBffService.GetTransactionFeesAsync(request));
+        }
+        catch (Exception e)
+        {
+            return Results.Problem($"Error at fee calculation query: {e.Message}");
+        }
+    }
+
     private static Guid? GetUserIdFromContext(HttpContext httpContext)
     {
         var userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
