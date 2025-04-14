@@ -11,4 +11,5 @@ public interface IAdminBffService : IBaseBffService
     Task<bool> CreditCompanyBalanceAsync(Guid companyId, decimal amount);
     Task<IEnumerable<TransactionDto>> GetSystemTransactionsAsync(Guid? companyId = null, DateTime? startDate = null, DateTime? endDate = null);
     Task<bool> SendSystemNotificationAsync(Guid? recipientId, string message, NotificationType type);
+    Task<List<CompanyFeeResult>> GetTransactionFeesAsync(TransactionFeeRequest request);
 }

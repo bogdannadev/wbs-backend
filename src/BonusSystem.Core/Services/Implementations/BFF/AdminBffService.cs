@@ -1,5 +1,3 @@
-using System.Text;
-using BonusSystem.Core.Repositories;
 using BonusSystem.Core.Services.Interfaces;
 using BonusSystem.Shared.Dtos;
 using BonusSystem.Shared.Models;
@@ -13,7 +11,7 @@ public class AdminBffService : BaseBffService, IAdminBffService
 {
     public AdminBffService(
         IDataService dataService,
-        IAuthenticationService authService) 
+        IAuthenticationService authService)
         : base(dataService, authService)
     {
     }
@@ -31,12 +29,36 @@ public class AdminBffService : BaseBffService, IAdminBffService
 
         return new List<PermittedActionDto>
         {
-            new() { ActionName = "RegisterCompany", Description = "Register a new company", Endpoint = "/api/admin/companies" },
-            new() { ActionName = "UpdateCompanyStatus", Description = "Update company status", Endpoint = "/api/admin/companies/{id}/status" },
-            new() { ActionName = "ModerateStore", Description = "Moderate a store", Endpoint = "/api/admin/stores/{id}/moderate" },
-            new() { ActionName = "CreditCompanyBalance", Description = "Credit company balance", Endpoint = "/api/admin/companies/{id}/credit" },
-            new() { ActionName = "GetSystemTransactions", Description = "Get system transactions", Endpoint = "/api/admin/transactions" },
-            new() { ActionName = "SendNotification", Description = "Send system notification", Endpoint = "/api/admin/notifications" }
+            new()
+            {
+                ActionName = "RegisterCompany", Description = "Register a new company",
+                Endpoint = "/api/admin/companies"
+            },
+            new()
+            {
+                ActionName = "UpdateCompanyStatus", Description = "Update company status",
+                Endpoint = "/api/admin/companies/{id}/status"
+            },
+            new()
+            {
+                ActionName = "ModerateStore", Description = "Moderate a store",
+                Endpoint = "/api/admin/stores/{id}/moderate"
+            },
+            new()
+            {
+                ActionName = "CreditCompanyBalance", Description = "Credit company balance",
+                Endpoint = "/api/admin/companies/{id}/credit"
+            },
+            new()
+            {
+                ActionName = "GetSystemTransactions", Description = "Get system transactions",
+                Endpoint = "/api/admin/transactions"
+            },
+            new()
+            {
+                ActionName = "SendNotification", Description = "Send system notification",
+                Endpoint = "/api/admin/notifications"
+            }
         };
     }
 
@@ -138,7 +160,8 @@ public class AdminBffService : BaseBffService, IAdminBffService
     /// <summary>
     /// Gets system transactions
     /// </summary>
-    public async Task<IEnumerable<TransactionDto>> GetSystemTransactionsAsync(Guid? companyId = null, DateTime? startDate = null, DateTime? endDate = null)
+    public async Task<IEnumerable<TransactionDto>> GetSystemTransactionsAsync(Guid? companyId = null,
+        DateTime? startDate = null, DateTime? endDate = null)
     {
         IEnumerable<TransactionDto> transactions;
 
@@ -187,5 +210,29 @@ public class AdminBffService : BaseBffService, IAdminBffService
 
             return await _dataService.Notifications.SendNotificationToRoleAsync(targetRole, message, type);
         }
+    }
+
+    public async Task<List<CompanyFeeResult>> GetTransactionFeesAsync(TransactionFeeRequest request)
+    {
+        var transactions = await _dataService.Transactions.GetAllAsync();
+
+        if (request.FromDate != null)
+            transactions = transactions.Where(t => t.Timestamp >= request.FromDate);
+
+        if (request.EndDate != null)
+            transactions = transactions.Where(t => t.Timestamp <= request.EndDate);
+
+
+        return transactions
+            .Where(t => t.CompanyId.HasValue)
+            .Where(t => t.Status == TransactionStatus.Completed)
+            .GroupBy(t => t.CompanyId!.Value)
+            .Select(g => new CompanyFeeResult
+            {
+                CompanyId = g.Key,
+                TotalTransactions = g.Count(),
+                TotalFee = g.Sum(t => t.TotalCost * request.FeePercent)
+            })
+            .ToList();
     }
 }

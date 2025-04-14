@@ -21,9 +21,9 @@
 #@baseUrl = http://62.113.59.109:5001
 
 # Authentication Tokens (to be updated after login)
-@buyerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI2NjY2NjY2Ni02NjY2LTY2NjYtNjY2Ni02NjY2NjY2NjY2NjYiLCJyb2xlIjoiQnV5ZXIiLCJuYmYiOjE3NDQzNzE3MzIsImV4cCI6MTc3NTkwNzczMiwiaWF0IjoxNzQ0MzcxNzMyfQ.6MPFSfSJA-ZZ3rGepg0T30xMJ1HBNE0EfU3kM5X_6U8
-@sellerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtNDQ0NC00NDQ0NDQ0NDQ0NDQiLCJyb2xlIjoiU2VsbGVyIiwibmJmIjoxNzQ0MzcxNjc1LCJleHAiOjE3NzU5MDc2NzUsImlhdCI6MTc0NDM3MTY3NX0.HT9wxtncmzyjDZE2PsjUyScugW5QtAWdL9NMs0305QU
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxMTExMTExMS0xMTExLTExMTEtMTExMS0xMTExMTExMTExMTEiLCJyb2xlIjoiU3lzdGVtQWRtaW4iLCJuYmYiOjE3NDM4NzgyNjQsImV4cCI6MTc3NTQxNDI2NCwiaWF0IjoxNzQzODc4MjY0fQ.NRxNuI7Un6m7hOO4DDIAVcejEhKiTUKJHNbr3Nb4IRI
+@buyerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI2NjY2NjY2Ni02NjY2LTY2NjYtNjY2Ni02NjY2NjY2NjY2NjYiLCJyb2xlIjoiQnV5ZXIiLCJuYmYiOjE3NDQzNzM4MjIsImV4cCI6MTc3NTkwOTgyMiwiaWF0IjoxNzQ0MzczODIyfQ.7zgyA_IsA6U9DqvsQr7fyMgAIY6R3IAc0N2lZgIlinc
+@sellerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtNDQ0NC00NDQ0NDQ0NDQ0NDQiLCJyb2xlIjoiU2VsbGVyIiwibmJmIjoxNzQ0MzczNjgyLCJleHAiOjE3NzU5MDk2ODIsImlhdCI6MTc0NDM3MzY4Mn0.8bC_Ryjzzc4uXyUvMXE1n75lk0yAmTfNf8wTba9m3iE
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxMTExMTExMS0xMTExLTExMTEtMTExMS0xMTExMTExMTExMTEiLCJyb2xlIjoiU3lzdGVtQWRtaW4iLCJuYmYiOjE3NDQ2NDkyNTIsImV4cCI6MTc3NjE4NTI1MiwiaWF0IjoxNzQ0NjQ5MjUyfQ.31X3SW7LDFfFipS3YvEodMl88fKs4uSm1LDF5f1YEas
 @observerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyMjIyMjIyMi0yMjIyLTIyMjItMjIyMi0yMjIyMjIyMjIyMjIiLCJyb2xlIjoiQ29tcGFueU9ic2VydmVyIiwibmJmIjoxNzQzODc4Mjc4LCJleHAiOjE3NzU0MTQyNzgsImlhdCI6MTc0Mzg3ODI3OH0.q7-qXJwW1OxxUqoHtLu91N3iTqh3lswM266Kbr6q-do
 
 ###############################################
@@ -176,6 +176,34 @@ Accept: application/json
 ###############################################
 # ADMIN OPERATIONS
 ###############################################
+
+# Fee calculations with null params
+POST {{baseUrl}}/api/admin/companies/transaction-fees
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "feePercent": 0.05,
+    "fromDate": null,
+    "endDate": null
+}
+
+###
+
+# Fee calculations with date params
+POST {{baseUrl}}/api/admin/companies/transaction-fees
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "feePercent": 0.05,
+  "fromDate": "2025-01-01T00:00:00Z",
+  "endDate": "2025-04-14T23:59:59Z"
+}
+
+###
 
 # Register New Company
 POST {{baseUrl}}/api/admin/companies

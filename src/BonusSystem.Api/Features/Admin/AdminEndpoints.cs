@@ -1,3 +1,4 @@
+using System.Numerics;
 using BonusSystem.Api.Infrastructure.Swagger;
 using BonusSystem.Core.Services.Interfaces;
 using BonusSystem.Shared.Models;
@@ -118,6 +119,25 @@ public static class AdminEndpoints
                 return operation;
             });
 
+        group.MapPost("/companies/transaction-fees", AdminHandlers.GetTransactionFeeReport)
+            .WithName("GetTransactionFeeReport")
+            .RequireAuthorization()
+            .WithOpenApi(operation =>
+            {
+                operation.Summary = "Get companies transaction fees";
+                operation.Description = "Allow to calculate the list of companies transaction fees based on all system COMPLETED transactions.\n\n"
+                    + "Path parameters:\n"
+                    + "- feePercent: transaction fee value\n\n"
+                    + "- fromDate: (optional) filtering by start date\n\n"
+                    + "- endDate: (optional) filtering by end date.";
+                
+                operation.EnsureResponse("200", "Fees calculated successfully");
+                operation.EnsureResponse("401", "Unauthorized");
+                operation.EnsureResponse("500", "Error at getting company fees");
+
+                return operation;
+            });
+        
         group.MapGet("/transactions", AdminHandlers.GetSystemTransactions)
             .WithName("GetSystemTransactions")
             .RequireAuthorization()
