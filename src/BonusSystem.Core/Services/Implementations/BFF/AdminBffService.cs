@@ -223,16 +223,37 @@ public class AdminBffService : BaseBffService, IAdminBffService
             transactions = transactions.Where(t => t.Timestamp <= request.EndDate);
 
 
-        return transactions
+        var groupedTransactions = transactions
             .Where(t => t.CompanyId.HasValue)
             .Where(t => t.Status == TransactionStatus.Completed)
             .GroupBy(t => t.CompanyId!.Value)
-            .Select(g => new CompanyFeeResult
+            .Select(g => new 
             {
                 CompanyId = g.Key,
                 TotalTransactions = g.Count(),
                 TotalFee = g.Sum(t => t.TotalCost * request.FeePercent)
             })
             .ToList();
+
+        var companyIds = groupedTransactions.Select(g => g.CompanyId).ToList();
+        var companies = (await _dataService.Companies.GetAllAsync())
+            .Where(c => companyIds.Contains(c.Id))
+            .ToDictionary(c => c.Id, c => c.Name);
+
+        var result = new List<CompanyFeeResult>();
+        foreach (var gr in groupedTransactions)
+        {
+            companies.TryGetValue(gr.CompanyId, out var companyName);
+            
+            result.Add(new CompanyFeeResult
+            {
+                CompanyId = gr.CompanyId,
+                CompanyName = companyName ?? "Unknown",
+                TotalTransactions = gr.TotalTransactions,
+                TotalFee = gr.TotalFee
+            });
+        }
+
+        return result;
     }
 }
