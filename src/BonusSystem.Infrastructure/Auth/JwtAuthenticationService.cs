@@ -15,16 +15,16 @@ namespace BonusSystem.Infrastructure.Auth;
 /// <summary>
 /// JWT-based authentication service
 /// </summary>
-public class JwtAuthenticationService : IAuthenticationService
+public class AuthenticationService : IAuthenticationService
 {
     private readonly IUserRepository _userRepository;
     private readonly AppDbOptions _options;
-    private readonly ILogger<JwtAuthenticationService> _logger;
+    private readonly ILogger<AuthenticationService> _logger;
 
-    public JwtAuthenticationService(
+    public AuthenticationService(
         IUserRepository userRepository,
         IOptions<AppDbOptions> options,
-        ILogger<JwtAuthenticationService> logger)
+        ILogger<AuthenticationService> logger)
     {
         _userRepository = userRepository;
         _options = options.Value;
