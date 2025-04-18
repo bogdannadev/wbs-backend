@@ -35,6 +35,63 @@ internal static class UserSeedData
                 IsActive = true
             },
 
+            // Company Users (one for each company)
+            new UserEntity
+            {
+                Id = Guid.Parse("AAAAABBB-AAAA-AAAA-AAAA-AAAAAAAAAAAA"),
+                Username = "megamart",
+                Email = "company@megamart.com",
+                Role = UserRole.Company,
+                BonusBalance = 0,
+                CreatedAt = DateTime.UtcNow.AddDays(-60),
+                LastLogin = DateTime.UtcNow.AddDays(-1),
+                IsActive = true
+            },
+            new UserEntity
+            {
+                Id = Guid.Parse("BBBBBCCC-BBBB-BBBB-BBBB-BBBBBBBBBBBB"),
+                Username = "techhaven",
+                Email = "company@techhaven.com",
+                Role = UserRole.Company,
+                BonusBalance = 0,
+                CreatedAt = DateTime.UtcNow.AddDays(-45),
+                LastLogin = DateTime.UtcNow.AddDays(-2),
+                IsActive = true
+            },
+            new UserEntity
+            {
+                Id = Guid.Parse("CCCCCAAA-CCCC-CCCC-CCCC-CCCCCCCCCCCC"),
+                Username = "freshfoods",
+                Email = "company@freshfoods.com",
+                Role = UserRole.Company,
+                BonusBalance = 0,
+                CreatedAt = DateTime.UtcNow.AddDays(-5),
+                LastLogin = DateTime.UtcNow.AddDays(-1),
+                IsActive = true
+            },
+            new UserEntity
+            {
+                Id = Guid.Parse("DDDDDEEE-DDDD-DDDD-DDDD-DDDDDDDDDDDD"),
+                Username = "fashionboutique",
+                Email = "company@fashionboutique.com",
+                Role = UserRole.Company,
+                BonusBalance = 0,
+                CreatedAt = DateTime.UtcNow.AddDays(-30),
+                LastLogin = DateTime.UtcNow.AddDays(-1),
+                IsActive = true
+            },
+            new UserEntity
+            {
+                Id = Guid.Parse("EEEEEFFF-EEEE-EEEE-EEEE-EEEEEEEEEEEE"),
+                Username = "familypharmacy",
+                Email = "company@familypharmacy.com",
+                Role = UserRole.Company,
+                BonusBalance = 0,
+                CreatedAt = DateTime.UtcNow.AddDays(-75),
+                LastLogin = DateTime.UtcNow.AddDays(-3),
+                IsActive = true
+            },
+
             // Store Admin
             new UserEntity
             {

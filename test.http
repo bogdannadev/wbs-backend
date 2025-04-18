@@ -17,14 +17,15 @@
 # - Notification Type: 0=System, 1=Transaction, 2=Balance, 3=Promotion, 4=Warning
 
 # Base Configuration
-@baseUrl = http://localhost:5001
+@baseUrl = https://localhost:5002
 #@baseUrl = http://62.113.59.109:5001
 
 # Authentication Tokens (to be updated after login)
-@buyerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI2NjY2NjY2Ni02NjY2LTY2NjYtNjY2Ni02NjY2NjY2NjY2NjYiLCJyb2xlIjoiQnV5ZXIiLCJuYmYiOjE3NDQzNzM4MjIsImV4cCI6MTc3NTkwOTgyMiwiaWF0IjoxNzQ0MzczODIyfQ.7zgyA_IsA6U9DqvsQr7fyMgAIY6R3IAc0N2lZgIlinc
-@sellerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtNDQ0NC00NDQ0NDQ0NDQ0NDQiLCJyb2xlIjoiU2VsbGVyIiwibmJmIjoxNzQ0MzczNjgyLCJleHAiOjE3NzU5MDk2ODIsImlhdCI6MTc0NDM3MzY4Mn0.8bC_Ryjzzc4uXyUvMXE1n75lk0yAmTfNf8wTba9m3iE
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxMTExMTExMS0xMTExLTExMTEtMTExMS0xMTExMTExMTExMTEiLCJyb2xlIjoiU3lzdGVtQWRtaW4iLCJuYmYiOjE3NDQ2NDkyNTIsImV4cCI6MTc3NjE4NTI1MiwiaWF0IjoxNzQ0NjQ5MjUyfQ.31X3SW7LDFfFipS3YvEodMl88fKs4uSm1LDF5f1YEas
-@observerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyMjIyMjIyMi0yMjIyLTIyMjItMjIyMi0yMjIyMjIyMjIyMjIiLCJyb2xlIjoiQ29tcGFueU9ic2VydmVyIiwibmJmIjoxNzQzODc4Mjc4LCJleHAiOjE3NzU0MTQyNzgsImlhdCI6MTc0Mzg3ODI3OH0.q7-qXJwW1OxxUqoHtLu91N3iTqh3lswM266Kbr6q-do
+@buyerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI2NjY2NjY2Ni02NjY2LTY2NjYtNjY2Ni02NjY2NjY2NjY2NjYiLCJyb2xlIjoiQnV5ZXIiLCJuYmYiOjE3NDQ5NzUwMzMsImV4cCI6MTc3NjUxMTAzMywiaWF0IjoxNzQ0OTc1MDMzfQ.uViPRwdn4dR5Z-rd46yzrveKRgEdbQ_JS975bJHryC8
+@sellerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtNDQ0NC00NDQ0NDQ0NDQ0NDQiLCJyb2xlIjoiU2VsbGVyIiwibmJmIjoxNzQ0OTc1MDUxLCJleHAiOjE3NzY1MTEwNTEsImlhdCI6MTc0NDk3NTA1MX0.UpjPiPa-p5taRWkJ4dROUwDzELLiAODzjYNoFTRHIM0
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxMTExMTExMS0xMTExLTExMTEtMTExMS0xMTExMTExMTExMTEiLCJyb2xlIjoiU3lzdGVtQWRtaW4iLCJuYmYiOjE3NDQ5NzUwNjYsImV4cCI6MTc3NjUxMTA2NiwiaWF0IjoxNzQ0OTc1MDY2fQ.FlXWrubFYm7tkjv6XyZpLTrSxzT9aFM_ZPmwHqcQ4_Q
+@observerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyMjIyMjIyMi0yMjIyLTIyMjItMjIyMi0yMjIyMjIyMjIyMjIiLCJyb2xlIjoiQ29tcGFueU9ic2VydmVyIiwibmJmIjoxNzQ0OTc1MDc4LCJleHAiOjE3NzY1MTEwNzgsImlhdCI6MTc0NDk3NTA3OH0.565bWsbkWZaSNoU0N5svIk-IzJ8qFT04ra-tLS5-WkU
+@companyToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhYWFhYWJiYi1hYWFhLWFhYWEtYWFhYS1hYWFhYWFhYWFhYWEiLCJyb2xlIjoiQ29tcGFueSIsIm5iZiI6MTc0NDk3NTA5MSwiZXhwIjoxNzc2NTExMDkxLCJpYXQiOjE3NDQ5NzUwOTF9.cSySqTJfRueF4_yz_Dj8S88_jXMcejoKS7qalJLIh-g
 
 ###############################################
 # AUTHENTICATION WORKFLOWS
@@ -76,6 +77,18 @@ Accept: application/json
     "password": "Password123"
 }
 
+###
+
+# Login as Company 
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "company@megamart.com",
+    "password": "Password123"
+}
+
 ###############################################
 # BUYER OPERATIONS
 ###############################################
@@ -116,7 +129,7 @@ Accept: application/json
 ###
 
 # Cancel Specific Transaction
-POST {{baseUrl}}/api/buyers/transactions/aaaaaaaa-bbbb-cccc-dddd-111111111111/cancel
+POST {{baseUrl}}/api/buyers/transactions/11111111-aaaa-1111-aaaa-111111111111/cancel
 Authorization: Bearer {{buyerToken}}
 Accept: application/json
 
@@ -171,6 +184,61 @@ Accept: application/json
 # Get Store Transactions (using authenticated seller's identity)
 GET {{baseUrl}}/api/sellers/transactions/list
 Authorization: Bearer {{sellerToken}}
+Accept: application/json
+
+###############################################
+# COMPANY OPERATIONS
+###############################################
+
+# Get Company Context
+GET {{baseUrl}}/api/companies/context
+Authorization: Bearer {{companyToken}}
+Accept: application/json
+
+###
+
+# Register a New Store
+POST {{baseUrl}}/api/companies/stores
+Authorization: Bearer {{companyToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "companyId": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
+    "name": "Downtown Store",
+    "location": "Downtown",
+    "address": "123 Main St, City, State 12345",
+    "contactPhone": "+1-555-444-3333",
+    "sellerIds": []
+}
+
+###
+
+# Register a New Seller
+POST {{baseUrl}}/api/companies/sellers
+Authorization: Bearer {{companyToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "username": "newseller",
+    "email": "newseller@megamart.com",
+    "password": "Seller123!",
+    "role": 1
+}
+
+###
+
+# Get Company Statistics
+GET {{baseUrl}}/api/companies/statistics?startDate=2025-01-01T00:00:00Z&endDate=2025-04-15T23:59:59Z
+Authorization: Bearer {{companyToken}}
+Accept: application/json
+
+###
+
+# Get Company Transaction Summary
+GET {{baseUrl}}/api/companies/transactions
+Authorization: Bearer {{companyToken}}
 Accept: application/json
 
 ###############################################
