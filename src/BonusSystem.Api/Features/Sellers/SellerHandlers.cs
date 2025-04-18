@@ -1,7 +1,7 @@
+using BonusSystem.Api.Helpers;
 using BonusSystem.Core.Services.Interfaces;
 using BonusSystem.Shared.Dtos;
 using BonusSystem.Shared.Models;
-using System.Security.Claims;
 
 namespace BonusSystem.Api.Features.Sellers;
 
@@ -9,23 +9,13 @@ public static class SellerHandlers
 {
     public static async Task<IResult> GetUserContext(HttpContext httpContext, ISellerBffService sellerService)
     {
-        var userId = GetUserIdFromContext(httpContext);
-        if (userId == null)
+        return await RequestHelper.ProcessAuthenticatedRequest(httpContext, async userId => 
         {
-            return Results.Unauthorized();
-        }
-
-        try
-        {
-            var context = await sellerService.GetUserContextAsync(userId.Value);
-            var actions = await sellerService.GetPermittedActionsAsync(userId.Value);
+            var context = await sellerService.GetUserContextAsync(userId);
+            var actions = await sellerService.GetPermittedActionsAsync(userId);
             
-            return Results.Ok(new { context, actions });
-        }
-        catch (Exception ex)
-        {
-            return Results.Problem($"Error getting user context: {ex.Message}");
-        }
+            return new { context, actions };
+        }, "Error getting user context");
     }
 
     public static async Task<IResult> ProcessTransaction(
@@ -33,7 +23,7 @@ public static class SellerHandlers
         TransactionRequestDto request,
         ISellerBffService sellerService)
     {
-        var userId = GetUserIdFromContext(httpContext);
+        var userId = RequestHelper.GetUserIdFromContext(httpContext);
         if (userId == null)
         {
             return Results.Unauthorized();
@@ -44,14 +34,14 @@ public static class SellerHandlers
             var result = await sellerService.ProcessTransactionAsync(userId.Value, request);
             if (!result.Success)
             {
-                return Results.BadRequest(new { message = result.ErrorMessage });
+                return RequestHelper.CreateErrorResponse(result.ErrorMessage);
             }
             
-            return Results.Ok(result);
+            return RequestHelper.CreateSuccessResponse(result);
         }
         catch (Exception ex)
         {
-            return Results.Problem($"Error processing transaction: {ex.Message}");
+            return RequestHelper.HandleExceptionResponse(ex, "Error processing transaction");
         }
     }
 
@@ -60,7 +50,7 @@ public static class SellerHandlers
         Guid id,
         ISellerBffService sellerService)
     {
-        var userId = GetUserIdFromContext(httpContext);
+        var userId = RequestHelper.GetUserIdFromContext(httpContext);
         if (userId == null)
         {
             return Results.Unauthorized();
@@ -71,14 +61,14 @@ public static class SellerHandlers
             var success = await sellerService.ConfirmTransactionReturnAsync(userId.Value, id);
             if (!success)
             {
-                return Results.BadRequest("Transaction could not be returned");
+                return RequestHelper.CreateErrorResponse("Transaction could not be returned");
             }
             
-            return Results.Ok(new { message = "Transaction return confirmed successfully" });
+            return RequestHelper.CreateSuccessResponse("Transaction return confirmed successfully");
         }
         catch (Exception ex)
         {
-            return Results.Problem($"Error confirming transaction return: {ex.Message}");
+            return RequestHelper.HandleExceptionResponse(ex, "Error confirming transaction return");
         }
     }
 
@@ -87,73 +77,31 @@ public static class SellerHandlers
         Guid id,
         ISellerBffService sellerService)
     {
-        var userId = GetUserIdFromContext(httpContext);
-        if (userId == null)
-        {
-            return Results.Unauthorized();
-        }
-
-        try
+        return await RequestHelper.ProcessAuthenticatedRequest(httpContext, async userId => 
         {
             var balance = await sellerService.GetBuyerBonusBalanceAsync(id);
-            return Results.Ok(new { balance });
-        }
-        catch (Exception ex)
-        {
-            return Results.Problem($"Error getting buyer balance: {ex.Message}");
-        }
+            return new { balance };
+        }, "Error getting buyer balance");
     }
 
     public static async Task<IResult> GetStoreBalance(
         HttpContext httpContext,
         ISellerBffService sellerService)
     {
-        var userId = GetUserIdFromContext(httpContext);
-        if (userId == null)
+        return await RequestHelper.ProcessAuthenticatedRequest(httpContext, async userId => 
         {
-            return Results.Unauthorized();
-        }
-
-        try
-        {
-            var balance = await sellerService.GetStoreBonusBalanceByUserIdAsync(userId.Value);
-            return Results.Ok(new { balance });
-        }
-        catch (Exception ex)
-        {
-            return Results.Problem($"Error getting store balance: {ex.Message}");
-        }
+            var balance = await sellerService.GetStoreBonusBalanceByUserIdAsync(userId);
+            return new { balance };
+        }, "Error getting store balance");
     }
 
     public static async Task<IResult> GetStoreTransactions(
         HttpContext httpContext,
         ISellerBffService sellerService)
     {
-        var userId = GetUserIdFromContext(httpContext);
-        if (userId == null)
+        return await RequestHelper.ProcessAuthenticatedRequest(httpContext, async userId => 
         {
-            return Results.Unauthorized();
-        }
-
-        try
-        {
-            var transactions = await sellerService.GetStoreBonusTransactionsByUserIdAsync(userId.Value);
-            return Results.Ok(transactions);
-        }
-        catch (Exception ex)
-        {
-            return Results.Problem($"Error getting store transactions: {ex.Message}");
-        }
-    }
-
-    private static Guid? GetUserIdFromContext(HttpContext httpContext)
-    {
-        var userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
-        {
-            return null;
-        }
-
-        return userId;
+            return await sellerService.GetStoreBonusTransactionsByUserIdAsync(userId);
+        }, "Error getting store transactions");
     }
 }
