@@ -8,6 +8,18 @@ namespace BonusSystem.Api.Features.Admin;
 
 public static class AdminHandlers
 {
+    public static async Task<IResult> TestAPI_String_return() 
+    { 
+
+        try
+        {
+            return Results.Ok("String returned, successfully!");
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem($"Error getting user context: {ex.Message}");
+        }
+    }
     public static async Task<IResult> GetUserContext(HttpContext httpContext, IAdminBffService adminService)
     {
         var userId = GetUserIdFromContext(httpContext);

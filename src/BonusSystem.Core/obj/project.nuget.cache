@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "3GExnYTfxsE=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\user\\Documents\\GitHub\\wbs-backend\\src\\BonusSystem.Core\\BonusSystem.Core.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\user\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.3\\microsoft.extensions.dependencyinjection.abstractions.9.0.3.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\9.0.3\\microsoft.extensions.logging.abstractions.9.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
