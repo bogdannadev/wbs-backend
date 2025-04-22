@@ -14,6 +14,18 @@ public static class AdminEndpoints
             .RequireAuthorization()
             .WithTags("Admin")
             .WithOpenApi();
+            
+        group.MapGet("/test_api_string", AdminHandlers.TestAPI_String_return)
+            .WithName("TestApi") 
+            .WithOpenApi(operation => {
+                operation.Summary = "Test task";
+                operation.Description = "Test task"; 
+                
+                operation.EnsureResponse("200", "Returns 'String returned, successfully!' ");
+                operation.EnsureResponse("401", "Unauthorized");
+                operation.EnsureResponse("500", "Internal server error");
+                
+                return operation;});  
 
         group.MapGet("/context", AdminHandlers.GetUserContext)
             .WithName("GetAdminContext")
