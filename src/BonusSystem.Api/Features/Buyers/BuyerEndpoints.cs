@@ -128,6 +128,21 @@ public static class BuyerEndpoints
                 
                 return operation;
             });
+
+            group.MapGet("/test_string", BuyerHandlers.Test_Task_String)
+            .WithName("Test_string")
+            .AllowAnonymous()
+            .WithOpenApi(operation =>
+            {
+            operation.Summary = "return String returned successfully!";
+            operation.Description = "for Test_task";
+    
+            operation.EnsureResponse("200", "String returned successfully!");
+            operation.EnsureResponse("401", "Unauthorized");
+            operation.EnsureResponse("500", "Internal server error");
+    
+            return operation;   
+            });
             
         return app;
     }

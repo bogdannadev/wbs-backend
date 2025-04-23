@@ -101,6 +101,13 @@ Accept: application/json
 
 ###
 
+# Test string 
+Get GET {{baseUrl}}/api/buyers/test_string
+Authorization: Bearer {{buyerToken}}
+Accept: application/json
+
+###
+
 # Generate Buyer QR Code
 GET {{baseUrl}}/api/buyers/qrcode
 Authorization: Bearer {{buyerToken}}
@@ -112,7 +119,6 @@ Accept: application/json
 GET {{baseUrl}}/api/buyers/stores?category=all
 Authorization: Bearer {{buyerToken}}
 Accept: application/json
-
 ###
 
 # Cancel Specific Transaction

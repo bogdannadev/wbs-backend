@@ -144,4 +144,9 @@ public static class BuyerHandlers
 
         return userId;
     }
+
+    public static async Task<string> Test_Task_String()
+    {
+        return await Task.FromResult("string returned successfully!");
+    }
 }
