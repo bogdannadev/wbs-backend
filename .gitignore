@@ -6,14 +6,6 @@
 *.userosscache
 *.sln.docstates
 
-src/BonusSystem.Api/obj/
-src/BonusSystem.Api/bin/
-src/BonusSystem.Core/obj/
-src/BonusSystem.Core/bin/
-src/BonusSystem.Infrastructure/obj/
-src/BonusSystem.Infrastructure/bin/
-src/BonusSystem.Shared/obj/
-src/BonusSystem.Shared/bin/
 # Mono auto generated files
 mono_crash.*
 
@@ -140,3 +132,5 @@ _pkginfo.txt
 
 # Visual Studio cache files
 *.cache
+**/bin/
+**/obj/
