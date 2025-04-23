@@ -1,0 +1,16 @@
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\bin\Debug\net9.0\BonusSystem.Core.deps.json
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\bin\Debug\net9.0\BonusSystem.Core.dll
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\bin\Debug\net9.0\BonusSystem.Core.pdb
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\bin\Debug\net9.0\BonusSystem.Shared.dll
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\bin\Debug\net9.0\BonusSystem.Shared.pdb
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\obj\Debug\net9.0\BonusSystem.Core.csproj.AssemblyReference.cache
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\obj\Debug\net9.0\BonusSystem.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\obj\Debug\net9.0\BonusSystem.Core.AssemblyInfoInputs.cache
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\obj\Debug\net9.0\BonusSystem.Core.AssemblyInfo.cs
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\obj\Debug\net9.0\BonusSystem.Core.csproj.CoreCompileInputs.cache
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\obj\Debug\net9.0\BonusSystem.Core.sourcelink.json
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\obj\Debug\net9.0\BonusSys.04BF6BCE.Up2Date
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\obj\Debug\net9.0\BonusSystem.Core.dll
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\obj\Debug\net9.0\refint\BonusSystem.Core.dll
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\obj\Debug\net9.0\BonusSystem.Core.pdb
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Core\obj\Debug\net9.0\ref\BonusSystem.Core.dll

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BonusSystem.Api</name>
+    </assembly>
+    <members>
+        <member name="T:BonusSystem.Api.Infrastructure.Swagger.Documentation.AdminExamples">
+            <summary>
+            Provides example responses for admin-related API endpoints
+            </summary>
+        </member>
+        <member name="T:BonusSystem.Api.Infrastructure.Swagger.Documentation.AuthExamples">
+            <summary>
+            Provides example responses for authentication-related API endpoints
+            </summary>
+        </member>
+        <member name="T:BonusSystem.Api.Infrastructure.Swagger.Documentation.BuyerSpecialtyExamples">
+            <summary>
+            Provides example responses for QR code and specialty buyer endpoints
+            </summary>
+        </member>
+        <member name="T:BonusSystem.Api.Infrastructure.Swagger.Documentation.CompanyStoreExamples">
+            <summary>
+            Provides example responses for company and store-related API endpoints
+            </summary>
+        </member>
+        <member name="T:BonusSystem.Api.Infrastructure.Swagger.Documentation.ObserverExamples">
+            <summary>
+            Provides example responses for observer-related API endpoints
+            </summary>
+        </member>
+        <member name="T:BonusSystem.Api.Infrastructure.Swagger.Documentation.SwaggerConfigurationOptions">
+            <summary>
+            Configures custom Swagger/OpenAPI options
+            </summary>
+        </member>
+        <member name="T:BonusSystem.Api.Infrastructure.Swagger.Documentation.TransactionExamples">
+            <summary>
+            Provides example responses for transaction-related API endpoints
+            </summary>
+        </member>
+        <member name="T:BonusSystem.Api.Infrastructure.Swagger.SchemaEnhancementFilter">
+            <summary>
+            Enhances schema components in the Swagger document with basic descriptions
+            </summary>
+        </member>
+        <member name="M:BonusSystem.Api.Infrastructure.Swagger.SwaggerExtensions.EnsureResponse(Microsoft.OpenApi.Models.OpenApiOperation,System.String,System.String)">
+            <summary>
+            Safely adds or updates a response description in the OpenAPI operation
+            </summary>
+        </member>
+    </members>
+</doc>

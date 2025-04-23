@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "qRmo9FrPCOiY5cBCcenWuxteHeEHi0rsQgXvGd6V9uc=",
+  "Source": "BonusSystem.Api",
+  "BasePath": "_content/BonusSystem.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

@@ -178,8 +178,13 @@ Accept: application/json
 ###############################################
 
 # Test task 
+<<<<<<< Updated upstream
 
 GET {{baseUrl}}/api/admin/test_api_string
+=======
+GET {{baseUrl}}/api/admin/test_api_string
+Accept: application/json
+>>>>>>> Stashed changes
 
 { 
     "String returned, successfully!" 

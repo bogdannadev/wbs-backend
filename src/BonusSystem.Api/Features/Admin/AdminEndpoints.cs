@@ -17,6 +17,7 @@ public static class AdminEndpoints
             
         group.MapGet("/test_api_string", AdminHandlers.TestAPI_String_return)
             .WithName("TestApi") 
+            .AllowAnonymous()
             .WithOpenApi(operation => {
                 operation.Summary = "Test task";
                 operation.Description = "Test task"; 

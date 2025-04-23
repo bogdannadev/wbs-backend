@@ -1,0 +1,12 @@
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Shared\bin\Debug\net9.0\BonusSystem.Shared.deps.json
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Shared\bin\Debug\net9.0\BonusSystem.Shared.dll
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Shared\bin\Debug\net9.0\BonusSystem.Shared.pdb
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Shared\obj\Debug\net9.0\BonusSystem.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Shared\obj\Debug\net9.0\BonusSystem.Shared.AssemblyInfoInputs.cache
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Shared\obj\Debug\net9.0\BonusSystem.Shared.AssemblyInfo.cs
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Shared\obj\Debug\net9.0\BonusSystem.Shared.csproj.CoreCompileInputs.cache
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Shared\obj\Debug\net9.0\BonusSystem.Shared.sourcelink.json
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Shared\obj\Debug\net9.0\BonusSystem.Shared.dll
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Shared\obj\Debug\net9.0\refint\BonusSystem.Shared.dll
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Shared\obj\Debug\net9.0\BonusSystem.Shared.pdb
+C:\Users\user\Documents\GitHub\wbs-backend\src\BonusSystem.Shared\obj\Debug\net9.0\ref\BonusSystem.Shared.dll

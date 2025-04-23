@@ -212,7 +212,7 @@ public static class AdminHandlers
         var userId = GetUserIdFromContext(httpContext);
         if (userId == null)
         {
-            return Results.Unauthorized();
+                return Results.Unauthorized();
         }
 
         try

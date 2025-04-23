@@ -11,7 +11,7 @@ public static class AuthEndpoints
         var group = app.MapGroup("/auth")
             .WithTags("Authentication")
             .WithOpenApi();
-
+        
         group.MapPost("/buyer_register", AuthHandlers.BuyerRegister)
             .AllowAnonymous()
             .WithName("BuyerRegister")

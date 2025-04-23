@@ -13,11 +13,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BonusSystem.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-<<<<<<< HEAD
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+45316000cf871322a7930d5979f7a94230deb91b")]
+<<<<<<< Updated upstream
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+81bc98b1982794b2568d8c9593eabd06b3486458")]
 =======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ba6f9fde878509e91c948ed6c18ce5772db7189f")]
->>>>>>> 657dce8ddac0922db490e27af38093d0dd72e5cd
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a2fc9cdec1289b5685980ffd6738bb489618e1fd")]
+>>>>>>> Stashed changes
 [assembly: System.Reflection.AssemblyProductAttribute("BonusSystem.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BonusSystem.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
