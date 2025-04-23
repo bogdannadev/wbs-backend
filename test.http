@@ -185,6 +185,8 @@ GET {{baseUrl}}/api/admin/test_api_string
     "String returned, successfully!" 
 }
 
+### 
+
 # Fee calculations with null params
 POST {{baseUrl}}/api/admin/companies/transaction-fees
 Authorization: Bearer {{adminToken}}

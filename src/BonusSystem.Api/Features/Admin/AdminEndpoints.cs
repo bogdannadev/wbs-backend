@@ -18,15 +18,16 @@ public static class AdminEndpoints
         group.MapGet("/test_api_string", AdminHandlers.TestAPI_String_return)
             .WithName("TestApi") 
             .AllowAnonymous()
-            .WithOpenApi(operation => {
+            .WithOpenApi(operation => 
+            {
                 operation.Summary = "Test task";
                 operation.Description = "Test task"; 
-                
                 operation.EnsureResponse("200", "Returns 'String returned, successfully!' ");
                 operation.EnsureResponse("401", "Unauthorized");
                 operation.EnsureResponse("500", "Internal server error");
                 
-                return operation;});  
+                return operation;
+            });  
 
         group.MapGet("/context", AdminHandlers.GetUserContext)
             .WithName("GetAdminContext")
