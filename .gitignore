@@ -22,6 +22,10 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+src/BonusSystem.Core/
+src/BonusSystem.Infrastructure/ 
+src/BonusSystem.Shared/ 
+
 
 # Visual Studio 2019 cache/options directory
 .vs/
