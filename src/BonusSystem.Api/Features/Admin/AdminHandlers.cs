@@ -35,6 +35,29 @@ public static class AdminHandlers
             return result;
         }, "Error registering company");
     }
+    
+    public static async Task<IResult> RegisterCompanyWithAdmin(
+        HttpContext httpContext,
+        CompanyWithAdminRegistrationDto request,
+        IAdminBffService adminService)
+    {
+        return await RequestHelper.ProcessAuthenticatedRequest(httpContext, async userId => 
+        {
+            // Validate that only SystemAdmin users can register companies
+            if (!RequestHelper.IsUserInRole(httpContext, UserRole.SystemAdmin.ToString()))
+            {
+                throw new UnauthorizedAccessException("Only system administrators can register companies");
+            }
+            
+            var result = await adminService.RegisterCompanyWithAdminAsync(request);
+            if (!result.Success)
+            {
+                throw new InvalidOperationException(result.ErrorMessage);
+            }
+            
+            return result;
+        }, "Error registering company with admin");
+    }
 
     public static async Task<IResult> UpdateCompanyStatus(
         HttpContext httpContext,

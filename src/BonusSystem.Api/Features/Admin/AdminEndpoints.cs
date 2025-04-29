@@ -38,8 +38,8 @@ public static class AdminEndpoints
             .RequireAuthorization()
             .WithOpenApi(operation => 
             {
-                operation.Summary = "Register a New Company";
-                operation.Description = "Creates a new company record in the system. Companies are entities that own stores and participate in the bonus program by distributing bonus points to customers.\n\n" +
+                operation.Summary = "Register a New Company (Legacy)";
+                operation.Description = "Creates a new company record in the system. This is a legacy endpoint and is recommended to use the new endpoint (/api/admin/companies-with-admin) instead.\n\n" +
                     "Request requires:\n" +
                     "- name: Name of the company\n" +
                     "- contactEmail: Primary contact email for the company\n" +
@@ -48,6 +48,31 @@ public static class AdminEndpoints
                     "Successful response contains the registered company details.";
                 
                 operation.EnsureResponse("200", "Company registered successfully");
+                operation.EnsureResponse("400", "Registration failed");
+                operation.EnsureResponse("401", "Unauthorized");
+                operation.EnsureResponse("500", "Internal server error");
+                
+                return operation;
+            });
+            
+        group.MapPost("/companies-with-admin", AdminHandlers.RegisterCompanyWithAdmin)
+            .WithName("RegisterCompanyWithAdmin")
+            .RequireAuthorization()
+            .WithOpenApi(operation => 
+            {
+                operation.Summary = "Register a New Company with Admin User";
+                operation.Description = "Creates a new company record in the system along with its admin user. Companies are entities that own stores and participate in the bonus program by distributing bonus points to customers.\n\n" +
+                    "Request requires:\n" +
+                    "- name: Name of the company\n" +
+                    "- contactEmail: Primary contact email for the company\n" +
+                    "- contactPhone: Primary contact phone number\n" +
+                    "- initialBonusBalance: Initial bonus points to credit to the company\n" +
+                    "- adminUsername: Username for the company admin\n" +
+                    "- adminEmail: Email for the company admin\n" +
+                    "- adminPassword: Password for the company admin\n\n" +
+                    "Successful response contains the registered company details.";
+                
+                operation.EnsureResponse("200", "Company with admin registered successfully");
                 operation.EnsureResponse("400", "Registration failed");
                 operation.EnsureResponse("401", "Unauthorized");
                 operation.EnsureResponse("500", "Internal server error");

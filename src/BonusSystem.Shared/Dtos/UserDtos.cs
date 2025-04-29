@@ -9,6 +9,7 @@ public record UserDto
     public string Email { get; init; } = string.Empty;
     public UserRole Role { get; init; }
     public decimal BonusBalance { get; init; }
+    public Guid? CompanyId { get; init; }
 }
 
 public record BuyerRegistrationDto
@@ -38,6 +39,7 @@ public record UserContextDto
     public string Username { get; init; } = string.Empty;
     public UserRole Role { get; init; }
     public decimal BonusBalance { get; init; }
+    public Guid? CompanyId { get; init; }
 }
 
 public record PermittedActionDto

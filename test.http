@@ -25,7 +25,7 @@
 @sellerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtNDQ0NC00NDQ0NDQ0NDQ0NDQiLCJyb2xlIjoiU2VsbGVyIiwibmJmIjoxNzQ0OTc1MDUxLCJleHAiOjE3NzY1MTEwNTEsImlhdCI6MTc0NDk3NTA1MX0.UpjPiPa-p5taRWkJ4dROUwDzELLiAODzjYNoFTRHIM0
 @adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxMTExMTExMS0xMTExLTExMTEtMTExMS0xMTExMTExMTExMTEiLCJyb2xlIjoiU3lzdGVtQWRtaW4iLCJuYmYiOjE3NDQ5NzUwNjYsImV4cCI6MTc3NjUxMTA2NiwiaWF0IjoxNzQ0OTc1MDY2fQ.FlXWrubFYm7tkjv6XyZpLTrSxzT9aFM_ZPmwHqcQ4_Q
 @observerToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyMjIyMjIyMi0yMjIyLTIyMjItMjIyMi0yMjIyMjIyMjIyMjIiLCJyb2xlIjoiQ29tcGFueU9ic2VydmVyIiwibmJmIjoxNzQ0OTc1MDc4LCJleHAiOjE3NzY1MTEwNzgsImlhdCI6MTc0NDk3NTA3OH0.565bWsbkWZaSNoU0N5svIk-IzJ8qFT04ra-tLS5-WkU
-@companyToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhYWFhYWJiYi1hYWFhLWFhYWEtYWFhYS1hYWFhYWFhYWFhYWEiLCJyb2xlIjoiQ29tcGFueSIsIm5iZiI6MTc0NDk3NTA5MSwiZXhwIjoxNzc2NTExMDkxLCJpYXQiOjE3NDQ5NzUwOTF9.cSySqTJfRueF4_yz_Dj8S88_jXMcejoKS7qalJLIh-g
+@companyToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhYWFhYWJiYi1hYWFhLWFhYWEtYWFhYS1hYWFhYWFhYWFhYWEiLCJyb2xlIjoiQ29tcGFueSIsIkNvbXBhbnlJZCI6ImFhYWFhYWFhLWFhYWEtYWFhYS1hYWFhLWFhYWFhYWFhYWFhYSIsIm5iZiI6MTc0NTkyNTE4MywiZXhwIjoxNzc3NDYxMTgzLCJpYXQiOjE3NDU5MjUxODN9.TLdnbmF1ZH6eNFsdIKc26JZAWOGCXaUGtxVnOFgGKtQ
 
 ###############################################
 # AUTHENTICATION WORKFLOWS
@@ -190,6 +190,50 @@ Accept: application/json
 # COMPANY OPERATIONS
 ###############################################
 
+# Get All Stores with Sellers (No Filtering)
+# PageSize - stores per page
+# Page - page count
+POST {{baseUrl}}/api/companies/stores-with-sellers
+Authorization: Bearer {{companyToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "page": 1,
+    "pageSize": 2
+}
+
+###
+
+# Get Active Stores with Sellers
+# Statuses: 0 - Active, 1 - Inactive, 2 - Pending approval
+POST {{baseUrl}}/api/companies/stores-with-sellers
+Authorization: Bearer {{companyToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "storeStatus": 1,
+    "page": 1,
+    "pageSize": 10
+}
+
+###
+
+# Get Pending Approval Stores with Sellers
+POST {{baseUrl}}/api/companies/stores-with-sellers
+Authorization: Bearer {{companyToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "storeStatus": 0,
+    "page": 1,
+    "pageSize": 10
+}
+
+###
+
 # Get Company Context
 GET {{baseUrl}}/api/companies/context
 Authorization: Bearer {{companyToken}}
@@ -221,10 +265,9 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "username": "newseller",
-    "email": "newseller@megamart.com",
-    "password": "Seller123!",
-    "role": 1
+    "username": "newseller1234",
+    "email": "newseller1234@megamart.com",
+    "password": "Seller123!"
 }
 
 ###

@@ -88,7 +88,8 @@ public static class RequestHelper
     /// <returns>The company ID if found, otherwise null</returns>
     public static Guid? GetCompanyIdFromUser(HttpContext httpContext, Guid userId)
     {
-        // First check if there's a company ID claim
+        // First check if there's a company ID claim - this is the primary method
+        // after our new implementation adds the claim during authentication
         var companyIdClaim = httpContext.User.FindFirst("CompanyId")?.Value;
         
         if (!string.IsNullOrEmpty(companyIdClaim) && Guid.TryParse(companyIdClaim, out var companyId))
@@ -96,7 +97,8 @@ public static class RequestHelper
             return companyId;
         }
         
-        // If we don't have a claim and the user is a Company role, the user ID might be the company ID
+        // Legacy fallback: If user is a Company role, the user ID might be the company ID
+        // This is for backward compatibility during the transition
         var roleClaim = GetUserRole(httpContext);
         if (roleClaim == UserRole.Company.ToString())
         {

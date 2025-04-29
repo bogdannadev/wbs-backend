@@ -81,6 +81,13 @@ public class CompanyBffService : ICompanyBffService
                 Description = "View transaction summary",
                 Endpoint = "/api/company/transactions"
             });
+            
+            permittedActions.Add(new PermittedActionDto
+            {
+                ActionName = "ViewStoresWithSellers",
+                Description = "View company stores with sellers",
+                Endpoint = "/api/companies/stores-with-sellers"
+            });
         }
 
         return permittedActions;
@@ -133,6 +140,26 @@ public class CompanyBffService : ICompanyBffService
 
     public async Task<bool> RegisterSeller(UserRegistrationDto seller)
     {
+        // This method is kept for backward compatibility
+        // It should not be used for new implementations
+        throw new NotSupportedException("This method is deprecated. Use RegisterSellerForCompany instead to ensure sellers are properly linked to a company.");
+    }
+    
+    public async Task<bool> RegisterSellerForCompany(SellerRegistrationDto seller, Guid companyId)
+    {
+        // Validate company exists
+        var company = await _companyRepository.GetByIdAsync(companyId);
+        if (company == null)
+        {
+            throw new ArgumentException($"Company with ID {companyId} not found", nameof(companyId));
+        }
+        
+        // Check if company is active
+        if (company.Status != CompanyStatus.Active)
+        {
+            throw new InvalidOperationException($"Company with ID {companyId} is not active");
+        }
+        
         // Check if email is already in use
         var existingUser = await _userRepository.GetByEmailAsync(seller.Email);
         if (existingUser != null)
@@ -140,23 +167,19 @@ public class CompanyBffService : ICompanyBffService
             throw new InvalidOperationException($"Email {seller.Email} is already in use");
         }
 
-        // Ensure role is Seller
-        if (seller.Role != UserRole.Seller)
-        {
-            throw new ArgumentException("User role must be Seller", nameof(seller.Role));
-        }
-
-        // Create new seller user
+        // Create new seller user with company association
         var newSeller = new UserDto
         {
             Id = Guid.NewGuid(),
             Username = seller.Username,
             Email = seller.Email,
             Role = UserRole.Seller,
-            BonusBalance = 0 // Sellers don't have bonus balance
+            BonusBalance = 0, // Sellers don't have bonus balance
+            CompanyId = companyId // Link to the company
         };
 
         await _userRepository.CreateAsync(newSeller);
+        
         return true;
     }
 
@@ -259,5 +282,103 @@ public class CompanyBffService : ICompanyBffService
         }
 
         return latestTransaction;
+    }
+
+    public async Task<StoresWithSellersPagedResponseDto> GetStoresWithSellersAsync(Guid companyId, StoresFilterRequestDto filter)
+    {
+        // Validate company exists
+        var company = await _companyRepository.GetByIdAsync(companyId);
+        if (company == null)
+        {
+            throw new ArgumentException($"Company with ID {companyId} not found", nameof(companyId));
+        }
+
+        // Validate filter parameters
+        if (filter.StoreStatus.HasValue)
+        {
+            if (!Enum.IsDefined(typeof(StoreStatus), filter.StoreStatus.Value))
+            {
+                throw new ArgumentException($"Invalid store status value: {filter.StoreStatus.Value}", nameof(filter.StoreStatus));
+            }
+        }
+
+        if (filter.SellerRole.HasValue)
+        {
+            if (!Enum.IsDefined(typeof(UserRole), filter.SellerRole.Value))
+            {
+                throw new ArgumentException($"Invalid seller role value: {filter.SellerRole.Value}", nameof(filter.SellerRole));
+            }
+            
+            // Ensure we're only filtering for Seller role
+            if (filter.SellerRole.Value != UserRole.Seller)
+            {
+                filter = filter with { SellerRole = UserRole.Seller };
+            }
+        }
+
+        // Get all stores for this company
+        var allStores = await _storeRepository.GetStoresByCompanyIdAsync(companyId);
+        
+        // Apply store status filter if provided
+        if (filter.StoreStatus.HasValue)
+        {
+            allStores = allStores.Where(s => s.Status == filter.StoreStatus.Value).ToList();
+        }
+        
+        // Calculate total count before pagination
+        var totalCount = allStores.Count();
+        
+        // Calculate total pages
+        var totalPages = (int)Math.Ceiling((double)totalCount / filter.PageSize);
+        
+        // Apply pagination
+        var paginatedStores = allStores
+            .Skip((filter.Page - 1) * filter.PageSize)
+            .Take(filter.PageSize)
+            .ToList();
+        
+        // Create list to hold stores with sellers
+        var storesWithSellers = new List<StoreWithSellersDto>();
+        
+        // Get all sellers for all paginated stores in a single operation to avoid N+1 queries
+        var storeIds = paginatedStores.Select(s => s.Id).ToList();
+        Dictionary<Guid, List<UserDto>> sellersByStore = new();
+        
+        // Prepare a dictionary to hold sellers by store ID
+        foreach (var storeId in storeIds)
+        {
+            var storeSellers = await _storeRepository.GetSellersByStoreIdAsync(storeId);
+            
+            // We know sellers should have Seller role, but double-check for safety
+            sellersByStore[storeId] = storeSellers.Where(s => s.Role == UserRole.Seller).ToList();
+        }
+        
+        // For each store, add it with its sellers to the result
+        foreach (var store in paginatedStores)
+        {
+            var sellers = sellersByStore.ContainsKey(store.Id) ? sellersByStore[store.Id] : new List<UserDto>();
+            
+            storesWithSellers.Add(new StoreWithSellersDto
+            {
+                Id = store.Id,
+                CompanyId = store.CompanyId,
+                Name = store.Name,
+                Location = store.Location,
+                Address = store.Address,
+                ContactPhone = store.ContactPhone,
+                Status = store.Status,
+                Sellers = sellers
+            });
+        }
+        
+        // Create and return the paginated response
+        return new StoresWithSellersPagedResponseDto
+        {
+            Stores = storesWithSellers,
+            TotalCount = totalCount,
+            Page = filter.Page,
+            PageSize = filter.PageSize,
+            TotalPages = totalPages
+        };
     }
 }

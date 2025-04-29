@@ -32,7 +32,8 @@ internal static class UserSeedData
                 BonusBalance = 0,
                 CreatedAt = DateTime.UtcNow.AddDays(-25),
                 LastLogin = DateTime.UtcNow.AddDays(-2),
-                IsActive = true
+                IsActive = true,
+                CompanyId = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA")
             },
 
             // Company Users (one for each company)
@@ -45,7 +46,8 @@ internal static class UserSeedData
                 BonusBalance = 0,
                 CreatedAt = DateTime.UtcNow.AddDays(-60),
                 LastLogin = DateTime.UtcNow.AddDays(-1),
-                IsActive = true
+                IsActive = true,
+                CompanyId = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA")
             },
             new UserEntity
             {
@@ -56,7 +58,8 @@ internal static class UserSeedData
                 BonusBalance = 0,
                 CreatedAt = DateTime.UtcNow.AddDays(-45),
                 LastLogin = DateTime.UtcNow.AddDays(-2),
-                IsActive = true
+                IsActive = true,
+                CompanyId = Guid.Parse("BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB")
             },
             new UserEntity
             {
@@ -67,7 +70,8 @@ internal static class UserSeedData
                 BonusBalance = 0,
                 CreatedAt = DateTime.UtcNow.AddDays(-5),
                 LastLogin = DateTime.UtcNow.AddDays(-1),
-                IsActive = true
+                IsActive = true,
+                CompanyId = Guid.Parse("CCCCCCCC-CCCC-CCCC-CCCC-CCCCCCCCCCCC")
             },
             new UserEntity
             {
@@ -78,7 +82,8 @@ internal static class UserSeedData
                 BonusBalance = 0,
                 CreatedAt = DateTime.UtcNow.AddDays(-30),
                 LastLogin = DateTime.UtcNow.AddDays(-1),
-                IsActive = true
+                IsActive = true,
+                CompanyId = Guid.Parse("DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD")
             },
             new UserEntity
             {
@@ -89,7 +94,8 @@ internal static class UserSeedData
                 BonusBalance = 0,
                 CreatedAt = DateTime.UtcNow.AddDays(-75),
                 LastLogin = DateTime.UtcNow.AddDays(-3),
-                IsActive = true
+                IsActive = true,
+                CompanyId = Guid.Parse("EEEEEEEE-EEEE-EEEE-EEEE-EEEEEEEEEEEE")
             },
 
             // Store Admin
@@ -102,7 +108,8 @@ internal static class UserSeedData
                 BonusBalance = 0,
                 CreatedAt = DateTime.UtcNow.AddDays(-20),
                 LastLogin = DateTime.UtcNow.AddDays(-1),
-                IsActive = true
+                IsActive = true,
+                CompanyId = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA")
             },
 
             // Sellers (store employees)
@@ -115,7 +122,8 @@ internal static class UserSeedData
                 BonusBalance = 0,
                 CreatedAt = DateTime.UtcNow.AddDays(-15),
                 LastLogin = DateTime.UtcNow.AddHours(-4),
-                IsActive = true
+                IsActive = true,
+                CompanyId = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA")
             },
             new UserEntity
             {
@@ -126,7 +134,8 @@ internal static class UserSeedData
                 BonusBalance = 0,
                 CreatedAt = DateTime.UtcNow.AddDays(-15),
                 LastLogin = DateTime.UtcNow.AddHours(-2),
-                IsActive = true
+                IsActive = true,
+                CompanyId = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA")
             },
 
             // Buyers (customers)
