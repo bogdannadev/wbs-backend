@@ -268,6 +268,9 @@ namespace BonusSystem.Infrastructure.Migrations
                         .HasColumnType("numeric(18,2)")
                         .HasDefaultValue(0m);
 
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -295,6 +298,8 @@ namespace BonusSystem.Infrastructure.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -373,11 +378,23 @@ namespace BonusSystem.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("BonusSystem.Infrastructure.DataAccess.Entities.UserEntity", b =>
+                {
+                    b.HasOne("BonusSystem.Infrastructure.DataAccess.Entities.CompanyEntity", "Company")
+                        .WithMany("Users")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("BonusSystem.Infrastructure.DataAccess.Entities.CompanyEntity", b =>
                 {
                     b.Navigation("Stores");
 
                     b.Navigation("Transactions");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("BonusSystem.Infrastructure.DataAccess.Entities.StoreEntity", b =>

@@ -7,7 +7,8 @@ public enum UserRole
     StoreAdmin,
     SystemAdmin,
     CompanyObserver,
-    SystemObserver
+    SystemObserver,
+    Company
 }
 
 public enum CompanyStatus

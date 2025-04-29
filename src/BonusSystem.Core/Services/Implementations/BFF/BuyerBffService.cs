@@ -111,13 +111,6 @@ public class BuyerBffService : BaseBffService, IBuyerBffService
             return false;
         }
 
-        // Check if the transaction can be cancelled (i.e., is recent enough)
-        if (transaction.Timestamp < DateTime.UtcNow.AddDays(-1))
-        {
-            // Transactions can only be cancelled within 24 hours (example rule)
-            return false;
-        }
-
         // Update transaction status
         await _dataService.Transactions.UpdateTransactionStatusAsync(transactionId, TransactionStatus.Reversed);
 

@@ -13,4 +13,9 @@ public interface IUserRepository : IRepository<UserDto, Guid>
     Task<UserRole> GetUserRoleAsync(Guid userId);
     Task<bool> IsUserExistsByEmailAsync(string email);
     Task<IEnumerable<UserDto>> GetUsersByRoleAsync(UserRole role);
+    
+    // Company relationship methods
+    Task<IEnumerable<UserDto>> GetUsersByCompanyIdAsync(Guid companyId);
+    Task<bool> AssignUserToCompanyAsync(Guid userId, Guid companyId);
+    Task<UserDto?> GetCompanyAdminUserByCompanyIdAsync(Guid companyId);
 }

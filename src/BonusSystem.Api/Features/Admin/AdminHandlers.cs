@@ -1,8 +1,8 @@
+using BonusSystem.Api.Helpers;
 using BonusSystem.Core.Services.Interfaces;
 using BonusSystem.Shared.Dtos;
 using BonusSystem.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace BonusSystem.Api.Features.Admin;
 
@@ -10,23 +10,13 @@ public static class AdminHandlers
 {
     public static async Task<IResult> GetUserContext(HttpContext httpContext, IAdminBffService adminService)
     {
-        var userId = GetUserIdFromContext(httpContext);
-        if (userId == null)
+        return await RequestHelper.ProcessAuthenticatedRequest(httpContext, async userId => 
         {
-            return Results.Unauthorized();
-        }
-
-        try
-        {
-            var context = await adminService.GetUserContextAsync(userId.Value);
-            var actions = await adminService.GetPermittedActionsAsync(userId.Value);
+            var context = await adminService.GetUserContextAsync(userId);
+            var actions = await adminService.GetPermittedActionsAsync(userId);
             
-            return Results.Ok(new { context, actions });
-        }
-        catch (Exception ex)
-        {
-            return Results.Problem($"Error getting user context: {ex.Message}");
-        }
+            return new { context, actions };
+        }, "Error getting user context");
     }
 
     public static async Task<IResult> RegisterCompany(
@@ -34,26 +24,39 @@ public static class AdminHandlers
         CompanyRegistrationDto request,
         IAdminBffService adminService)
     {
-        var userId = GetUserIdFromContext(httpContext);
-        if (userId == null)
-        {
-            return Results.Unauthorized();
-        }
-
-        try
+        return await RequestHelper.ProcessAuthenticatedRequest(httpContext, async userId => 
         {
             var result = await adminService.RegisterCompanyAsync(request);
             if (!result.Success)
             {
-                return Results.BadRequest(new { message = result.ErrorMessage });
+                throw new InvalidOperationException(result.ErrorMessage);
             }
             
-            return Results.Ok(result);
-        }
-        catch (Exception ex)
+            return result;
+        }, "Error registering company");
+    }
+    
+    public static async Task<IResult> RegisterCompanyWithAdmin(
+        HttpContext httpContext,
+        CompanyWithAdminRegistrationDto request,
+        IAdminBffService adminService)
+    {
+        return await RequestHelper.ProcessAuthenticatedRequest(httpContext, async userId => 
         {
-            return Results.Problem($"Error registering company: {ex.Message}");
-        }
+            // Validate that only SystemAdmin users can register companies
+            if (!RequestHelper.IsUserInRole(httpContext, UserRole.SystemAdmin.ToString()))
+            {
+                throw new UnauthorizedAccessException("Only system administrators can register companies");
+            }
+            
+            var result = await adminService.RegisterCompanyWithAdminAsync(request);
+            if (!result.Success)
+            {
+                throw new InvalidOperationException(result.ErrorMessage);
+            }
+            
+            return result;
+        }, "Error registering company with admin");
     }
 
     public static async Task<IResult> UpdateCompanyStatus(
@@ -62,7 +65,7 @@ public static class AdminHandlers
         [FromBody] CompanyStatus status,
         IAdminBffService adminService)
     {
-        var userId = GetUserIdFromContext(httpContext);
+        var userId = RequestHelper.GetUserIdFromContext(httpContext);
         if (userId == null)
         {
             return Results.Unauthorized();
@@ -73,14 +76,14 @@ public static class AdminHandlers
             var success = await adminService.UpdateCompanyStatusAsync(id, status);
             if (!success)
             {
-                return Results.BadRequest("Company status could not be updated");
+                return RequestHelper.CreateErrorResponse("Company status could not be updated");
             }
             
-            return Results.Ok(new { message = "Company status updated successfully" });
+            return RequestHelper.CreateSuccessResponse("Company status updated successfully");
         }
         catch (Exception ex)
         {
-            return Results.Problem($"Error updating company status: {ex.Message}");
+            return RequestHelper.HandleExceptionResponse(ex, "Error updating company status");
         }
     }
 
@@ -90,7 +93,7 @@ public static class AdminHandlers
         [FromQuery] bool approve,
         IAdminBffService adminService)
     {
-        var userId = GetUserIdFromContext(httpContext);
+        var userId = RequestHelper.GetUserIdFromContext(httpContext);
         if (userId == null)
         {
             return Results.Unauthorized();
@@ -101,14 +104,14 @@ public static class AdminHandlers
             var success = await adminService.ModerateStoreAsync(id, approve);
             if (!success)
             {
-                return Results.BadRequest("Store could not be moderated");
+                return RequestHelper.CreateErrorResponse("Store could not be moderated");
             }
             
-            return Results.Ok(new { message = $"Store {(approve ? "approved" : "rejected")} successfully" });
+            return RequestHelper.CreateSuccessResponse($"Store {(approve ? "approved" : "rejected")} successfully");
         }
         catch (Exception ex)
         {
-            return Results.Problem($"Error moderating store: {ex.Message}");
+            return RequestHelper.HandleExceptionResponse(ex, "Error moderating store");
         }
     }
 
@@ -118,7 +121,7 @@ public static class AdminHandlers
         [FromBody] decimal amount,
         IAdminBffService adminService)
     {
-        var userId = GetUserIdFromContext(httpContext);
+        var userId = RequestHelper.GetUserIdFromContext(httpContext);
         if (userId == null)
         {
             return Results.Unauthorized();
@@ -129,14 +132,14 @@ public static class AdminHandlers
             var success = await adminService.CreditCompanyBalanceAsync(id, amount);
             if (!success)
             {
-                return Results.BadRequest("Company balance could not be credited");
+                return RequestHelper.CreateErrorResponse("Company balance could not be credited");
             }
             
-            return Results.Ok(new { message = "Company balance credited successfully" });
+            return RequestHelper.CreateSuccessResponse("Company balance credited successfully");
         }
         catch (Exception ex)
         {
-            return Results.Problem($"Error crediting company balance: {ex.Message}");
+            return RequestHelper.HandleExceptionResponse(ex, "Error crediting company balance");
         }
     }
 
@@ -147,21 +150,10 @@ public static class AdminHandlers
         [FromQuery] DateTime? endDate,
         IAdminBffService adminService)
     {
-        var userId = GetUserIdFromContext(httpContext);
-        if (userId == null)
+        return await RequestHelper.ProcessAuthenticatedRequest(httpContext, async userId => 
         {
-            return Results.Unauthorized();
-        }
-
-        try
-        {
-            var transactions = await adminService.GetSystemTransactionsAsync(companyId, startDate, endDate);
-            return Results.Ok(transactions);
-        }
-        catch (Exception ex)
-        {
-            return Results.Problem($"Error getting system transactions: {ex.Message}");
-        }
+            return await adminService.GetSystemTransactionsAsync(companyId, startDate, endDate);
+        }, "Error getting system transactions");
     }
 
     public static async Task<IResult> SendSystemNotification(
@@ -170,7 +162,7 @@ public static class AdminHandlers
         [FromBody] NotificationRequest request,
         IAdminBffService adminService)
     {
-        var userId = GetUserIdFromContext(httpContext);
+        var userId = RequestHelper.GetUserIdFromContext(httpContext);
         if (userId == null)
         {
             return Results.Unauthorized();
@@ -181,14 +173,14 @@ public static class AdminHandlers
             var success = await adminService.SendSystemNotificationAsync(recipientId, request.Message, request.Type);
             if (!success)
             {
-                return Results.BadRequest("Notification could not be sent");
+                return RequestHelper.CreateErrorResponse("Notification could not be sent");
             }
             
-            return Results.Ok(new { message = "Notification sent successfully" });
+            return RequestHelper.CreateSuccessResponse("Notification sent successfully");
         }
         catch (Exception ex)
         {
-            return Results.Problem($"Error sending notification: {ex.Message}");
+            return RequestHelper.HandleExceptionResponse(ex, "Error sending notification");
         }
     }
 
@@ -197,36 +189,9 @@ public static class AdminHandlers
         TransactionFeeRequest request,
         IAdminBffService adminBffService)
     {
-        var userId = GetUserIdFromContext(httpContext);
-        if (userId == null)
+        return await RequestHelper.ProcessAuthenticatedRequest(httpContext, async userId => 
         {
-            return Results.Unauthorized();
-        }
-
-        try
-        {
-            return Results.Ok(await adminBffService.GetTransactionFeesAsync(request));
-        }
-        catch (Exception e)
-        {
-            return Results.Problem($"Error at fee calculation query: {e.Message}");
-        }
+            return await adminBffService.GetTransactionFeesAsync(request);
+        }, "Error at fee calculation query");
     }
-
-    private static Guid? GetUserIdFromContext(HttpContext httpContext)
-    {
-        var userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
-        {
-            return null;
-        }
-
-        return userId;
-    }
-}
-
-public class NotificationRequest
-{
-    public string Message { get; set; } = string.Empty;
-    public NotificationType Type { get; set; } = NotificationType.System;
 }

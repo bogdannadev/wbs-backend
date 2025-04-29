@@ -48,7 +48,7 @@ public static class ApiExtensions
         ConfigureEntityFramework(services, configuration);
 
         // Register authentication service
-        services.AddScoped<IAuthenticationService, JwtAuthenticationService>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
         
         // Register DataSeeder
         services.AddScoped<DatabaseSeeder>();
@@ -58,6 +58,7 @@ public static class ApiExtensions
         services.AddScoped<ISellerBffService, SellerBffService>();
         services.AddScoped<IAdminBffService, AdminBffService>();
         services.AddScoped<IObserverBffService, ObserverBffService>();
+        services.AddScoped<ICompanyBffService, CompanyBffService>();
 
         // Configure Authentication
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -17,4 +17,5 @@ public class CompanyEntity
     // Navigation properties
     public ICollection<StoreEntity> Stores { get; set; } = new List<StoreEntity>();
     public ICollection<BonusTransactionEntity> Transactions { get; set; } = new List<BonusTransactionEntity>();
+    public ICollection<UserEntity> Users { get; set; } = new List<UserEntity>();
 }
