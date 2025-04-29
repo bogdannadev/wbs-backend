@@ -44,6 +44,30 @@ internal class CompanySeedData
                 Status = CompanyStatus.Pending,
                 CreatedAt = DateTime.UtcNow.AddDays(-5),
                 UpdatedAt = DateTime.UtcNow.AddDays(-5)
+            },
+            new CompanyEntity
+            {
+                Id = Guid.Parse("DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD"),
+                Name = "Fashion Boutique",
+                ContactEmail = "contact@fashionboutique.com",
+                ContactPhone = "+1-555-345-6789",
+                BonusBalance = 75000.00m,
+                OriginalBonusBalance = 75000.00m,
+                Status = CompanyStatus.Active,
+                CreatedAt = DateTime.UtcNow.AddDays(-30),
+                UpdatedAt = DateTime.UtcNow.AddDays(-5)
+            },
+            new CompanyEntity
+            {
+                Id = Guid.Parse("EEEEEEEE-EEEE-EEEE-EEEE-EEEEEEEEEEEE"),
+                Name = "Family Pharmacy",
+                ContactEmail = "info@familypharmacy.com",
+                ContactPhone = "+1-555-222-3333",
+                BonusBalance = 120000.00m,
+                OriginalBonusBalance = 150000.00m,
+                Status = CompanyStatus.Active,
+                CreatedAt = DateTime.UtcNow.AddDays(-75),
+                UpdatedAt = DateTime.UtcNow.AddDays(-20)
             }
         };
     }

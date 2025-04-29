@@ -15,16 +15,16 @@ namespace BonusSystem.Infrastructure.Auth;
 /// <summary>
 /// JWT-based authentication service
 /// </summary>
-public class JwtAuthenticationService : IAuthenticationService
+public class AuthenticationService : IAuthenticationService
 {
     private readonly IUserRepository _userRepository;
     private readonly AppDbOptions _options;
-    private readonly ILogger<JwtAuthenticationService> _logger;
+    private readonly ILogger<AuthenticationService> _logger;
 
-    public JwtAuthenticationService(
+    public AuthenticationService(
         IUserRepository userRepository,
         IOptions<AppDbOptions> options,
-        ILogger<JwtAuthenticationService> logger)
+        ILogger<AuthenticationService> logger)
     {
         _userRepository = userRepository;
         _options = options.Value;
@@ -93,7 +93,8 @@ public class JwtAuthenticationService : IAuthenticationService
                 Username = registrationDto.Username,
                 Email = registrationDto.Email,
                 Role = registrationDto.Role,
-                BonusBalance = 0
+                BonusBalance = 0,
+                CompanyId = null // This will be set by specific services when needed
             };
 
             await _userRepository.CreateAsync(user);
@@ -165,7 +166,7 @@ public class JwtAuthenticationService : IAuthenticationService
         }
     }
 
-    public Task<string> GenerateTokenAsync(Guid userId, UserRole role)
+    public async Task<string> GenerateTokenAsync(Guid userId, UserRole role)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_options.JwtSecret);
@@ -175,6 +176,16 @@ public class JwtAuthenticationService : IAuthenticationService
             new(ClaimTypes.NameIdentifier, userId.ToString()),
             new(ClaimTypes.Role, role.ToString())
         };
+        
+        // Add CompanyId claim for company and seller users
+        if (role == UserRole.Company || role == UserRole.Seller)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user != null && user.CompanyId.HasValue)
+            {
+                claims.Add(new Claim("CompanyId", user.CompanyId.Value.ToString()));
+            }
+        }
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -186,7 +197,7 @@ public class JwtAuthenticationService : IAuthenticationService
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        return Task.FromResult(tokenHandler.WriteToken(token));
+        return tokenHandler.WriteToken(token);
     }
 
     public Task<Guid?> GetUserIdFromTokenAsync(string token)

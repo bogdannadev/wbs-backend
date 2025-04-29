@@ -1,7 +1,7 @@
+using BonusSystem.Api.Helpers;
 using BonusSystem.Core.Services.Interfaces;
 using BonusSystem.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace BonusSystem.Api.Features.Observers;
 
@@ -9,23 +9,13 @@ public static class ObserverHandlers
 {
     public static async Task<IResult> GetUserContext(HttpContext httpContext, IObserverBffService observerService)
     {
-        var userId = GetUserIdFromContext(httpContext);
-        if (userId == null)
+        return await RequestHelper.ProcessAuthenticatedRequest(httpContext, async userId => 
         {
-            return Results.Unauthorized();
-        }
-
-        try
-        {
-            var context = await observerService.GetUserContextAsync(userId.Value);
-            var actions = await observerService.GetPermittedActionsAsync(userId.Value);
+            var context = await observerService.GetUserContextAsync(userId);
+            var actions = await observerService.GetPermittedActionsAsync(userId);
             
-            return Results.Ok(new { context, actions });
-        }
-        catch (Exception ex)
-        {
-            return Results.Problem($"Error getting user context: {ex.Message}");
-        }
+            return new { context, actions };
+        }, "Error getting user context");
     }
 
     public static async Task<IResult> GetStatistics(
@@ -35,13 +25,7 @@ public static class ObserverHandlers
         [FromQuery] DateTime? endDate,
         IObserverBffService observerService)
     {
-        var userId = GetUserIdFromContext(httpContext);
-        if (userId == null)
-        {
-            return Results.Unauthorized();
-        }
-
-        try
+        return await RequestHelper.ProcessAuthenticatedRequest(httpContext, async userId => 
         {
             var query = new StatisticsQueryDto
             {
@@ -50,13 +34,8 @@ public static class ObserverHandlers
                 EndDate = endDate
             };
             
-            var statistics = await observerService.GetStatisticsAsync(query);
-            return Results.Ok(statistics);
-        }
-        catch (Exception ex)
-        {
-            return Results.Problem($"Error getting statistics: {ex.Message}");
-        }
+            return await observerService.GetStatisticsAsync(query);
+        }, "Error getting statistics");
     }
 
     public static async Task<IResult> GetTransactionSummary(
@@ -64,52 +43,19 @@ public static class ObserverHandlers
         [FromQuery] Guid? companyId,
         IObserverBffService observerService)
     {
-        var userId = GetUserIdFromContext(httpContext);
-        if (userId == null)
+        return await RequestHelper.ProcessAuthenticatedRequest(httpContext, async userId => 
         {
-            return Results.Unauthorized();
-        }
-
-        try
-        {
-            var summary = await observerService.GetTransactionSummaryAsync(companyId);
-            return Results.Ok(summary);
-        }
-        catch (Exception ex)
-        {
-            return Results.Problem($"Error getting transaction summary: {ex.Message}");
-        }
+            return await observerService.GetTransactionSummaryAsync(companyId);
+        }, "Error getting transaction summary");
     }
 
     public static async Task<IResult> GetCompaniesOverview(
         HttpContext httpContext,
         IObserverBffService observerService)
     {
-        var userId = GetUserIdFromContext(httpContext);
-        if (userId == null)
+        return await RequestHelper.ProcessAuthenticatedRequest(httpContext, async userId => 
         {
-            return Results.Unauthorized();
-        }
-
-        try
-        {
-            var overview = await observerService.GetCompaniesOverviewAsync();
-            return Results.Ok(overview);
-        }
-        catch (Exception ex)
-        {
-            return Results.Problem($"Error getting companies overview: {ex.Message}");
-        }
-    }
-
-    private static Guid? GetUserIdFromContext(HttpContext httpContext)
-    {
-        var userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
-        {
-            return null;
-        }
-
-        return userId;
+            return await observerService.GetCompaniesOverviewAsync();
+        }, "Error getting companies overview");
     }
 }

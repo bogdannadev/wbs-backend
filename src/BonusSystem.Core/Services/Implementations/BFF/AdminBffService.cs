@@ -67,7 +67,8 @@ public class AdminBffService : BaseBffService, IAdminBffService
     /// </summary>
     public async Task<CompanyRegistrationResultDto> RegisterCompanyAsync(CompanyRegistrationDto request)
     {
-        // Create the company
+        // This method is kept for backward compatibility
+        // It should not be used for new implementations
         var company = new CompanyDto
         {
             Id = Guid.NewGuid(),
@@ -89,6 +90,89 @@ public class AdminBffService : BaseBffService, IAdminBffService
             Success = true,
             Company = company
         };
+    }
+    
+    /// <summary>
+    /// Registers a new company with its admin user
+    /// </summary>
+    public async Task<CompanyRegistrationResultDto> RegisterCompanyWithAdminAsync(CompanyWithAdminRegistrationDto request)
+    {
+        try
+        {
+            // Check if admin email is already in use
+            var existingUser = await _dataService.Users.GetByEmailAsync(request.AdminEmail);
+            if (existingUser != null)
+            {
+                return new CompanyRegistrationResultDto
+                {
+                    Success = false,
+                    ErrorMessage = $"Email {request.AdminEmail} is already in use"
+                };
+            }
+            
+            // Create the company
+            var company = new CompanyDto
+            {
+                Id = Guid.NewGuid(),
+                Name = request.Name,
+                ContactEmail = request.ContactEmail,
+                ContactPhone = request.ContactPhone,
+                BonusBalance = request.InitialBonusBalance,
+                OriginalBonusBalance = request.InitialBonusBalance,
+                Status = CompanyStatus.Active,
+                CreatedAt = DateTime.UtcNow,
+                Stores = new List<StoreDto>()
+            };
+
+            // Create company admin user
+            var companyAdmin = new UserDto
+            {
+                Id = Guid.NewGuid(),
+                Username = request.AdminUsername,
+                Email = request.AdminEmail,
+                Role = UserRole.Company,
+                BonusBalance = 0,
+                CompanyId = company.Id // Link to the company
+            };
+            
+            // Save the company
+            await _dataService.Companies.CreateAsync(company);
+            
+            // Save the company admin
+            await _dataService.Users.CreateAsync(companyAdmin);
+            
+            // Create password hash for the admin
+            var authResult = await _authService.SignUpAsync(new UserRegistrationDto
+            {
+                Username = request.AdminUsername,
+                Email = request.AdminEmail,
+                Password = request.AdminPassword,
+                Role = UserRole.Company
+            });
+            
+            if (!authResult.Success)
+            {
+                return new CompanyRegistrationResultDto
+                {
+                    Success = false,
+                    ErrorMessage = authResult.ErrorMessage ?? "Failed to create admin user"
+                };
+            }
+
+            return new CompanyRegistrationResultDto
+            {
+                Success = true,
+                Company = company
+            };
+        }
+        catch (Exception ex)
+        {
+            return new CompanyRegistrationResultDto
+            {
+                Success = false,
+                ErrorMessage = $"Error creating company: {ex.Message}"
+            };
+        }
     }
 
     /// <summary>

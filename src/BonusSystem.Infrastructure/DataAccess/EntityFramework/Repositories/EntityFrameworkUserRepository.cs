@@ -79,6 +79,7 @@ public class EntityFrameworkUserRepository : IUserRepository
             entity.Email = dto.Email;
             entity.Role = dto.Role;
             entity.BonusBalance = dto.BonusBalance;
+            entity.CompanyId = dto.CompanyId;
             
             await _dbContext.SaveChangesAsync();
             
@@ -200,6 +201,81 @@ public class EntityFrameworkUserRepository : IUserRepository
         }
     }
 
+    public async Task<IEnumerable<UserDto>> GetUsersByCompanyIdAsync(Guid companyId)
+    {
+        try
+        {
+            var entities = await _dbContext.Users.AsNoTracking()
+                .Where(u => u.CompanyId == companyId)
+                .ToListAsync();
+            
+            return entities.Select(MapToDto);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving users for company with ID {CompanyId}", companyId);
+            throw;
+        }
+    }
+
+    public async Task<bool> AssignUserToCompanyAsync(Guid userId, Guid companyId)
+    {
+        try
+        {
+            // Check if the company exists
+            var companyExists = await _dbContext.Companies.AnyAsync(c => c.Id == companyId);
+            if (!companyExists)
+            {
+                _logger.LogWarning("Cannot assign user to non-existent company. Company ID: {CompanyId}", companyId);
+                return false;
+            }
+            
+            // Find the user
+            var user = await _dbContext.Users.FindAsync(userId);
+            if (user == null)
+            {
+                _logger.LogWarning("Cannot assign non-existent user to company. User ID: {UserId}", userId);
+                return false;
+            }
+            
+            // Only allow assigning Company or Seller roles to a company
+            if (user.Role != UserRole.Company && user.Role != UserRole.Seller)
+            {
+                _logger.LogWarning("Cannot assign user with role {Role} to company. Only Company and Seller roles can be assigned.", user.Role);
+                return false;
+            }
+            
+            // Assign company ID
+            user.CompanyId = companyId;
+            await _dbContext.SaveChangesAsync();
+            
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error assigning user {UserId} to company {CompanyId}", userId, companyId);
+            throw;
+        }
+    }
+
+    public async Task<UserDto?> GetCompanyAdminUserByCompanyIdAsync(Guid companyId)
+    {
+        try
+        {
+            // Find the company admin (user with Company role and the specified company ID)
+            var entity = await _dbContext.Users.AsNoTracking()
+                .Where(u => u.CompanyId == companyId && u.Role == UserRole.Company)
+                .FirstOrDefaultAsync();
+            
+            return entity != null ? MapToDto(entity) : null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving admin user for company with ID {CompanyId}", companyId);
+            throw;
+        }
+    }
+
     private UserDto MapToDto(UserEntity entity)
     {
         return new UserDto
@@ -208,7 +284,8 @@ public class EntityFrameworkUserRepository : IUserRepository
             Username = entity.Username,
             Email = entity.Email,
             Role = entity.Role,
-            BonusBalance = entity.BonusBalance
+            BonusBalance = entity.BonusBalance,
+            CompanyId = entity.CompanyId
         };
     }
 
@@ -221,6 +298,7 @@ public class EntityFrameworkUserRepository : IUserRepository
             Email = dto.Email,
             Role = dto.Role,
             BonusBalance = dto.BonusBalance,
+            CompanyId = dto.CompanyId,
             IsActive = true,
             CreatedAt = DateTime.UtcNow
         };

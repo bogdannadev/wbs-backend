@@ -37,7 +37,8 @@ public abstract class BaseBffService : IBaseBffService
             UserId = user.Id,
             Username = user.Username,
             Role = user.Role,
-            BonusBalance = user.BonusBalance
+            BonusBalance = user.BonusBalance,
+            CompanyId = user.CompanyId
         };
     }
 

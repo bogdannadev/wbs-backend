@@ -13,6 +13,10 @@ public class UserEntity
     public DateTime? LastLogin { get; set; }
     public bool IsActive { get; set; }
     
+    // Company relationship
+    public Guid? CompanyId { get; set; }
+    public CompanyEntity? Company { get; set; }
+    
     // Navigation properties
     public ICollection<BonusTransactionEntity> Transactions { get; set; } = new List<BonusTransactionEntity>();
     public ICollection<NotificationEntity> Notifications { get; set; } = new List<NotificationEntity>();

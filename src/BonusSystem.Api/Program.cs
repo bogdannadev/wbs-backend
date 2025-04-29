@@ -1,6 +1,7 @@
 using BonusSystem.Api.Features.Admin;
 using BonusSystem.Api.Features.Auth;
 using BonusSystem.Api.Features.Buyers;
+using BonusSystem.Api.Features.Companies;
 using BonusSystem.Api.Features.Observers;
 using BonusSystem.Api.Features.Sellers;
 using BonusSystem.Api.Infrastructure.Extensions;
@@ -24,9 +25,9 @@ public class Program
         app.MapBuyerEndpoints();
         app.MapSellerEndpoints();
         app.MapAdminEndpoints();
+        app.MapCompanyEndpoints();
         app.MapObserverEndpoints();
 
         await app.RunAsync();
     }
 }
-

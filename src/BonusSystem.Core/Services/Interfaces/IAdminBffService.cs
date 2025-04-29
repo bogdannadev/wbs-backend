@@ -6,6 +6,7 @@ namespace BonusSystem.Core.Services.Interfaces;
 public interface IAdminBffService : IBaseBffService
 {
     Task<CompanyRegistrationResultDto> RegisterCompanyAsync(CompanyRegistrationDto request);
+    Task<CompanyRegistrationResultDto> RegisterCompanyWithAdminAsync(CompanyWithAdminRegistrationDto request);
     Task<bool> UpdateCompanyStatusAsync(Guid companyId, CompanyStatus status);
     Task<bool> ModerateStoreAsync(Guid storeId, bool isApproved);
     Task<bool> CreditCompanyBalanceAsync(Guid companyId, decimal amount);

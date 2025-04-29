@@ -1,4 +1,5 @@
 using BonusSystem.Infrastructure.DataAccess.Entities;
+using BonusSystem.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -33,9 +34,17 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
         
         builder.Property(u => u.IsActive)
             .HasDefaultValue(true);
+            
+        // Company relationship
+        builder.HasOne(u => u.Company)
+            .WithMany(c => c.Users)
+            .HasForeignKey(u => u.CompanyId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
         
         // Indexes
         builder.HasIndex(u => u.Email).IsUnique();
         builder.HasIndex(u => u.Role);
+        builder.HasIndex(u => u.CompanyId);
     }
 }
