@@ -24,6 +24,7 @@ public static class SellerHandlers
         ISellerBffService sellerService, 
         decimal cashbackpercent)
     {
+        
         var userId = RequestHelper.GetUserIdFromContext(httpContext);
         if (userId == null)
         {

@@ -1,5 +1,6 @@
 using BonusSystem.Shared.Models;
 
+
 namespace BonusSystem.Shared.Dtos;
 
 public record TransactionDto
