@@ -46,7 +46,6 @@ public static class SellerEndpoints
                     "- cashbackPercent: Percentage of cashback to be applied (0-100)\n\n" +
                     "Successful response contains the processed transaction details.";
                 
-                
                 operation.EnsureResponse("200", "Transaction processed successfully");
                 operation.EnsureResponse("400", "Transaction failed");
                 operation.EnsureResponse("401", "Unauthorized");
