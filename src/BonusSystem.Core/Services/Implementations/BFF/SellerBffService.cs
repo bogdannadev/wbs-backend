@@ -87,17 +87,7 @@ public class SellerBffService : BaseBffService, ISellerBffService
             };
         }
         decimal cashback = request.TotalCost * (cashbackpercent / 100); 
-        transaction.CashbackAmount = cashback;
 
-        buyer.BonusBalance += cashback;
-        await _dataService.Users.UpdateBalanceAsync(buyer.Id, buyer.BonusBalance);
-
-        return new TransactionResultDto
-        {
-            Success = true,
-            Transaction = transaction
-        };
-        
         // Create the transaction
         var transaction = new TransactionDto
         {
@@ -114,6 +104,9 @@ public class SellerBffService : BaseBffService, ISellerBffService
             Description = $"Transaction at {store.Name}"
         };
 
+        var updatedBuyer = buyer with { BonusBalance = buyer.BonusBalance + cashback };
+        await _dataService.Users.UpdateBalanceAsync(updatedBuyer.Id, updatedBuyer.BonusBalance);
+        
         // Save the transaction
         await _dataService.Transactions.CreateAsync(transaction);
 
