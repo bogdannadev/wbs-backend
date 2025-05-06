@@ -41,7 +41,7 @@ public class SellerBffService : BaseBffService, ISellerBffService
     /// <summary>
     /// Processes a transaction
     /// </summary>
-    public async Task<TransactionResultDto> ProcessTransactionAsync(Guid sellerId, TransactionRequestDto request)
+    public async Task<TransactionResultDto> ProcessTransactionAsync(Guid sellerId, TransactionRequestDto request, decimal cashbackpercent)
     {
         // Check if seller exists
         var seller = await _dataService.Users.GetByIdAsync(sellerId);
@@ -85,7 +85,18 @@ public class SellerBffService : BaseBffService, ISellerBffService
                 ErrorMessage = "Insufficient bonus balance"
             };
         }
+        decimal cashback = request.TotalCost * (cashbackpercent / 100); 
+        transaction.CashbackAmount = cashback;
 
+        buyer.BonusBalance += cashback;
+        await _dataService.Users.UpdateBalanceAsync(buyer.Id, buyer.BonusBalance);
+
+        return new TransactionResultDto
+        {
+            Success = true,
+            Transaction = transaction
+        };
+        
         // Create the transaction
         var transaction = new TransactionDto
         {
@@ -98,6 +109,7 @@ public class SellerBffService : BaseBffService, ISellerBffService
             Type = request.Type,
             Timestamp = DateTime.UtcNow,
             Status = TransactionStatus.Completed,
+            CashbackAmount = cashback,
             Description = $"Transaction at {store.Name}"
         };
 
