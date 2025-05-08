@@ -21,5 +21,6 @@ public interface ITransactionRepository : IRepository<TransactionDto, Guid>
     // For bonus expiration
     Task<IEnumerable<TransactionDto>> GetActiveTransactionsForUserAsync(Guid userId);
     Task<IEnumerable<TransactionDto>> GetActiveTransactionsForCompanyAsync(Guid companyId);
-    Task ProcessExpirationAsync(DateTime expirationDate);
+    Task ProcessExpirationAsync(DateTime expirationDate); 
+    Task<ReplenishmentBonusBalance> ReplenishmentBonusBalance(ReplenishmentBonusBalance replenishmentBonusTransaction); 
 }

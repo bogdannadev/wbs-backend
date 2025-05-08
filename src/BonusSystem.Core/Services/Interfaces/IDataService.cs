@@ -10,6 +10,7 @@ public interface IDataService
     IUserRepository Users { get; }
     ICompanyRepository Companies { get; }
     IStoreRepository Stores { get; }
-    ITransactionRepository Transactions { get; }
+    ITransactionRepository Transactions { get; } 
+    IFiatTransactionRepository FiatTransactions { get; }
     INotificationRepository Notifications { get; }
 }

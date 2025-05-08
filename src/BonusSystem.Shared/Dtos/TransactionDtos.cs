@@ -15,6 +15,17 @@ public record TransactionDto
     public DateTime Timestamp { get; init; }
     public TransactionStatus Status { get; init; }
     public string Description { get; init; } = string.Empty;
+} 
+
+public record FiatTransactionDto
+{ 
+    public Guid Id { get; init; }
+    public Guid? BuyerId { get; init; }
+    public decimal BonusAmount { get; init; }
+    public TransactionType Type { get; init; }
+    public DateTime Timestamp { get; init; }
+    public TransactionStatus Status { get; init; }
+    public string Description { get; init; } = string.Empty;  
 }
 
 public record TransactionRequestDto
@@ -48,4 +59,30 @@ public record StoreBonusTransactionsDto
     public string StoreName { get; init; } = string.Empty;
     public decimal TotalTransactions { get; init; }
     public List<TransactionDto> Transactions { get; init; } = new();
+} 
+public record ReplenishmentBonusBalance
+{
+    public Guid BuyerId { get; init; }
+    public decimal Amount { get; init; }
+    public DateTime Timestamp { get; init; }
+    public bool IsValid()
+    {
+        return Amount > 0;
+    }
+} 
+
+public class PaymentRequest
+{
+    public string CardNumber { get; set; }
+    public string ExpiryDate { get; set; }
+    public string Cvv { get; set; }
+    public decimal Amount { get; set; }
+    public string Currency { get; set; }
+}
+
+public class PaymentResult
+{
+    public bool Success { get; set; }
+    public string TransactionId { get; set; }
+    public string ErrorMessage { get; set; }
 }

@@ -86,7 +86,7 @@ public class SellerBffService : BaseBffService, ISellerBffService
                 ErrorMessage = "Insufficient bonus balance"
             };
         }
-        decimal cashback = request.TotalCost * (cashbackpercent / 100); 
+        decimal cashback = request.TotalCost * cashbackpercent; 
 
         // Create the transaction
         var transaction = new TransactionDto
