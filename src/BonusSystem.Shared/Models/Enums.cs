@@ -31,6 +31,7 @@ public enum TransactionType
     Spend,
     Expire,
     AdminAdjustment
+
 }
 
 public enum TransactionStatus

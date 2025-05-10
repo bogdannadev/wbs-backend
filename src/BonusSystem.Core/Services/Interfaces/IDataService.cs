@@ -11,6 +11,5 @@ public interface IDataService
     ICompanyRepository Companies { get; }
     IStoreRepository Stores { get; }
     ITransactionRepository Transactions { get; } 
-    IFiatTransactionRepository FiatTransactions { get; }
     INotificationRepository Notifications { get; }
 }

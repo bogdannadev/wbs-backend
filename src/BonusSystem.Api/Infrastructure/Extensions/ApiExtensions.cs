@@ -33,7 +33,7 @@ public static class ApiExtensions
                     .AllowAnyHeader();
             });
         });
-
+        services.AddHttpClient(); 
         // Configure swagger and OpenAPI
         services.AddEndpointsApiExplorer();
 
