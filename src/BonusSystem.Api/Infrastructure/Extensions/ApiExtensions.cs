@@ -15,7 +15,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.SwaggerGen; 
 
 namespace BonusSystem.Api.Infrastructure.Extensions;
 
@@ -33,7 +33,6 @@ public static class ApiExtensions
                     .AllowAnyHeader();
             });
         });
-        services.AddHttpClient(); 
         // Configure swagger and OpenAPI
         services.AddEndpointsApiExplorer();
 
@@ -59,6 +58,7 @@ public static class ApiExtensions
         services.AddScoped<IAdminBffService, AdminBffService>();
         services.AddScoped<IObserverBffService, ObserverBffService>();
         services.AddScoped<ICompanyBffService, CompanyBffService>();
+        services.AddScoped<IStatisticsExportService, StatisticsExportService>();
 
         // Configure Authentication
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

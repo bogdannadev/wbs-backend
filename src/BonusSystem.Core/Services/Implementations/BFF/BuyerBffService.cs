@@ -11,14 +11,11 @@ namespace BonusSystem.Core.Services.Implementations.BFF;
 /// </summary>
 public class BuyerBffService : BaseBffService, IBuyerBffService
 {
-    private readonly HttpClient _httpClient; 
     public BuyerBffService(
         IDataService dataService,
-        IAuthenticationService authService, 
-        HttpClient httpClient) 
+        IAuthenticationService authService) 
         : base(dataService, authService)
     { 
-        _httpClient = httpClient;
     }
 
     /// <summary>

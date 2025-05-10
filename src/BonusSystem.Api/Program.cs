@@ -4,6 +4,7 @@ using BonusSystem.Api.Features.Buyers;
 using BonusSystem.Api.Features.Companies;
 using BonusSystem.Api.Features.Observers;
 using BonusSystem.Api.Features.Sellers;
+using BonusSystem.Api.Features.Accounting; 
 using BonusSystem.Api.Infrastructure.Extensions;
 
 public class Program
@@ -27,7 +28,7 @@ public class Program
         app.MapAdminEndpoints();
         app.MapCompanyEndpoints();
         app.MapObserverEndpoints();
-
+        app.MapAccountingEndpoints();
         await app.RunAsync();
     }
 }
