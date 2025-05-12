@@ -49,14 +49,11 @@ public record StoreBonusTransactionsDto
     public decimal TotalTransactions { get; init; }
     public List<TransactionDto> Transactions { get; init; } = new();
 } 
-public record ReplenishmentFiatBalance
-{
-    public Guid BuyerId { get; init; }
-    public decimal Amount { get; init; }
-    public DateTime Timestamp { get; init; }
-    public bool IsValid()
-    {
-        return Amount > 0;
-    } 
-    public PaymentRequest paymentRequest {get; set; }
-} 
+public record FiatTransactionDto
+{ 
+    public Guid BuyerId {get; init; } 
+    public decimal Amount { get; init; } 
+    public string Description { get; init; } = string.Empty; 
+    public DateTime TransactionDate { get; init; } 
+    public PaymentRequest PaymentRequest { get; set; } 
+}
