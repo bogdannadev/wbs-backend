@@ -1,4 +1,4 @@
-using OfficeOpenXml;
+// using OfficeOpenXml;
 using System.Text;
 using System.Reflection;
 using BonusSystem.Core.Services.Interfaces;
@@ -7,10 +7,6 @@ namespace BonusSystem.Core.Services.Implementations.BFF;
 
 public class StatisticsExportService : IStatisticsExportService
 {
-    public StatisticsExportService()
-    {
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-    }
     public async Task<Stream> ExportToCsvAsync<T>(T data)
     {
         var stream = new MemoryStream();
@@ -41,45 +37,45 @@ public class StatisticsExportService : IStatisticsExportService
         return stream;
     }
 
-    public async Task<Stream> ExportToExcelAsync<T>(T data)
-    {
-        var stream = new MemoryStream();
-        using (var package = new ExcelPackage(stream))
-        {
-            var worksheet = package.Workbook.Worksheets.Add("Report");
-            var properties = typeof(T).GetProperties();
+    // public async Task<Stream> ExportToExcelAsync<T>(T data)
+    // {
+    //     var stream = new MemoryStream();
+    //     using (var package = new ExcelPackage(stream))
+    //     {
+    //         var worksheet = package.Workbook.Worksheets.Add("Report");
+    //         var properties = typeof(T).GetProperties();
 
-            // Write headers
-            for (int i = 0; i < properties.Length; i++)
-            {
-                worksheet.Cells[1, i + 1].Value = properties[i].Name;
-            }
+    //         // Write headers
+    //         for (int i = 0; i < properties.Length; i++)
+    //         {
+    //             worksheet.Cells[1, i + 1].Value = properties[i].Name;
+    //         }
 
-            // Write data
-            int row = 2;
-            if (data is IEnumerable<object> collection)
-            {
-                foreach (var item in collection)
-                {
-                    for (int i = 0; i < properties.Length; i++)
-                    {
-                        worksheet.Cells[row, i + 1].Value = properties[i].GetValue(item);
-                    }
-                    row++;
-                }
-            }
-            else
-            {
-                for (int i = 0; i < properties.Length; i++)
-                {
-                    worksheet.Cells[row, i + 1].Value = properties[i].GetValue(data);
-                }
-            }
+    //         // Write data
+    //         int row = 2;
+    //         if (data is IEnumerable<object> collection)
+    //         {
+    //             foreach (var item in collection)
+    //             {
+    //                 for (int i = 0; i < properties.Length; i++)
+    //                 {
+    //                     worksheet.Cells[row, i + 1].Value = properties[i].GetValue(item);
+    //                 }
+    //                 row++;
+    //             }
+    //         }
+    //         else
+    //         {
+    //             for (int i = 0; i < properties.Length; i++)
+    //             {
+    //                 worksheet.Cells[row, i + 1].Value = properties[i].GetValue(data);
+    //             }
+    //         }
 
-            await package.SaveAsync();
-        }
+    //         await package.SaveAsync();
+    //     }
 
-        stream.Position = 0;
-        return stream;
-    }
+    //     stream.Position = 0;
+    //     return stream;
+    // }
 }

@@ -264,5 +264,11 @@ public static class ApiExtensions
         services.AddScoped<ITransactionRepository>(sp => sp.GetRequiredService<IDataService>().Transactions);
         services.AddScoped<INotificationRepository>(sp => sp.GetRequiredService<IDataService>().Notifications);
     }
-    
+    // public static class EPPlusConfig
+    // {
+    //     public static void Initialize()
+    //     {
+    //         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+    //     }
+    // }
 }

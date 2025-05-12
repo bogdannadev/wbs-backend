@@ -31,10 +31,10 @@ public static class AccountingHandlers
                     var csvStream = await exportService.ExportToCsvAsync(statistics);
                     return Results.File(csvStream, "text/csv", "accounting_statistics.csv");
                 
-                case "excel":
-                    var excelStream = await exportService.ExportToExcelAsync(statistics);
-                    return Results.File(excelStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
-                        "accounting_statistics.xlsx");
+                // case "excel":
+                //     var excelStream = await exportService.ExportToExcelAsync(statistics);
+                //     return Results.File(excelStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                //         "accounting_statistics.xlsx");
                 
                 default:
                     return Results.Ok(statistics);
@@ -57,13 +57,20 @@ public static class AccountingHandlers
             switch (format.ToLower())
             {
                 case "csv":
-                    var csvStream = await exportService.ExportToCsvAsync(transactions);
-                    return Results.File(csvStream, "text/csv", "transactions_report.csv");
+                    var stream = await exportService.ExportToCsvAsync(transactions);
+                    // Reset stream position to beginning
+                    stream.Position = 0;
+                    return Results.File(
+                        fileStream: stream,
+                        contentType: "text/csv",
+                        fileDownloadName: "transactions_report.csv",
+                        enableRangeProcessing: false
+                    );
                 
-                case "excel":
-                    var excelStream = await exportService.ExportToExcelAsync(transactions);
-                    return Results.File(excelStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
-                        "transactions_report.xlsx");
+                // case "excel":
+                //     var excelStream = await exportService.ExportToExcelAsync(transactions);
+                //     return Results.File(excelStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                //         "transactions_report.xlsx");
                 
                 default:
                     return Results.Ok(transactions);
@@ -84,13 +91,19 @@ public static class AccountingHandlers
             switch (format.ToLower())
             {
                 case "csv":
-                    var csvStream = await exportService.ExportToCsvAsync(companies);
-                    return Results.File(csvStream, "text/csv", "companies_report.csv");
-                
-                case "excel":
-                    var excelStream = await exportService.ExportToExcelAsync(companies);
-                    return Results.File(excelStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
-                        "companies_report.xlsx");
+                    var stream = await exportService.ExportToCsvAsync(companies);
+                    // Reset stream position to beginning
+                    stream.Position = 0;
+                    return Results.File(
+                        fileStream: stream,
+                        contentType: "text/csv",
+                        fileDownloadName: "companies_report.csv",
+                        enableRangeProcessing: false
+                    );
+                // case "excel":
+                //     var excelStream = await exportService.ExportToExcelAsync(companies);
+                //     return Results.File(excelStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                //         "companies_report.xlsx");
                 
                 default:
                     return Results.Ok(companies);
