@@ -100,7 +100,6 @@ public class SellerBffService : BaseBffService, ISellerBffService
             Type = request.Type,
             Timestamp = DateTime.UtcNow,
             Status = TransactionStatus.Completed,
-            CashbackAmount = cashback,
             Description = $"Transaction at {store.Name}"
         };
 
