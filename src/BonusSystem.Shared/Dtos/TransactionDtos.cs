@@ -52,8 +52,7 @@ public record StoreBonusTransactionsDto
 public record FiatTransactionDto
 { 
     public Guid BuyerId {get; init; } 
-    public decimal Amount { get; init; } 
+    public PaymentRequest PaymentBody { get; set; } 
     public string Description { get; init; } = string.Empty; 
     public DateTime TransactionDate { get; init; } 
-    public PaymentRequest PaymentRequest { get; set; } 
 }
