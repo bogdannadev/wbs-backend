@@ -14,7 +14,8 @@ public sealed class BonusSystemContext : DbContext
     public DbSet<UserEntity> Users { get; set; } = null!;
     public DbSet<CompanyEntity> Companies { get; set; } = null!;
     public DbSet<StoreEntity> Stores { get; set; } = null!;
-    public DbSet<BonusTransactionEntity> BonusTransactions { get; set; } = null!;
+    public DbSet<BonusTransactionEntity> BonusTransactions { get; set; } = null!; 
+    public DbSet<FiatTransactionEntity> FiatTransactions {get; set; } = null!; 
     public DbSet<NotificationEntity> Notifications { get; set; } = null!;
     public DbSet<StoreSellerAssignmentEntity> StoreSellerAssignments { get; set; } = null!;
     
@@ -29,7 +30,8 @@ public sealed class BonusSystemContext : DbContext
         modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
         modelBuilder.ApplyConfiguration(new CompanyEntityConfiguration());
         modelBuilder.ApplyConfiguration(new StoreEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new BonusTransactionEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new BonusTransactionEntityConfiguration()); 
+        modelBuilder.ApplyConfiguration(new FiatTransactionEntity()); 
         modelBuilder.ApplyConfiguration(new NotificationEntityConfiguration());
         modelBuilder.ApplyConfiguration(new StoreSellerAssignmentEntityConfiguration());
     }

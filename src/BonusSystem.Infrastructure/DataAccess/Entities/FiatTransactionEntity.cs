@@ -3,7 +3,7 @@ using BonusSystem.Shared.Dtos;
 
 namespace BonusSystem.Infrastructure.DataAccess.Entities; 
 
-public class FiatTransaction 
+public class FiatTransactionEntity
 { 
     public Guid Id {get; set; }  
     public Guid BuyerId {get; set; }

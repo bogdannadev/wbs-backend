@@ -13,7 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BonusSystem.Shared\BonusSystem.Shared.csproj" />
+    <ProjectReference Include="..\BonusSystem.Shared\BonusSystem.Shared.csproj" /> 
+    
   </ItemGroup>
 
 </Project>
