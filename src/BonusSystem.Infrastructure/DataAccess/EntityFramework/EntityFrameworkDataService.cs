@@ -26,7 +26,6 @@ public class EntityFrameworkDataService : IDataService
     public IUserRepository Users { get; }
     public ICompanyRepository Companies { get; }
     public IStoreRepository Stores { get; }
-    public ITransactionRepository Transactions { get; }  
-    public IFiatTransactionRepository FiatTransaction {get; }
+    public ITransactionRepository Transactions { get; }
     public INotificationRepository Notifications { get; }
 }

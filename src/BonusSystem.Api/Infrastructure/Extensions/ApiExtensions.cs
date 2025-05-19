@@ -15,7 +15,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-using Swashbuckle.AspNetCore.SwaggerGen; 
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace BonusSystem.Api.Infrastructure.Extensions;
 
@@ -33,6 +33,7 @@ public static class ApiExtensions
                     .AllowAnyHeader();
             });
         });
+
         // Configure swagger and OpenAPI
         services.AddEndpointsApiExplorer();
 
@@ -58,7 +59,6 @@ public static class ApiExtensions
         services.AddScoped<IAdminBffService, AdminBffService>();
         services.AddScoped<IObserverBffService, ObserverBffService>();
         services.AddScoped<ICompanyBffService, CompanyBffService>();
-        services.AddScoped<IStatisticsExportService, StatisticsExportService>();
 
         // Configure Authentication
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -264,11 +264,5 @@ public static class ApiExtensions
         services.AddScoped<ITransactionRepository>(sp => sp.GetRequiredService<IDataService>().Transactions);
         services.AddScoped<INotificationRepository>(sp => sp.GetRequiredService<IDataService>().Notifications);
     }
-    // public static class EPPlusConfig
-    // {
-    //     public static void Initialize()
-    //     {
-    //         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-    //     }
-    // }
+    
 }

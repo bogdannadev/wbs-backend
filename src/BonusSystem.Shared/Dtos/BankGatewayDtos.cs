@@ -1,11 +1,14 @@
+namespace BonusSystem.Shared.Dtos;
 
-namespace BonusSystem.Shared.Dtos; 
-
-public class PaymentRequest
+public class FiatTransactionDto
 {
-    public string CardNumber { get; set; }
-    public string ExpiryDate { get; set; }
-    public string Cvv { get; set; }
+    public Guid BuyerId { get; set; }
+    public PaymentBodyDto PaymentBody { get; set; }
+    public string Description { get; set; }
+}
+
+public class PaymentBodyDto
+{
     public decimal Amount { get; set; }
     public string Currency { get; set; }
 }
@@ -13,20 +16,6 @@ public class PaymentRequest
 public class PaymentResult
 {
     public bool Success { get; set; }
-    public string? ErrorMessage { get; set; }
+    public string ClientSecret { get; set; }
+    public string ErrorMessage { get; set; }
 }
-
-public class BuyersBankAccount
-{
-    public Guid BuyerId { get; set; }
-    public decimal Balance { get; set; }
-    public string AccountNumber { get; set; }
-    public string AccountHolderName { get; set; } 
-} 
-
-public class WBSBankAccount
-{ 
-    public decimal Balance { get; set; }
-    public string AccountNumber { get; set; }
-    public string AccountHolderName { get; set; }
-} 

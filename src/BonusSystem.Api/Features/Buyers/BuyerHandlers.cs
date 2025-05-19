@@ -2,7 +2,6 @@ using BonusSystem.Api.Helpers;
 using BonusSystem.Core.Services.Interfaces;
 using BonusSystem.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
-using BonusSystem.Shared.Dtos; 
 
 namespace BonusSystem.Api.Features.Buyers;
 
@@ -18,6 +17,7 @@ public static class BuyerHandlers
             return new { context, actions };
         }, "Error getting user context");
     }
+
     public static async Task<IResult> GetBalance(HttpContext httpContext, IBuyerBffService buyerService)
     {
         return await RequestHelper.ProcessAuthenticatedRequest(httpContext,

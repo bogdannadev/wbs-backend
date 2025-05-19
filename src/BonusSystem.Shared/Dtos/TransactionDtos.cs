@@ -9,13 +9,12 @@ public record TransactionDto
     public Guid? CompanyId { get; init; }
     public Guid? StoreId { get; init; }
     public decimal BonusAmount { get; init; }
-    public decimal TotalCost { get; init; } 
+    public decimal TotalCost { get; init; }
     public TransactionType Type { get; init; }
     public DateTime Timestamp { get; init; }
     public TransactionStatus Status { get; init; }
     public string Description { get; init; } = string.Empty;
-} 
-
+}
 
 public record TransactionRequestDto
 {
@@ -48,11 +47,4 @@ public record StoreBonusTransactionsDto
     public string StoreName { get; init; } = string.Empty;
     public decimal TotalTransactions { get; init; }
     public List<TransactionDto> Transactions { get; init; } = new();
-} 
-public record FiatTransactionDto
-{ 
-    public Guid BuyerId {get; init; } 
-    public PaymentRequest PaymentBody { get; set; } 
-    public string Description { get; init; } = string.Empty; 
-    public DateTime TransactionDate { get; init; } 
 }

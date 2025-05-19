@@ -2,8 +2,7 @@ using BonusSystem.Core.Repositories;
 using BonusSystem.Core.Services.Interfaces;
 using BonusSystem.Shared.Dtos;
 using BonusSystem.Shared.Models;
-using System.Net.Http;
-using System.Net.Http.Json;
+
 namespace BonusSystem.Core.Services.Implementations.BFF;
 
 /// <summary>
@@ -15,7 +14,7 @@ public class BuyerBffService : BaseBffService, IBuyerBffService
         IDataService dataService,
         IAuthenticationService authService) 
         : base(dataService, authService)
-    { 
+    {
     }
 
     /// <summary>

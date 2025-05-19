@@ -43,7 +43,6 @@ public static class SellerEndpoints
                     "- buyerId: Unique identifier of the buyer (from QR code scan)\n" +
                     "- amount: Bonus amount for the transaction (positive value)\n" +
                     "- type: Transaction type (0=Earn, 1=Spend)\n" +
-                    "- cashbackpercent: Percentage of cashback to be applied (0-100)\n\n" +
                     "Successful response contains the processed transaction details.";
                 
                 operation.EnsureResponse("200", "Transaction processed successfully");

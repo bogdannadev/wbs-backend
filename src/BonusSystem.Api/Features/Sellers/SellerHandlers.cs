@@ -21,8 +21,7 @@ public static class SellerHandlers
     public static async Task<IResult> ProcessTransaction(
         HttpContext httpContext,
         TransactionRequestDto request,
-        ISellerBffService sellerService,
-        decimal cashbackpercent)
+        ISellerBffService sellerService)
     {
         var userId = RequestHelper.GetUserIdFromContext(httpContext);
         if (userId == null)
@@ -32,7 +31,7 @@ public static class SellerHandlers
 
         try
         {
-            var result = await sellerService.ProcessTransactionAsync(userId.Value, request, cashbackpercent );
+            var result = await sellerService.ProcessTransactionAsync(userId.Value, request);
             if (!result.Success)
             {
                 return RequestHelper.CreateErrorResponse(result.ErrorMessage);

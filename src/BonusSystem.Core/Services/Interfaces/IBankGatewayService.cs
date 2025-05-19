@@ -1,7 +1,9 @@
 using BonusSystem.Shared.Dtos;
 
-namespace BonusSystem.Core.Services.Interfaces; 
-public interface IBankGatewayService
+namespace BonusSystem.Core.Services.Interfaces;
+
+public interface IPaymentService
 {
-    Task<PaymentResult> ProcessPaymentAsync(PaymentRequest paymentRequest);
+    Task<PaymentResult> CreatePaymentAsync(FiatTransactionDto transaction);
+    Task<bool> HandleWebhookAsync(string json, string signature);
 }

@@ -7,14 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- <PackageReference Include="EPPlus" Version="6.2.0" /> -->
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BonusSystem.Shared\BonusSystem.Shared.csproj" /> 
-    
+    <ProjectReference Include="..\BonusSystem.Shared\BonusSystem.Shared.csproj" />
   </ItemGroup>
 
 </Project>
