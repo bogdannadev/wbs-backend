@@ -17,32 +17,32 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "https://localhost:5002",
+      "value": "http://185.129.49.159:5000",
       "type": "string"
     },
     {
       "key": "buyerToken",
-      "value": "",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI2NjY2NjY2Ni02NjY2LTY2NjYtNjY2Ni02NjY2NjY2NjY2NjYiLCJyb2xlIjoiQnV5ZXIiLCJuYmYiOjE3NDQ5NzUwMzMsImV4cCI6MTc3NjUxMTAzMywiaWF0IjoxNzQ0OTc1MDMzfQ.uViPRwdn4dR5Z-rd46yzrveKRgEdbQ_JS975bJHryC8",
       "type": "string"
     },
     {
       "key": "sellerToken",
-      "value": "",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI0NDQ0NDQ0NC00NDQ0LTQ0NDQtNDQ0NC00NDQ0NDQ0NDQ0NDQiLCJyb2xlIjoiU2VsbGVyIiwibmJmIjoxNzQ0OTc1MDUxLCJleHAiOjE3NzY1MTEwNTEsImlhdCI6MTc0NDk3NTA1MX0.UpjPiPa-p5taRWkJ4dROUwDzELLiAODzjYNoFTRHIM0",
       "type": "string"
     },
     {
       "key": "adminToken",
-      "value": "",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxMTExMTExMS0xMTExLTExMTEtMTExMS0xMTExMTExMTExMTEiLCJyb2xlIjoiU3lzdGVtQWRtaW4iLCJuYmYiOjE3NDQ5NzUwNjYsImV4cCI6MTc3NjUxMTA2NiwiaWF0IjoxNzQ0OTc1MDY2fQ",
       "type": "string"
     },
     {
       "key": "observerToken",
-      "value": "",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyMjIyMjIyMi0yMjIyLTIyMjItMjIyMi0yMjIyMjIyMjIyMjIiLCJyb2xlIjoiQ29tcGFueU9ic2VydmVyIiwibmJmIjoxNzQ0OTc1MDc4LCJleHAiOjE3NzY1MTEwNzgsImlhdCI6MTc0NDk3NTA3OH0",
       "type": "string"
     },
     {
       "key": "companyToken",
-      "value": "",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJhYWFhYWJiYi1hYWFhLWFhYWEtYWFhYS1hYWFhYWFhYWFhYWEiLCJyb2xlIjoiQ29tcGFueSIsIkNvbXBhbnlJZCI6ImFhYWFhYWFhLWFhYWEtYWFhYS1hYWFhLWFhYWFhYWFhYWFhYSIsIm5iZiI6MTc0NTkyNTE4MywiZXhwIjoxNzc3NDYxMTgzLCJpYXQiOjE3NDU5MjUxODN9",
       "type": "string"
     }
   ],
