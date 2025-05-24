@@ -1,0 +1,1362 @@
+{
+  "info": {
+    "name": "BonusSystem API",
+    "description": "Complete API collection for BonusSystem with authentication workflows, buyer operations, seller operations, company operations, admin operations, and observer operations.\n\nEnum Definitions:\n- Company Status: 0=Pending, 1=Active, 2=Suspended, 3=Closed\n- Transaction Type: 0=Earn, 1=Spend, 2=Expired, 3=SystemCredit, 4=Cancelled\n- Notification Type: 0=System, 1=Transaction, 2=Balance, 3=Promotion, 4=Warning",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:5002",
+      "type": "string"
+    },
+    {
+      "key": "buyerToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "sellerToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "observerToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "companyToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login as Buyer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.token) {",
+                  "        pm.collectionVariables.set('buyerToken', responseJson.token);",
+                  "        console.log('Buyer token saved:', responseJson.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"customer1@example.com\",\n    \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login as Seller",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.token) {",
+                  "        pm.collectionVariables.set('sellerToken', responseJson.token);",
+                  "        console.log('Seller token saved:', responseJson.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"seller1@megamart.com\",\n    \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login as Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.token) {",
+                  "        pm.collectionVariables.set('adminToken', responseJson.token);",
+                  "        console.log('Admin token saved:', responseJson.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin@bonussystem.com\",\n    \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login as Observer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.token) {",
+                  "        pm.collectionVariables.set('observerToken', responseJson.token);",
+                  "        console.log('Observer token saved:', responseJson.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"observer@megamart.com\",\n    \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login as Company",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.token) {",
+                  "        pm.collectionVariables.set('companyToken', responseJson.token);",
+                  "        console.log('Company token saved:', responseJson.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"company@megamart.com\",\n    \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login as Seller2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.token) {",
+                  "        pm.collectionVariables.set('sellerToken', responseJson.token);",
+                  "        console.log('Seller2 token saved (updated sellerToken):', responseJson.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"seller2@megamart.com\",\n    \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Buyer Operations",
+      "item": [
+        {
+          "name": "Get Buyer Context",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/buyers/context",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "buyers", "context"]
+            }
+          }
+        },
+        {
+          "name": "Get Buyer Balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/buyers/balance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "buyers", "balance"]
+            }
+          }
+        },
+        {
+          "name": "Get Buyer Transaction History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/buyers/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "buyers", "transactions"]
+            }
+          }
+        },
+        {
+          "name": "Generate Buyer QR Code",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/buyers/qrcode",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "buyers", "qrcode"]
+            }
+          }
+        },
+        {
+          "name": "Find Stores by Category",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/buyers/stores?category=all",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "buyers", "stores"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "all"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancel Specific Transaction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/buyers/transactions/11111111-aaaa-1111-aaaa-111111111111/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "buyers", "transactions", "11111111-aaaa-1111-aaaa-111111111111", "cancel"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Seller Operations",
+      "item": [
+        {
+          "name": "Process Earn Transaction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"buyerId\": \"66666666-6666-6666-6666-666666666666\",\n    \"bonusAmount\": 150,\n    \"totalCost\": 1000,\n    \"type\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/sellers/transactions/process",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sellers", "transactions", "process"]
+            }
+          }
+        },
+        {
+          "name": "Process Spend Transaction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"buyerId\": \"66666666-6666-6666-6666-666666666666\",\n    \"bonusAmount\": 50,\n    \"totalCost\": 1000,\n    \"type\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/sellers/transactions/process",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sellers", "transactions", "process"]
+            }
+          }
+        },
+        {
+          "name": "Get Buyer Balance (Seller View)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/sellers/buyers/66666666-6666-6666-6666-666666666666/balance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sellers", "buyers", "66666666-6666-6666-6666-666666666666", "balance"]
+            }
+          }
+        },
+        {
+          "name": "Get Store Balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/sellers/balance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sellers", "balance"]
+            }
+          }
+        },
+        {
+          "name": "Get Store Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/sellers/transactions/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sellers", "transactions", "list"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Company Operations",
+      "item": [
+        {
+          "name": "Get All Stores with Sellers",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{companyToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"page\": 1,\n    \"pageSize\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/companies/stores-with-sellers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "companies", "stores-with-sellers"]
+            }
+          }
+        },
+        {
+          "name": "Get Active Stores with Sellers",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{companyToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"storeStatus\": 1,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/companies/stores-with-sellers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "companies", "stores-with-sellers"]
+            }
+          }
+        },
+        {
+          "name": "Get Pending Approval Stores",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{companyToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"storeStatus\": 0,\n    \"page\": 1,\n    \"pageSize\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/companies/stores-with-sellers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "companies", "stores-with-sellers"]
+            }
+          }
+        },
+        {
+          "name": "Get Company Context",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{companyToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/companies/context",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "companies", "context"]
+            }
+          }
+        },
+        {
+          "name": "Register New Store",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{companyToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"companyId\": \"AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA\",\n    \"name\": \"Downtown Store\",\n    \"location\": \"Downtown\",\n    \"address\": \"123 Main St, City, State 12345\",\n    \"contactPhone\": \"+1-555-444-3333\",\n    \"sellerIds\": []\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/companies/stores",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "companies", "stores"]
+            }
+          }
+        },
+        {
+          "name": "Register New Seller",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{companyToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"newseller1234\",\n    \"email\": \"newseller1234@megamart.com\",\n    \"password\": \"Seller123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/companies/sellers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "companies", "sellers"]
+            }
+          }
+        },
+        {
+          "name": "Get Company Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{companyToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/companies/statistics?startDate=2025-01-01T00:00:00Z&endDate=2025-04-15T23:59:59Z",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "companies", "statistics"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2025-01-01T00:00:00Z"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2025-04-15T23:59:59Z"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Company Transaction Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{companyToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/companies/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "companies", "transactions"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Operations",
+      "item": [
+        {
+          "name": "Calculate Transaction Fees (No Date Filter)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"feePercent\": 0.05,\n    \"fromDate\": null,\n    \"endDate\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/companies/transaction-fees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "companies", "transaction-fees"]
+            }
+          }
+        },
+        {
+          "name": "Calculate Transaction Fees (With Date Filter)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"feePercent\": 0.05,\n  \"fromDate\": \"2025-01-01T00:00:00Z\",\n  \"endDate\": \"2025-04-14T23:59:59Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/companies/transaction-fees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "companies", "transaction-fees"]
+            }
+          }
+        },
+        {
+          "name": "Register New Company",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"New Test Company\",\n    \"contactEmail\": \"contact@newtestcompany.com\",\n    \"contactPhone\": \"+1-555-123-7890\",\n    \"initialBonusBalance\": 500000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/companies",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "companies"]
+            }
+          }
+        },
+        {
+          "name": "Update Company Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "1"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/companies/AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "companies", "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA", "status"]
+            }
+          }
+        },
+        {
+          "name": "Create Pending Store Registration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"companyId\": \"AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA\",\n    \"name\": \"Pending Test Store\",\n    \"location\": \"Riverside\",\n    \"address\": \"789 River Rd, Anytown, AN 12345\",\n    \"contactPhone\": \"+1-555-789-0123\",\n    \"sellerIds\": []\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/stores",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "stores"]
+            }
+          }
+        },
+        {
+          "name": "Moderate Store (Approve)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/stores/AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAB/moderate?approve=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "stores", "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAB", "moderate"],
+              "query": [
+                {
+                  "key": "approve",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Credit Company Balance",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "100000"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/companies/AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA/credit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "companies", "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA", "credit"]
+            }
+          }
+        },
+        {
+          "name": "Get System Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/transactions?companyId=AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "transactions"],
+              "query": [
+                {
+                  "key": "companyId",
+                  "value": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Send System Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"message\": \"Special promotion this weekend!\",\n    \"type\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/notifications?recipientId=66666666-6666-6666-6666-666666666666",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "notifications"],
+              "query": [
+                {
+                  "key": "recipientId",
+                  "value": "66666666-6666-6666-6666-666666666666"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter Transactions by Date Range",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/transactions?startDate=2024-03-01&endDate=2024-04-15",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "transactions"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-03-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-04-15"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Observer Operations",
+      "item": [
+        {
+          "name": "Get Observer Context",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{observerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/observers/context",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "observers", "context"]
+            }
+          }
+        },
+        {
+          "name": "Get System-Wide Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{observerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/observers/statistics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "observers", "statistics"]
+            }
+          }
+        },
+        {
+          "name": "Get Transaction Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{observerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/observers/transactions/summary?companyId=AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "observers", "transactions", "summary"],
+              "query": [
+                {
+                  "key": "companyId",
+                  "value": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Companies Overview",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{observerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/observers/companies",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "observers", "companies"]
+            }
+          }
+        },
+        {
+          "name": "Get Company-Specific Statistics (MegaMart)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{observerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/observers/statistics?companyId=AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA&startDate=2024-01-01&endDate=2024-04-15",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "observers", "statistics"],
+              "query": [
+                {
+                  "key": "companyId",
+                  "value": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-04-15"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get TechHaven Company Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{observerToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/observers/statistics?companyId=BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "observers", "statistics"],
+              "query": [
+                {
+                  "key": "companyId",
+                  "value": "BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Extended Demo Operations",
+      "item": [
+        {
+          "name": "Process Earn Transaction as Seller2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"buyerId\": \"66666666-6666-6666-6666-666666666666\",\n    \"totalCost\": 1000,\n    \"bonusAmount\": 200,\n    \"type\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/sellers/transactions/process",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sellers", "transactions", "process"]
+            }
+          }
+        },
+        {
+          "name": "Process Spend Transaction as Seller2",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"buyerId\": \"66666666-6666-6666-6666-666666666666\",\n    \"totalCost\": 1000,\n    \"bonusAmount\": 75,\n    \"type\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/sellers/transactions/process",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sellers", "transactions", "process"]
+            }
+          }
+        },
+        {
+          "name": "Process Earn for Another Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sellerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"buyerId\": \"77777777-7777-7777-7777-777777777777\",\n    \"bonusAmount\": 150,\n    \"totalCost\": 1000,\n    \"type\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/sellers/transactions/process",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "sellers", "transactions", "process"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}
