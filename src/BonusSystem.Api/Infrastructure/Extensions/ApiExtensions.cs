@@ -26,11 +26,14 @@ public static class ApiExtensions
         // Configure CORS - Allow everything
         services.AddCors(options =>
         {
-            options.AddDefaultPolicy(builder =>
+            options.AddDefaultPolicy(policy =>
             {
-                builder.AllowAnyOrigin()
+                policy.WithOrigins(
+                        "http://185.129.49.159:5000",
+                        "https://185.129.49.159:5001")
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .AllowCredentials();
             });
         });
 
