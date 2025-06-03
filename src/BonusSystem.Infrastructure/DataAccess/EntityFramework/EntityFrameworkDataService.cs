@@ -1,7 +1,9 @@
-﻿using BonusSystem.Core.Repositories;
+﻿using System.Data;
+using BonusSystem.Core.Repositories;
 using BonusSystem.Core.Services.Interfaces;
 using BonusSystem.Infrastructure.DataAccess.EntityFramework.Repositories;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace BonusSystem.Infrastructure.DataAccess.EntityFramework;
 
@@ -28,4 +30,20 @@ public class EntityFrameworkDataService : IDataService
     public IStoreRepository Stores { get; }
     public ITransactionRepository Transactions { get; }
     public INotificationRepository Notifications { get; }
+
+    public async Task ExecuteInTransactionAsync(Func<Task> operation, IsolationLevel isolationLevel = IsolationLevel.Serializable)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync(isolationLevel);
+
+        try
+        {
+            await operation();
+            await transaction.CommitAsync();
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
 }

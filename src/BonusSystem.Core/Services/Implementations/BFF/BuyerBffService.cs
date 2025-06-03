@@ -133,7 +133,7 @@ public class BuyerBffService : BaseBffService, IBuyerBffService
             newBalance += transaction.BonusAmount;
         }
 
-        await _dataService.Users.UpdateBalanceAsync(userId, newBalance);
+        await _dataService.Users.UpdateBalanceAsync(userId, newBalance, user.BonusBalance);
 
         return true;
     }

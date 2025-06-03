@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text;
 using BonusSystem.Api.Infrastructure.Swagger;
 using BonusSystem.Api.Infrastructure.Swagger.Documentation;
+using BonusSystem.Application.Common.Transactions;
 using BonusSystem.Core.Repositories;
 using BonusSystem.Core.Services.Implementations.BFF;
 using BonusSystem.Core.Services.Interfaces;
@@ -240,7 +241,7 @@ public static class ApiExtensions
 
         if (string.IsNullOrEmpty(connectionString))
             throw new InvalidOperationException("Connection string not found in the configuration");
-        
+
         // Configure the db context
         services.AddDbContext<BonusSystemContext>(options =>
         {
@@ -249,7 +250,7 @@ public static class ApiExtensions
                 npgOptions.MigrationsAssembly(typeof(BonusSystemContext).Assembly.GetName().Name);
                 npgOptions.EnableRetryOnFailure(5);
             });
-            
+
             // Enable detailed logging in development
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
             {
@@ -266,6 +267,7 @@ public static class ApiExtensions
         services.AddScoped<IStoreRepository>(sp => sp.GetRequiredService<IDataService>().Stores);
         services.AddScoped<ITransactionRepository>(sp => sp.GetRequiredService<IDataService>().Transactions);
         services.AddScoped<INotificationRepository>(sp => sp.GetRequiredService<IDataService>().Notifications);
+        services.AddScoped<ITransactionExecutor, TransactionExecutor>();
     }
     
 }

@@ -1,3 +1,4 @@
+using System.Data;
 using BonusSystem.Core.Repositories;
 
 namespace BonusSystem.Core.Services.Interfaces;
@@ -12,4 +13,7 @@ public interface IDataService
     IStoreRepository Stores { get; }
     ITransactionRepository Transactions { get; }
     INotificationRepository Notifications { get; }
+
+    Task ExecuteInTransactionAsync(Func<Task> operation, IsolationLevel isolationLevel = IsolationLevel.Serializable);
+
 }

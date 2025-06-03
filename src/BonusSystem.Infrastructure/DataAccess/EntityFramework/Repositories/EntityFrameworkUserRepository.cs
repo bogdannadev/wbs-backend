@@ -1,3 +1,4 @@
+using BonusSystem.Core.Exceptions;
 using BonusSystem.Core.Repositories;
 using BonusSystem.Infrastructure.DataAccess.Entities;
 using BonusSystem.Shared.Dtos;
@@ -130,20 +131,19 @@ public class EntityFrameworkUserRepository : IUserRepository
         }
     }
 
-    public async Task<bool> UpdateBalanceAsync(Guid userId, decimal newBalance)
+    public async Task<bool> UpdateBalanceAsync(Guid userId, decimal newBalance, decimal expectedCurrentBalance)
     {
         try
         {
-            var entity = await _dbContext.Users.FindAsync(userId);
-            if (entity == null)
-            {
-                return false;
-            }
+            var result = await _dbContext.Database.ExecuteSqlInterpolatedAsync($@"
+                UPDATE users
+                SET ""BonusBalance"" = {newBalance}
+                WHERE ""Id"" = {userId} AND ""BonusBalance"" = {expectedCurrentBalance}");
 
-            entity.BonusBalance = newBalance;
-            await _dbContext.SaveChangesAsync();
-            
-            return true;
+            if (result == 0)
+                throw new ConcurrencyException($"User {userId} balance update conflict — expected value was {expectedCurrentBalance}");
+                
+            return result > 0;
         }
         catch (Exception ex)
         {

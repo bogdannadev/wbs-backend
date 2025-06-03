@@ -8,7 +8,7 @@ namespace BonusSystem.Core.Repositories;
 /// </summary>
 public interface ICompanyRepository : IRepository<CompanyDto, Guid>
 {
-    Task<bool> UpdateBalanceAsync(Guid companyId, decimal newBalance);
+    Task<bool> UpdateBalanceAsync(Guid companyId, decimal newBalance, decimal expectedCurrentBalance);
     Task<bool> UpdateStatusAsync(Guid companyId, CompanyStatus status);
     Task<IEnumerable<CompanyDto>> GetCompaniesByStatusAsync(CompanyStatus status);
     Task<decimal> GetOriginalBalanceAsync(Guid companyId);
