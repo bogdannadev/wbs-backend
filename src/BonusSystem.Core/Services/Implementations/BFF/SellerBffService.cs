@@ -53,75 +53,72 @@ public class SellerBffService : BaseBffService, ISellerBffService
         {
             await _executor.ExecuteWithRetryAsync(async () =>
             {
-                await _dataService.ExecuteInTransactionAsync(async () =>
+                // Check if seller exists
+                var seller = await _dataService.Users.GetByIdAsync(sellerId);
+                if (seller == null || seller.Role != UserRole.Seller)
+                throw new InvalidOperationException("Invalid seller");
+
+                // Find seller's store
+                var store = await _dataService.Stores.GetStoreBySellerIdAsync(sellerId);
+                if (store == null || store.Status != StoreStatus.Active)
+                    throw new InvalidOperationException("Seller is not assigned to an active store");
+
+                // Check if buyer exists    
+                var buyer = await _dataService.Users.GetByIdAsync(request.BuyerId);
+                if (buyer == null || buyer.Role != UserRole.Buyer)
+                    throw new InvalidOperationException("Invalid buyer");
+
+                // For spend transactions, check if buyer has enough balance
+                if (request.Type == TransactionType.Spend && buyer.BonusBalance < request.BonusAmount)
+                    throw new InvalidOperationException("Insufficient bonus balance");
+
+                // Create the transaction
+                var transaction = new TransactionDto
                 {
-                    // Check if seller exists
-                    var seller = await _dataService.Users.GetByIdAsync(sellerId);
-                    if (seller == null || seller.Role != UserRole.Seller)
-                        throw new InvalidOperationException("Invalid seller");
+                    Id = Guid.NewGuid(),
+                    UserId = request.BuyerId,
+                    CompanyId = store.CompanyId,
+                    StoreId = store.Id,
+                    BonusAmount = request.BonusAmount,
+                    TotalCost = request.TotalCost,
+                    Type = request.Type,
+                    Timestamp = DateTime.UtcNow,
+                    Status = TransactionStatus.Completed,
+                    Description = $"Transaction at {store.Name}"
+                };
 
-                    // Find seller's store
-                    var store = await _dataService.Stores.GetStoreBySellerIdAsync(sellerId);
-                    if (store == null || store.Status != StoreStatus.Active)
-                        throw new InvalidOperationException("Seller is not assigned to an active store");
+                // Save the transaction
+                await _dataService.Transactions.CreateAsync(transaction);
 
-                    // Check if buyer exists    
-                    var buyer = await _dataService.Users.GetByIdAsync(request.BuyerId);
-                    if (buyer == null || buyer.Role != UserRole.Buyer)
-                        throw new InvalidOperationException("Invalid buyer");
+                decimal newBuyerBalance = request.Type switch
+                {
+                    TransactionType.Earn => buyer.BonusBalance + request.BonusAmount,
+                    TransactionType.Spend => buyer.BonusBalance - request.BonusAmount,
+                    _ => buyer.BonusBalance
+                };
 
-                    // For spend transactions, check if buyer has enough balance
-                    if (request.Type == TransactionType.Spend && buyer.BonusBalance < request.BonusAmount)
-                        throw new InvalidOperationException("Insufficient bonus balance");
+                await _dataService.Users.UpdateBalanceAsync(buyer.Id, newBuyerBalance, buyer.BonusBalance);
 
-                    // Create the transaction
-                    var transaction = new TransactionDto
+                var company = await _dataService.Companies.GetByIdAsync(store.CompanyId);
+
+                if (company != null)
+                {
+                    decimal newCompanyBalance = request.Type switch
                     {
-                        Id = Guid.NewGuid(),
-                        UserId = request.BuyerId,
-                        CompanyId = store.CompanyId,
-                        StoreId = store.Id,
-                        BonusAmount = request.BonusAmount,
-                        TotalCost = request.TotalCost,
-                        Type = request.Type,
-                        Timestamp = DateTime.UtcNow,
-                        Status = TransactionStatus.Completed,
-                        Description = $"Transaction at {store.Name}"
+                        TransactionType.Earn => company.BonusBalance - request.BonusAmount,
+                        TransactionType.Spend => company.BonusBalance + request.BonusAmount,
+                        _ => company.BonusBalance
                     };
 
-                    // Save the transaction
-                    await _dataService.Transactions.CreateAsync(transaction);
+                    await _dataService.Companies.UpdateBalanceAsync(company.Id, newCompanyBalance, company.BonusBalance);
+                }
 
-                    decimal newBuyerBalance = request.Type switch
-                    {
-                        TransactionType.Earn => buyer.BonusBalance + request.BonusAmount,
-                        TransactionType.Spend => buyer.BonusBalance - request.BonusAmount,
-                        _ => buyer.BonusBalance
-                    };
-
-                    await _dataService.Users.UpdateBalanceAsync(buyer.Id, newBuyerBalance, buyer.BonusBalance);
-
-                    var company = await _dataService.Companies.GetByIdAsync(store.CompanyId);
-
-                    if (company != null)
-                    {
-                        decimal newCompanyBalance = request.Type switch
-                        {
-                            TransactionType.Earn => company.BonusBalance - request.BonusAmount,
-                            TransactionType.Spend => company.BonusBalance + request.BonusAmount,
-                            _ => company.BonusBalance
-                        };
-
-                        await _dataService.Companies.UpdateBalanceAsync(company.Id, newCompanyBalance, company.BonusBalance);
-                    }
-
-                });
             });
             return new TransactionResultDto
-                {
-                    Success = true,
-                    Transaction = transactionDto
-                };
+            {
+                Success = true,
+                Transaction = transactionDto
+            };
         }
         catch (Exception ex)
         {
