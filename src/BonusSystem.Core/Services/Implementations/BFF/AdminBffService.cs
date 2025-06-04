@@ -211,7 +211,7 @@ public class AdminBffService : BaseBffService, IAdminBffService
 
         // Update company balance
         var newBalance = company.BonusBalance + amount;
-        var success = await _dataService.Companies.UpdateBalanceAsync(companyId, newBalance);
+        var success = await _dataService.Companies.UpdateBalanceAsync(companyId, newBalance, company.BonusBalance);
 
         if (success)
         {

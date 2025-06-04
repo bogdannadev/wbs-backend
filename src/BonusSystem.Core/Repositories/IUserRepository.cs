@@ -9,7 +9,7 @@ namespace BonusSystem.Core.Repositories;
 public interface IUserRepository : IRepository<UserDto, Guid>
 {
     Task<UserDto?> GetByEmailAsync(string email);
-    Task<bool> UpdateBalanceAsync(Guid userId, decimal newBalance);
+    Task<bool> UpdateBalanceAsync(Guid userId, decimal newBalance, decimal expectedCurrentBalance);
     Task<UserRole> GetUserRoleAsync(Guid userId);
     Task<bool> IsUserExistsByEmailAsync(string email);
     Task<IEnumerable<UserDto>> GetUsersByRoleAsync(UserRole role);
