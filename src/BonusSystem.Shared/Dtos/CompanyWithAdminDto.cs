@@ -1,4 +1,5 @@
 using BonusSystem.Shared.Models;
+using BonusSystem.Shared.Validation.Password; 
 
 namespace BonusSystem.Shared.Dtos;
 
@@ -16,6 +17,7 @@ public record CompanyWithAdminRegistrationDto
     // Company Admin Information
     public string AdminUsername { get; init; } = string.Empty;
     public string AdminEmail { get; init; } = string.Empty;
+    [PasswordValidation]
     public string AdminPassword { get; init; } = string.Empty;
 }
 
