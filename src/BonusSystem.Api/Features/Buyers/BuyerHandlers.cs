@@ -40,32 +40,33 @@ public static class BuyerHandlers
         }, "Error generating QR code");
     }
 
-    public static async Task<IResult> CancelTransaction(
-        HttpContext httpContext,
-        Guid id,
-        IBuyerBffService buyerService)
+public static async Task<IResult> CancelTransaction(
+    HttpContext httpContext,
+    Guid id,
+    bool confirm,
+    IBuyerBffService buyerService)
+{
+    var userId = RequestHelper.GetUserIdFromContext(httpContext);
+    if (userId == null)
     {
-        var userId = RequestHelper.GetUserIdFromContext(httpContext);
-        if (userId == null)
-        {
-            return Results.Unauthorized();
-        }
-
-        try
-        {
-            var success = await buyerService.CancelTransactionAsync(userId.Value, id);
-            if (!success)
-            {
-                return RequestHelper.CreateErrorResponse("Transaction could not be cancelled");
-            }
-
-            return RequestHelper.CreateSuccessResponse("Transaction cancelled successfully");
-        }
-        catch (Exception ex)
-        {
-            return RequestHelper.HandleExceptionResponse(ex, "Error cancelling transaction");
-        }
+        return Results.Unauthorized();
     }
+
+    try
+    {
+        var success = await buyerService.CancelTransactionAsync(userId.Value, id, confirm);
+        if (!success)
+        {
+            return RequestHelper.CreateErrorResponse("Transaction could not be cancelled. Confirmation required.");
+        }
+
+        return RequestHelper.CreateSuccessResponse("Transaction cancelled successfully");
+    }
+    catch (Exception ex)
+    {
+        return RequestHelper.HandleExceptionResponse(ex, "Error cancelling transaction");
+    }
+}
 
     public static async Task<IResult> FindStores(
         HttpContext httpContext,

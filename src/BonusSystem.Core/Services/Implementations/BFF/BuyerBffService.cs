@@ -101,12 +101,12 @@ public class BuyerBffService : BaseBffService, IBuyerBffService
     /// <summary>
     /// Cancels a transaction
     /// </summary>
-    public async Task<bool> CancelTransactionAsync(Guid userId, Guid transactionId)
+    public async Task<bool> CancelTransactionAsync(Guid userId, Guid transactionId, bool confirm)
     {
         var transaction = await _dataService.Transactions.GetByIdAsync(transactionId);
         
         // Check if the transaction exists and belongs to the user
-        if (transaction == null || transaction.UserId != userId)
+        if (transaction == null || transaction.UserId != userId || confirm == false)
         {
             return false;
         }
